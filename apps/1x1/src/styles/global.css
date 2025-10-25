@@ -1,0 +1,96 @@
+/**
+ * Global styles for unique patterns that Quasar doesn't provide
+ * Keep this minimal - use Quasar utilities for everything else
+ */
+
+/* Speech bubble arrow for HomePage mascot */
+.speech-bubble-arrow::before,
+.speech-bubble-arrow::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+}
+
+/* Mobile: Arrow on top */
+@media (max-width: 599.98px) {
+  .speech-bubble-arrow::before {
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 9px;
+    border-color: transparent transparent rgba(0, 0, 0, 0.12) transparent;
+  }
+
+  .speech-bubble-arrow::after {
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-color: transparent transparent white transparent;
+  }
+}
+
+/* Desktop: Arrow on left */
+@media (min-width: 600px) {
+  .speech-bubble-arrow::before {
+    left: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 9px;
+    border-color: transparent rgba(0, 0, 0, 0.12) transparent transparent;
+  }
+
+  .speech-bubble-arrow::after {
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px;
+    border-color: transparent white transparent transparent;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Apply animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}

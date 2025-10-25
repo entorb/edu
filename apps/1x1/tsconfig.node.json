@@ -1,0 +1,21 @@
+{
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "cypress.config.ts",
+    "src/config/text-de.ts",
+    "src/config/constants.ts",
+    "../../vite.config.base.ts",
+    "../../vitest.config.base.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noEmit": true,
+    "types": ["node"]
+  }
+}
