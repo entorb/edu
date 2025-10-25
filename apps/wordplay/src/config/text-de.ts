@@ -1,4 +1,8 @@
 export const TEXT_DE = {
+  // Shared text constants (synced with @edu/shared)
+  totalGamesPlayedByAll: 'Spiele gespielt.',
+  footerNoDataStored: 'Es werden keine persönlichen Daten gespeichert.',
+
   appTitle: "Rabat's Wortspiel",
   home: {
     welcome: 'Willkommen zurück!',
@@ -59,7 +63,5 @@ export const TEXT_DE = {
   },
   stats: {
     title: 'Statistiken'
-  },
-  totalGamesPlayedByAll: 'Spiele gespielt.',
-  footerNoDataStored: 'Es werden keine persönlichen Daten gespeichert.'
+  }
 }

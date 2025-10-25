@@ -3,8 +3,9 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
 import { TEXT_DE } from '../config/text-de'
+import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
-import { helperStatsDataWrite } from '../utils/helpers'
+import { helperStatsDataWrite } from '@edu/shared'
 
 const router = useRouter()
 const { score, lastRoundUpdates, isFoxHappy } = useGameStore()
@@ -25,7 +26,7 @@ function handleKeyDown(event: KeyboardEvent) {
 onMounted(async () => {
   window.addEventListener('keydown', handleKeyDown)
   // Update usage stats in DB
-  await helperStatsDataWrite()
+  await helperStatsDataWrite(BASE_PATH)
 })
 
 onUnmounted(() => {

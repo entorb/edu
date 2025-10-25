@@ -4,9 +4,14 @@ import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import type { GameResult } from '@/types'
-import { FIRST_GAME_BONUS, STREAK_GAME_BONUS, STREAK_GAME_INTERVAL } from '@/config/constants'
+import {
+  FIRST_GAME_BONUS,
+  STREAK_GAME_BONUS,
+  STREAK_GAME_INTERVAL,
+  BASE_PATH
+} from '@/config/constants'
 import { TEXT_DE } from '@/config/text-de'
-import { helperStatsDataWrite } from '@/util/helpers'
+import { helperStatsDataWrite } from '@edu/shared'
 
 const router = useRouter()
 
@@ -60,7 +65,7 @@ onMounted(async () => {
     }
 
     // update usage stats in DB
-    await helperStatsDataWrite()
+    await helperStatsDataWrite(BASE_PATH)
   }
 
   window.addEventListener('keydown', handleKeyDown)

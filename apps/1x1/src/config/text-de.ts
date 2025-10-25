@@ -4,6 +4,10 @@
  */
 
 export const TEXT_DE = {
+  // Shared text constants (synced with @edu/shared)
+  totalGamesPlayedByAll: 'Spiele gespielt.',
+  footerNoDataStored: 'Es werden keine persönlichen Daten gespeichert.',
+
   // App title
   appTitle: "Vyvit's 1x1 Spiel",
 
@@ -58,7 +62,6 @@ export const TEXT_DE = {
   legend: 'Legende',
   legendBackground: 'Hintergrund: Level (Rot=1 → Grün=5)',
   legendTextColor: 'Schriftfarbe: Zeit (Grün=schnell → Rot=langsam)',
-  footerNoDataStored: 'Keine Deiner Daten werden auf dem Server gespeichert.',
 
   // Reset dialog
   resetCardsTitle: 'Karten zurücksetzen',
@@ -82,10 +85,7 @@ export const TEXT_DE = {
 
   // Empty states
   noGamesPlayed: 'Noch keine Spiele gespielt',
-  noDataAvailable: 'Keine Kartendaten verfügbar',
-
-  // Database stats
-  totalGamesPlayedByAll: 'Spiele gespielt von allen Nutzern.'
+  noDataAvailable: 'Keine Kartendaten verfügbar'
 } as const
 
 export type TextKey = keyof typeof TEXT_DE

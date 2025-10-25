@@ -5,10 +5,11 @@ import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
 import { TEXT_DE } from '../config/text-de'
+import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
 import GameStatsDisplay from '../components/GameStatsDisplay.vue'
 import LevelDistribution from '../components/LevelDistribution.vue'
-import { helperStatsDataRead } from '../utils/helpers'
+import { helperStatsDataRead, AppFooter } from '@edu/shared'
 
 const router = useRouter()
 const { allCards, gameStats, startGame } = useGameStore()
@@ -44,7 +45,7 @@ onMounted(async () => {
     settings.value = lastSettings
   }
   // Fetch total games played by all users from database
-  totalGamesPlayedByAll.value = await helperStatsDataRead()
+  totalGamesPlayedByAll.value = await helperStatsDataRead(BASE_PATH)
 })
 
 function handleSubmit() {
@@ -197,38 +198,11 @@ function handleSubmit() {
           </div>
 
           <!-- Footer -->
-          <div class="text-center q-mt-lg q-pa-md text-caption text-grey-7 footer-links">
-            <div
-              v-if="totalGamesPlayedByAll > 0"
-              class="q-mt-sm text-grey-6"
-            >
-              {{ totalGamesPlayedByAll.toLocaleString('de-DE') }}
-              {{ TEXT_DE.totalGamesPlayedByAll }}
-              {{ TEXT_DE.footerNoDataStored }}
-            </div>
-            <div class="q-gutter-x-md q-mt-sm">
-              <a
-                href="https://entorb.net/contact.php?origin=wordplay"
-                target="_blank"
-                >by Torben</a
-              >
-              <a
-                href="https://entorb.net"
-                target="_blank"
-                >Home</a
-              >
-              <a
-                href="https://entorb.net/impressum.php"
-                target="_blank"
-                >Disclaimer</a
-              >
-              <a
-                href="https://github.com/entorb/wordplay"
-                target="_blank"
-                >GitHub</a
-              >
-            </div>
-          </div>
+          <AppFooter
+            :total-games-played-by-all="totalGamesPlayedByAll"
+            :base-path="BASE_PATH"
+            :text-de="TEXT_DE"
+          />
         </div>
       </q-page>
     </q-page-container>

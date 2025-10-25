@@ -7,5 +7,6 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+  "references": [{ "path": "../../packages/shared" }]
 }

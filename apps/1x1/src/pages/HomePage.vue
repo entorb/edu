@@ -4,9 +4,9 @@ import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
 import type { FocusType, Statistics, SelectionType } from '@/types'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
-import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS } from '@/config/constants'
+import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
 import { TEXT_DE } from '@/config/text-de'
-import { helperStatsDataRead } from '@/util/helpers'
+import { helperStatsDataRead, AppFooter } from '@edu/shared'
 
 const router = useRouter()
 
@@ -45,7 +45,7 @@ onMounted(async () => {
     focus.value = savedConfig.focus
   }
   // Fetch total games played by all users from database
-  totalGamesPlayedByAll.value = await helperStatsDataRead()
+  totalGamesPlayedByAll.value = await helperStatsDataRead(BASE_PATH)
 })
 
 // Watch for changes and save to session storage
@@ -244,37 +244,11 @@ function toggleSquares() {
         :label="TEXT_DE.goToHistory"
       />
     </div>
-    <div class="text-center q-mt-lg q-pa-md text-caption text-grey-7 footer-links">
-      <div
-        v-if="totalGamesPlayedByAll > 0"
-        class="q-mt-sm text-grey-6"
-      >
-        {{ totalGamesPlayedByAll.toLocaleString('de-DE') }} {{ TEXT_DE.totalGamesPlayedByAll }}
-        {{ TEXT_DE.footerNoDataStored }}
-      </div>
-      <div class="q-gutter-x-md q-mt-sm">
-        <a
-          href="https://entorb.net/contact.php?origin={{ BASE_PATH }}"
-          target="_blank"
-          >by Torben</a
-        >
-        <a
-          href="https://entorb.net"
-          target="_blank"
-          >Home</a
-        >
-        <a
-          href="https://entorb.net/impressum.php"
-          target="_blank"
-          >Disclaimer</a
-        >
-        <a
-          href="https://github.com/entorb/edu"
-          target="_blank"
-          >GitHub</a
-        >
-      </div>
-    </div>
+    <AppFooter
+      :total-games-played-by-all="totalGamesPlayedByAll"
+      :base-path="BASE_PATH"
+      :text-de="TEXT_DE"
+    />
   </q-page>
 </template>
 
