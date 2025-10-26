@@ -30,11 +30,6 @@ export const getVitestConfig = (rootDir: string): any => ({
       modules: {
         classNameStrategy: 'non-scoped'
       }
-    },
-    server: {
-      deps: {
-        inline: ['vuetify']
-      }
     }
   }
 })

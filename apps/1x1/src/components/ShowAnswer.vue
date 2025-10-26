@@ -78,15 +78,14 @@ function handleKeyup(event: KeyboardEvent) {
           <span
             class="text-negative text-weight-bold"
             style="text-decoration: line-through; text-decoration-thickness: 3px"
-          >{{ userAnswer }}</span>
+            >{{ userAnswer }}</span
+          >
           <q-icon
             name="arrow_forward"
             size="sm"
             class="q-mx-sm"
           />
-          <span class="text-positive text-weight-bold text-h4">{{
-            currentCard?.answer
-          }}</span>
+          <span class="text-positive text-weight-bold text-h4">{{ currentCard?.answer }}</span>
         </div>
       </q-card-section>
 

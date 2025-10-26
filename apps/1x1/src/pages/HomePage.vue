@@ -116,7 +116,9 @@ function toggleSquares() {
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
-        <GroundhogMascot :style="$q.screen.gt.xs ? 'width: 130px; height: 130px' : 'width: 100px; height: 100px'" />
+        <GroundhogMascot
+          :style="$q.screen.gt.xs ? 'width: 130px; height: 130px' : 'width: 100px; height: 100px'"
+        />
       </div>
       <div
         class="col-12 col-sm"
