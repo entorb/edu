@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '../config/text-de'
+import { TEXT_DE } from '@edu/shared'
 import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
 import { helperStatsDataWrite } from '@edu/shared'

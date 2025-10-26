@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
 import type { GameHistory } from '@/types'
-import { TEXT_DE } from '@/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 const router = useRouter()
 const history = ref<GameHistory[]>([])

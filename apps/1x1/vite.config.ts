@@ -9,7 +9,7 @@ import { defineConfig, mergeConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { baseViteConfig } from '../../vite.config.base'
 import { BASE_PATH } from './src/config/constants'
-import { TEXT_DE } from './src/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 // https://vite.dev/config/
 export default mergeConfig(
@@ -30,7 +30,7 @@ export default mergeConfig(
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
-          name: TEXT_DE.appTitle,
+          name: TEXT_DE.appTitle_1x1,
           short_name: '1x1',
           description: "Vyvit's 1x1 training app",
           theme_color: '#1976d2',

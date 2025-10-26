@@ -5,8 +5,8 @@ import { StorageService } from '@/services/storage'
 import type { FocusType, Statistics, SelectionType } from '@/types'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
-import { TEXT_DE } from '@/config/text-de'
-import { helperStatsDataRead, AppFooter } from '@edu/shared'
+import { TEXT_DE } from '@edu/shared'
+import { AppFooter } from '@edu/shared'
 
 const router = useRouter()
 
@@ -27,12 +27,10 @@ const isNumberSelected = computed(() => (num: number) => {
   return select.value.includes(num)
 })
 
-const totalGamesPlayedByAll = ref<number>(0)
-
 // Check if x² is selected
 const isSquaresSelected = computed(() => select.value === 'x²')
 
-onMounted(async () => {
+onMounted(() => {
   statistics.value = StorageService.getStatistics()
   // Initialize cards if not already done and verify all cards exist
   StorageService.getCards()
@@ -44,8 +42,6 @@ onMounted(async () => {
     select.value = savedConfig.select
     focus.value = savedConfig.focus
   }
-  // Fetch total games played by all users from database
-  totalGamesPlayedByAll.value = await helperStatsDataRead(BASE_PATH)
 })
 
 // Watch for changes and save to session storage
@@ -115,7 +111,7 @@ function toggleSquares() {
 
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h5 text-center q-mb-md">{{ TEXT_DE.appTitle }}</div>
+    <div class="text-h5 text-center q-mb-md">{{ TEXT_DE.appTitle_1x1 }}</div>
 
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
@@ -244,11 +240,7 @@ function toggleSquares() {
         :label="TEXT_DE.goToHistory"
       />
     </div>
-    <AppFooter
-      :total-games-played-by-all="totalGamesPlayedByAll"
-      :base-path="BASE_PATH"
-      :text-de="TEXT_DE"
-    />
+    <AppFooter :base-path="BASE_PATH" />
   </q-page>
 </template>
 

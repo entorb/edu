@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
 import { formatDate } from '../utils/helpers'
-import { TEXT_DE } from '../config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 const router = useRouter()
 const { history } = useGameStore()

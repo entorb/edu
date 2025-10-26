@@ -10,7 +10,7 @@ import {
   STREAK_GAME_INTERVAL,
   BASE_PATH
 } from '@/config/constants'
-import { TEXT_DE } from '@/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 import { helperStatsDataWrite } from '@edu/shared'
 
 const router = useRouter()

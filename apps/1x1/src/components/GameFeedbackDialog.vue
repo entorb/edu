@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Card } from '@/types'
-import { TEXT_DE } from '@/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 interface Props {
   show: boolean

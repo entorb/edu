@@ -9,7 +9,7 @@ import { defineConfig, mergeConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { baseViteConfig } from '../../vite.config.base'
 import { BASE_PATH } from './src/config/constants'
-import { TEXT_DE } from './src/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 // https://vite.dev/config/
 export default mergeConfig(

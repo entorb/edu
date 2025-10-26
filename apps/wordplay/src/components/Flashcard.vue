@@ -2,7 +2,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import type { Card, GameSettings, AnswerResult } from '../types'
 import { shuffleArray, normalizeString, levenshteinDistance } from '../utils/helpers'
-import { TEXT_DE } from '../config/text-de'
+import { TEXT_DE } from '@edu/shared'
 import { MAX_TIME } from '../config/constants'
 
 interface Props {

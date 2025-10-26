@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { TEXT_DE } from '../config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 const router = useRouter()
 

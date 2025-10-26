@@ -12,7 +12,7 @@ import {
   TIME_COLOR_THRESHOLDS,
   BG_COLORS
 } from '@/config/constants'
-import { TEXT_DE } from '@/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 const router = useRouter()
 const $q = useQuasar()

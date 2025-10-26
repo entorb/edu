@@ -3,7 +3,7 @@
     "vite.config.ts",
     "vitest.config.ts",
     "cypress.config.ts",
-    "src/config/text-de.ts",
+    "../../packages/shared/src/text-de.ts",
     "src/config/constants.ts",
     "../../vite.config.base.ts",
     "../../vitest.config.base.ts"

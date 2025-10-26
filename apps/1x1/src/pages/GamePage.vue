@@ -15,7 +15,7 @@ import {
   MAX_CARDS_PER_GAME,
   COUNTDOWN_INTERVAL
 } from '@/config/constants'
-import { TEXT_DE } from '@/config/text-de'
+import { TEXT_DE } from '@edu/shared'
 
 const router = useRouter()
 

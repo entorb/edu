@@ -240,7 +240,7 @@ export const FONT_SIZE = {
 // ============================================================================
 // FOCUS OPTIONS
 // ============================================================================
-import { TEXT_DE } from './text-de'
+import { TEXT_DE } from '@edu/shared'
 
 export const FOCUS_OPTIONS = [
   { label: TEXT_DE.focusWeak, value: 'weak', icon: 'school' },

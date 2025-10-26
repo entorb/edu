@@ -1,27 +1,31 @@
 <script setup lang="ts">
-interface TextDE {
-  totalGamesPlayedByAll: string
-  footerNoDataStored: string
-}
+import { ref, onMounted } from 'vue'
+import { helperStatsDataRead } from '../utils/statsHelpers'
+import { TEXT_DE } from '@edu/shared'
 
 interface Props {
-  totalGamesPlayedByAll?: number
   basePath: string
-  textDe: TextDE
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const numTotalGamesPlayedByAll = ref<number>(0)
+
+onMounted(async () => {
+  // Fetch total games played by all users from database
+  numTotalGamesPlayedByAll.value = await helperStatsDataRead(props.basePath)
+})
 </script>
 
 <template>
   <div class="text-center q-mt-lg q-pa-md text-caption text-grey-7 footer-links">
     <div
-      v-if="totalGamesPlayedByAll && totalGamesPlayedByAll > 0"
+      v-if="numTotalGamesPlayedByAll && numTotalGamesPlayedByAll > 0"
       class="q-mt-sm text-grey-6"
     >
-      {{ totalGamesPlayedByAll.toLocaleString('de-DE') }}
-      {{ textDe.totalGamesPlayedByAll }}
-      {{ textDe.footerNoDataStored }}
+      {{ numTotalGamesPlayedByAll.toLocaleString('de-DE') }}
+      {{ TEXT_DE.totalGamesPlayedByAll }}
+      {{ TEXT_DE.footerNoDataStored }}
     </div>
     <div class="q-gutter-x-md q-mt-sm">
       <a
@@ -40,7 +44,7 @@ defineProps<Props>()
         >Disclaimer</a
       >
       <a
-        href="https://github.com/entorb/edu"
+        href="https://github.com/entorb/flashcards"
         target="_blank"
         >GitHub</a
       >

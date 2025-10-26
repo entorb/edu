@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '../config/text-de'
+import { TEXT_DE } from '@edu/shared'
 import { MIN_LEVEL, MAX_LEVEL, DEFAULT_TIME } from '../config/constants'
 import type { Card } from '../types'
 
