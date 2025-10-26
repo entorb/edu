@@ -76,7 +76,7 @@ function handleSubmit() {
               color="grey-6"
               @click="router.push('/info')"
             >
-              <q-tooltip>Info zu Scoring-Regeln</q-tooltip>
+              <q-tooltip>{{ TEXT_DE.wordplay.home.infoTooltip }}</q-tooltip>
             </q-btn>
           </div>
 
@@ -103,7 +103,7 @@ function handleSubmit() {
             <!-- Mode Selection -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.wordplay.home.mode
+                TEXT_DE.words.mode
               }}</label>
               <q-btn-toggle
                 v-model="settings.mode"
@@ -117,7 +117,7 @@ function handleSubmit() {
             <!-- Priority Selection -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.wordplay.home.focus
+                TEXT_DE.words.focus
               }}</label>
               <div class="row q-col-gutter-sm">
                 <div
@@ -140,7 +140,7 @@ function handleSubmit() {
             <!-- Language Direction -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.wordplay.home.direction
+                TEXT_DE.words.direction
               }}</label>
               <q-btn-toggle
                 v-model="settings.language"
@@ -179,7 +179,7 @@ function handleSubmit() {
               <q-btn
                 outline
                 color="grey-8"
-                :label="TEXT_DE.wordplay.home.cards"
+                :label="TEXT_DE.nav.cards"
                 no-caps
                 class="full-width"
                 @click="router.push('/cards')"
@@ -189,7 +189,7 @@ function handleSubmit() {
               <q-btn
                 outline
                 color="grey-8"
-                :label="TEXT_DE.wordplay.home.history"
+                :label="TEXT_DE.nav.history"
                 no-caps
                 class="full-width"
                 @click="router.push('/history')"

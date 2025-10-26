@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// TODO:
+// cspell:disable
+
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
@@ -12,15 +15,15 @@ const reversedHistory = computed(() => [...history.value].reverse())
 
 function getModeText(mode: string): string {
   const modes: Record<string, string> = {
-    'multiple-choice': 'Multiple Choice',
-    blind: 'Blind',
-    typing: 'Tippen'
+    'multiple-choice': TEXT_DE.wordplay.modes['multiple-choice'],
+    blind: TEXT_DE.wordplay.modes.blind,
+    typing: TEXT_DE.wordplay.modes.typing
   }
   return modes[mode] || mode
 }
 
 function getPriorityText(priority: string): string {
-  return priority === 'low' ? 'Fokus: Schwach' : 'Fokus: Stark'
+  return priority === 'low' ? TEXT_DE.wordplay.history.focusWeak : TEXT_DE.wordplay.history.focusStrong
 }
 
 function handleGoBack() {
@@ -61,7 +64,7 @@ onUnmounted(() => {
         >
           <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.home.history }}</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{ TEXT_DE.nav.history }}</q-toolbar-title>
         <q-btn
           flat
           round
@@ -82,7 +85,7 @@ onUnmounted(() => {
             v-if="reversedHistory.length === 0"
             class="text-center text-grey-6 q-mt-lg"
           >
-            Keine Runden bisher gespielt.
+            {{ TEXT_DE.wordplay.history.noGamesPlayed }}
           </div>
 
           <q-list
@@ -108,10 +111,10 @@ onUnmounted(() => {
                 class="text-right"
               >
                 <q-item-label class="text-h6 text-primary text-weight-bold">
-                  {{ Math.round(entry.score) }} Pkt.
+                  {{ Math.round(entry.score) }} {{ TEXT_DE.wordplay.history.points }}
                 </q-item-label>
                 <q-item-label caption>
-                  {{ entry.correctAnswers }} / {{ entry.totalCards }} richtig
+                  {{ entry.correctAnswers }} / {{ entry.totalCards }} {{ TEXT_DE.wordplay.history.correct }}
                 </q-item-label>
               </q-item-section>
             </q-item>

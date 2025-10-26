@@ -188,7 +188,7 @@ function toggleSquares() {
 
         <!-- Focus Selection -->
         <div>
-          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.multiply.focus }}</div>
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.focus }}</div>
           <q-select
             v-model="focus"
             :options="focusOptions"

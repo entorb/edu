@@ -50,7 +50,7 @@ onUnmounted(() => {
         >
           <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">Alle Karten im Stapel</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.stats.allCardsTitle }}</q-toolbar-title>
         <q-btn
           flat
           round
@@ -81,7 +81,7 @@ onUnmounted(() => {
               <q-item-section side>
                 <q-badge
                   :color="getLevelColor(card.level)"
-                  :label="`Level ${card.level}`"
+                  :label="`${TEXT_DE.stats.level} ${card.level}`"
                 />
               </q-item-section>
             </q-item>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// TODO:
+// cspell:disable
+
 import { ref, computed, watch, onUnmounted } from 'vue'
 import type { Card, GameSettings, AnswerResult } from '../types'
 import { shuffleArray, normalizeString, levenshteinDistance } from '../utils/helpers'

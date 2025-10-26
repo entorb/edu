@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// TODO:
+// cspell:disable
+
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
@@ -44,15 +47,15 @@ function handleExport() {
     .catch(() => {
       $q.notify({
         type: 'negative',
-        message: 'Konnte nicht in die Zwischenablage kopieren.'
+        message: TEXT_DE.wordplay.cardManagement.clipboardError
       })
     })
 }
 
 function showImportDialog() {
   $q.dialog({
-    title: 'Karten importieren',
-    message: 'Füge deinen Kartentext ein (EN[Tab/,]DE[Tab/,]LEVEL):',
+    title: TEXT_DE.wordplay.cardManagement.importDialogTitle,
+    message: TEXT_DE.wordplay.cardManagement.importDialogMessage,
     prompt: {
       model: '',
       type: 'textarea'
@@ -65,7 +68,7 @@ function showImportDialog() {
 
 function handleParseText(text: string) {
   if (!text) {
-    $q.notify({ type: 'negative', message: 'Das Textfeld ist leer.' })
+    $q.notify({ type: 'negative', message: TEXT_DE.wordplay.cardManagement.emptyTextError })
     return
   }
 
@@ -79,7 +82,7 @@ function handleParseText(text: string) {
   else {
     $q.notify({
       type: 'negative',
-      message: 'Konnte kein Trennzeichen (Tab, Komma, Semikolon) finden.'
+      message: TEXT_DE.wordplay.cardManagement.noDelimiterError
     })
     return
   }
@@ -106,20 +109,20 @@ function handleParseText(text: string) {
   if (newCards.length === 0) {
     $q.notify({
       type: 'negative',
-      message: `Keine gültigen Karten gefunden. Format: EN${delimiter}DE${delimiter}LEVEL (optional)`
+      message: TEXT_DE.wordplay.cardManagement.noCardsFoundError.replace('{delimiter}', delimiter)
     })
     return
   }
 
   $q.dialog({
-    title: 'Import bestätigen',
-    message: `${newCards.length} Karten gefunden. Importieren?`,
+    title: TEXT_DE.wordplay.cardManagement.confirmImportTitle,
+    message: TEXT_DE.wordplay.cardManagement.confirmImportMessage.replace('{count}', newCards.length.toString()),
     cancel: true
   }).onOk(() => {
     importCards(newCards)
     $q.notify({
       type: 'positive',
-      message: `${newCards.length} Karten erfolgreich importiert!`
+      message: TEXT_DE.wordplay.cardManagement.importSuccess.replace('{count}', newCards.length.toString())
     })
   })
 }
@@ -129,30 +132,30 @@ function handleMoveClick() {
   if (level < MIN_LEVEL || level > MAX_LEVEL) {
     $q.notify({
       type: 'negative',
-      message: `Bitte gib ein Level zwischen ${MIN_LEVEL} und ${MAX_LEVEL} ein.`
+      message: TEXT_DE.wordplay.cardManagement.invalidLevelError.replace('{min}', MIN_LEVEL.toString()).replace('{max}', MAX_LEVEL.toString())
     })
     return
   }
 
   $q.dialog({
-    title: 'Verschieben bestätigen',
-    message: `Alle ${allCards.value.length} Karten auf Level ${level} setzen?`,
+    title: TEXT_DE.wordplay.cardManagement.confirmMoveTitle,
+    message: TEXT_DE.wordplay.cardManagement.confirmMoveMessage.replace('{count}', allCards.value.length.toString()).replace('{level}', level.toString()),
     cancel: true
   }).onOk(() => {
     moveAllCards(level)
-    $q.notify({ type: 'positive', message: 'Alle Karten verschoben!' })
+    $q.notify({ type: 'positive', message: TEXT_DE.wordplay.cardManagement.moveSuccess })
   })
 }
 
 function showResetDialog() {
   $q.dialog({
-    title: 'Zurücksetzen bestätigen',
-    message: 'Diese Aktion setzt alle Karten und deinen Lernfortschritt zurück. Fortfahren?',
+    title: TEXT_DE.wordplay.cardManagement.confirmResetTitle,
+    message: TEXT_DE.wordplay.cardManagement.confirmResetMessage,
     cancel: true,
     color: 'negative'
   }).onOk(() => {
     resetCards()
-    $q.notify({ type: 'positive', message: 'Kartenstapel wurde zurückgesetzt!' })
+    $q.notify({ type: 'positive', message: TEXT_DE.wordplay.cardManagement.resetSuccess })
   })
 }
 
@@ -203,9 +206,9 @@ function getLevelColor(level: number): string {
           <div class="q-gutter-lg">
             <!-- Export -->
             <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">Karten Exportieren</h3>
+              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.exportTitle }}</h3>
               <p class="text-caption text-grey-7 q-mb-sm">
-                Speichere deinen aktuellen Kartenstapel in der Zwischenablage im TSV-Format.
+                {{ TEXT_DE.wordplay.cardManagement.exportDescription }}
               </p>
               <q-btn
                 outline
@@ -218,9 +221,9 @@ function getLevelColor(level: number): string {
 
             <!-- Import -->
             <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">Karten Importieren</h3>
+              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.importTitle }}</h3>
               <p class="text-caption text-grey-7 q-mb-sm">
-                Ersetze deinen aktuellen Stapel durch Kartendaten aus der Zwischenablage.
+                {{ TEXT_DE.wordplay.cardManagement.importDescription }}
               </p>
               <q-btn
                 outline
@@ -233,9 +236,9 @@ function getLevelColor(level: number): string {
 
             <!-- Move All Cards -->
             <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">Alle Karten verschieben</h3>
+              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.moveAllTitle }}</h3>
               <p class="text-caption text-grey-7 q-mb-sm">
-                Setze alle Karten im Stapel auf ein bestimmtes Level.
+                {{ TEXT_DE.wordplay.cardManagement.moveAllDescription }}
               </p>
               <div class="row q-gutter-sm items-center">
                 <q-input
@@ -262,10 +265,9 @@ function getLevelColor(level: number): string {
               class="q-pt-lg"
               style="border-top: 1px solid #e0e0e0"
             >
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">Gefahrenzone</h3>
+              <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">{{ TEXT_DE.wordplay.cardManagement.dangerZoneTitle }}</h3>
               <p class="text-caption text-grey-7 q-mb-sm">
-                Setze alle Karten und deinen gesamten Lernfortschritt auf den ursprünglichen Zustand
-                zurück.
+                {{ TEXT_DE.wordplay.cardManagement.dangerZoneDescription }}
               </p>
               <q-btn
                 outline

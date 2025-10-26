@@ -115,7 +115,7 @@ onUnmounted(() => {
         >
           <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">Spielen</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.game.title }}</q-toolbar-title>
         <q-btn
           flat
           round
@@ -147,7 +147,7 @@ onUnmounted(() => {
           <!-- Timer Progress Bar -->
           <div class="q-mb-md">
             <div class="flex justify-between items-center q-mb-xs">
-              <span class="text-caption text-grey-7">Zeit</span>
+              <span class="text-caption text-grey-7">{{ TEXT_DE.wordplay.game.time }}</span>
               <span
                 class="text-caption font-bold"
                 :class="`text-${timerColor}`"
