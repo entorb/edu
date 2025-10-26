@@ -16,6 +16,12 @@ export default mergeConfig(
   baseViteConfig,
   defineConfig({
     base: `/${BASE_PATH}/`,
+    server: {
+      port: 5173
+    },
+    preview: {
+      port: 4173
+    },
     plugins: [
       Vue({
         template: { transformAssetUrls }
@@ -31,8 +37,8 @@ export default mergeConfig(
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
           name: TEXT_DE.appTitle_1x1,
-          short_name: '1x1',
-          description: "Vyvit's 1x1 training app",
+          short_name: '${BASE_PATH}',
+          description: TEXT_DE.appTitle_1x1,
           theme_color: '#1976d2',
           background_color: '#ffffff',
           display: 'standalone',

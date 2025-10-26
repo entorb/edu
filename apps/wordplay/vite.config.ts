@@ -16,6 +16,12 @@ export default mergeConfig(
   baseViteConfig,
   defineConfig({
     base: `/${BASE_PATH}/`,
+    server: {
+      port: 5174
+    },
+    preview: {
+      port: 4174
+    },
     plugins: [
       Vue({
         template: { transformAssetUrls }
@@ -30,9 +36,9 @@ export default mergeConfig(
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
-          name: TEXT_DE.appTitle,
-          short_name: 'wordplay',
-          description: "Rabat's wordplay training app",
+          name: TEXT_DE.appTitle_wordplay,
+          short_name: BASE_PATH,
+          description: TEXT_DE.appTitle_wordplay,
           theme_color: '#1976d2',
           background_color: '#ffffff',
           display: 'standalone',
