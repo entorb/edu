@@ -41,9 +41,8 @@ function handleKeyup(event: KeyboardEvent) {
     :model-value="show"
     persistent
     @keyup="handleKeyup"
-    class="feedback-dialog"
   >
-    <q-card class="feedback-card">
+    <q-card style="min-width: 350px; max-width: 90vw">
       <q-card-section
         :class="[isCorrect ? 'bg-positive' : 'bg-negative']"
         class="text-white text-center q-pa-lg"
@@ -52,14 +51,14 @@ function handleKeyup(event: KeyboardEvent) {
           :name="isCorrect ? 'check_circle' : 'cancel'"
           color="white"
           size="100px"
-          class="q-mb-md animate-scale-in"
+          class="q-mb-md"
         />
         <div
           v-if="isCorrect"
           class="q-mt-md"
         >
           <div class="text-h5 text-weight-bold">+{{ lastPoints }} Punkte</div>
-          <div class="text-caption q-mt-xs points-calculation">
+          <div class="text-caption q-mt-xs text-weight-medium">
             <span v-if="speedBonus > 0">
               {{ basePoints }} + {{ levelBonus }} + {{ speedBonus }} = {{ lastPoints }}
             </span>
@@ -75,14 +74,17 @@ function handleKeyup(event: KeyboardEvent) {
         <div class="text-h4 q-mb-md text-grey-8 text-weight-medium">
           {{ currentCard?.question.replace('x', '×') }}
         </div>
-        <div class="text-h5 answer-comparison">
-          <span class="text-negative text-weight-bold wrong-answer">{{ userAnswer }}</span>
+        <div class="row items-center justify-center text-h5">
+          <span
+            class="text-negative text-weight-bold"
+            style="text-decoration: line-through; text-decoration-thickness: 3px"
+          >{{ userAnswer }}</span>
           <q-icon
             name="arrow_forward"
             size="sm"
             class="q-mx-sm"
           />
-          <span class="text-positive text-weight-bold correct-answer">{{
+          <span class="text-positive text-weight-bold text-h4">{{
             currentCard?.answer
           }}</span>
         </div>
@@ -102,7 +104,7 @@ function handleKeyup(event: KeyboardEvent) {
           "
           size="lg"
           unelevated
-          class="full-width continue-btn text-weight-medium"
+          class="full-width text-weight-medium"
           autofocus
           :disable="isButtonDisabled || isEnterDisabled"
           @click="handleContinue"
@@ -117,38 +119,3 @@ function handleKeyup(event: KeyboardEvent) {
     </q-card>
   </q-dialog>
 </template>
-
-<style scoped>
-/* Quasar handles most styling - keep only unique patterns */
-.feedback-card {
-  min-width: 350px;
-  max-width: 90vw;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.points-calculation {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-}
-
-.answer-comparison {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.wrong-answer {
-  text-decoration: line-through;
-  text-decoration-thickness: 3px;
-}
-
-.correct-answer {
-  font-size: 1.8rem;
-}
-
-.continue-btn {
-  height: 56px;
-  border-radius: 8px;
-}
-</style>

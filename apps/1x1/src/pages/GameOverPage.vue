@@ -83,33 +83,33 @@ function goHome() {
 </script>
 
 <template>
-  <q-page class="game-over-page q-pa-md">
-    <div
-      v-if="result"
-      class="text-center content-container"
-    >
+  <q-page
+    v-if="result"
+    class="flex flex-center q-pa-md"
+    style="max-width: 600px; margin: 0 auto"
+  >
+    <div class="full-width text-center">
       <!-- Mascot or Trophy Icon -->
-      <div class="mascot-container q-mb-md">
+      <div class="flex flex-center q-mb-md">
         <GroundhogMascot
           v-if="showMascot"
           smile
-          class="mascot"
+          :style="$q.screen.gt.xs ? 'width: 170px; height: 170px' : 'width: 150px; height: 150px'"
         />
         <q-icon
           v-else
           name="emoji_events"
           color="amber"
           size="100px"
-          class="animate-bounce"
         />
       </div>
 
       <!-- Results Card -->
-      <q-card class="q-mt-lg results-card">
+      <q-card class="q-mt-lg">
         <q-card-section class="q-pa-lg">
           <div class="row q-gutter-md justify-center">
-            <div class="stat-item">
-              <div class="text-h4 text-primary text-weight-bold stat-value">
+            <div style="min-width: 90px">
+              <div class="text-h4 text-primary text-weight-bold">
                 <q-icon
                   name="emoji_events"
                   color="amber"
@@ -118,11 +118,11 @@ function goHome() {
                 {{ result.points }}
               </div>
             </div>
-            <div class="stat-item">
-              <span class="text-h4 text-positive text-weight-bold stat-value">
+            <div style="min-width: 90px">
+              <span class="text-h4 text-positive text-weight-bold">
                 {{ result.correctAnswers }}
               </span>
-              <span class="text-h4 text-weight-bold stat-value">
+              <span class="text-h4 text-weight-bold">
                 /
                 {{ result.totalCards }}
               </span>
@@ -132,7 +132,7 @@ function goHome() {
           <!-- Bonus Points -->
           <div
             v-if="bonusPoints > 0"
-            class="q-mt-md bonus-section q-pa-sm"
+            class="q-mt-md q-pa-sm bg-amber-1 rounded-borders"
           >
             <q-separator class="q-mb-md" />
             <div class="text-subtitle2 text-amber-8 text-weight-bold q-mb-sm">
@@ -172,7 +172,7 @@ function goHome() {
       <q-btn
         color="primary"
         size="lg"
-        class="full-width q-mt-lg home-btn text-weight-medium"
+        class="full-width q-mt-lg"
         icon="home"
         :label="TEXT_DE.common.backToHome"
         unelevated
@@ -181,57 +181,3 @@ function goHome() {
     </div>
   </q-page>
 </template>
-
-<style scoped>
-/* Quasar handles most styling - keep only unique patterns */
-.game-over-page {
-  max-width: 600px;
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.content-container {
-  width: 100%;
-}
-
-.mascot-container {
-  display: flex;
-  justify-content: center;
-}
-
-.mascot {
-  width: 150px;
-  height: 150px;
-}
-
-.results-card {
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.stat-item {
-  min-width: 90px;
-}
-
-.home-btn {
-  height: 56px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(25, 118, 210, 0.3);
-}
-
-.bonus-section {
-  background-color: #fffbf0;
-  border-radius: 8px;
-}
-
-/* Tablet and larger */
-@media (min-width: 600px) {
-  .mascot {
-    width: 170px;
-    height: 170px;
-  }
-}
-</style>

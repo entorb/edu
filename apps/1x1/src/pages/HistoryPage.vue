@@ -54,7 +54,10 @@ function goHome() {
 </script>
 
 <template>
-  <q-page class="history-page q-pa-md">
+  <q-page
+    class="q-pa-md"
+    style="max-width: 800px; margin: 0 auto"
+  >
     <!-- Header -->
     <div class="row items-center q-mb-md">
       <q-btn
@@ -86,12 +89,15 @@ function goHome() {
     <q-list
       v-else
       separator
-      class="history-list"
+      bordered
+      class="rounded-borders"
     >
       <q-item
         v-for="(game, index) in sortedHistory"
         :key="index"
-        class="history-item q-pa-md"
+        class="q-pa-md"
+        clickable
+        v-ripple
       >
         <q-item-section avatar>
           <q-avatar
@@ -124,21 +130,3 @@ function goHome() {
     </q-list>
   </q-page>
 </template>
-
-<style scoped>
-/* Quasar handles most styling - keep only unique patterns */
-.history-page {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.history-list {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.history-item:hover {
-  background-color: #f5f5f5;
-}
-</style>

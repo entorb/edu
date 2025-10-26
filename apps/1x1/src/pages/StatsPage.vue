@@ -120,7 +120,10 @@ function goHome() {
 </script>
 
 <template>
-  <q-page class="q-pa-md page-container">
+  <q-page
+    class="q-pa-md"
+    style="max-width: 1200px; margin: 0 auto"
+  >
     <!-- Header -->
     <div class="row items-center q-mb-md">
       <q-btn
@@ -147,10 +150,7 @@ function goHome() {
     </div>
 
     <!-- Content -->
-    <div
-      v-else
-      class="stats-content"
-    >
+    <div v-else>
       <!-- Level Distribution -->
       <q-card class="q-mb-md level-card">
         <q-card-section>
@@ -294,7 +294,10 @@ function goHome() {
       </q-card>
 
       <!-- PWA Installation Info -->
-      <q-card class="q-mt-md pwa-info-card">
+      <q-card
+        class="q-mt-md bg-blue-1"
+        bordered
+      >
         <q-card-section>
           <div class="row items-center q-mb-sm">
             <q-icon
@@ -307,7 +310,7 @@ function goHome() {
               {{ TEXT_DE.multiply.pwaInstall.title }}
             </div>
           </div>
-          <div class="pwa-instructions">
+          <div>
             <div class="q-mb-xs">
               <strong>{{ TEXT_DE.multiply.pwaInstall.android }}</strong>
               {{ TEXT_DE.multiply.pwaInstall.androidInstructions }}
@@ -324,17 +327,7 @@ function goHome() {
 </template>
 
 <style scoped>
-/* Quasar handles most styling - keep only essential grid and unique patterns */
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.stats-content {
-  animation: fadeIn 0.3s ease-in;
-}
-
-/* Cards grid system - unique layout Quasar can't handle */
+/* Essential grid system - CSS Grid is optimal for multiplication table layout */
 .cards-grid-container {
   overflow-x: auto;
 }
@@ -382,26 +375,6 @@ function goHome() {
 .cell-answer {
   font-weight: 700;
   font-size: 1.1rem;
-}
-
-.pwa-info-card {
-  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-  border: 2px solid #bbdefb;
-}
-
-.footer-links {
-  border-top: 1px solid #e0e0e0;
-}
-
-.footer-links a {
-  color: #616161;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer-links a:hover {
-  color: #000;
-  text-decoration: underline;
 }
 
 /* Mobile: compact grid */

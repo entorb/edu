@@ -116,13 +116,16 @@ function toggleSquares() {
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
-        <GroundhogMascot class="mascot" />
+        <GroundhogMascot :style="$q.screen.gt.xs ? 'width: 130px; height: 130px' : 'width: 100px; height: 100px'" />
       </div>
-      <div class="col-12 col-sm">
+      <div
+        class="col-12 col-sm"
+        :class="$q.screen.gt.xs ? 'q-ml-md' : ''"
+      >
         <q-card
-          class="speech-bubble speech-bubble-arrow"
           flat
           bordered
+          class="rounded-borders"
         >
           <q-card-section class="q-pa-sm">
             <div class="row text-center q-gutter-sm justify-around">
@@ -243,31 +246,3 @@ function toggleSquares() {
     <AppFooter :base-path="BASE_PATH" />
   </q-page>
 </template>
-
-<style scoped>
-/* Quasar handles most styling - keep only unique patterns */
-.mascot {
-  width: 100px;
-  height: 100px;
-}
-
-.speech-bubble {
-  position: relative;
-  border-radius: 12px;
-  --bubble-border-color: rgba(0, 0, 0, 0.12);
-  border-color: var(--bubble-border-color);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-/* Larger screens: bigger mascot, speech bubble margin */
-@media (min-width: 600px) {
-  .mascot {
-    width: 130px;
-    height: 130px;
-  }
-
-  .speech-bubble {
-    margin-left: 15px;
-  }
-}
-</style>

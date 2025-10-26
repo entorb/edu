@@ -369,8 +369,22 @@ function goHome() {
 </script>
 
 <template>
-  <q-page class="game-page q-pa-md">
-    <div>
+  <q-page
+    class="q-pa-md"
+    style="max-width: 600px; margin: 0 auto"
+  >
+    <div
+      v-if="!gameStarted"
+      class="text-center q-mt-xl"
+    >
+      <q-spinner
+        color="primary"
+        size="50px"
+      />
+      <p>Spiel wird geladen...</p>
+    </div>
+
+    <div v-else>
       <!-- Header with Back Button and Game Progress -->
       <div class="row items-center justify-between q-mb-md">
         <q-btn
@@ -395,8 +409,8 @@ function goHome() {
 
       <!-- Current Question -->
       <q-card
-        class="q-mb-md question-card"
         v-if="currentCard"
+        class="q-mb-md"
       >
         <q-card-section class="text-center q-pa-md">
           <div class="row justify-between items-center q-mb-sm">
@@ -411,7 +425,12 @@ function goHome() {
               {{ currentCard.time.toFixed(1) }}s
             </div>
           </div>
-          <div class="question-text q-my-md">{{ displayQuestion }}</div>
+          <div
+            class="q-my-md text-weight-bold"
+            :class="$q.screen.gt.xs ? 'text-h2' : 'text-h3'"
+          >
+            {{ displayQuestion }}
+          </div>
         </q-card-section>
       </q-card>
 
@@ -464,29 +483,3 @@ function goHome() {
     </div>
   </q-page>
 </template>
-
-<style scoped>
-/* Quasar handles most styling - keep only unique patterns */
-.game-page {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.question-card {
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-}
-
-.question-text {
-  font-size: 4rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-/* Mobile: smaller question text */
-@media (max-width: 599.98px) {
-  .question-text {
-    font-size: 2.75rem;
-  }
-}
-</style>
