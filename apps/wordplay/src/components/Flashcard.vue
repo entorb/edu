@@ -2,7 +2,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import type { Card, GameSettings, AnswerResult } from '../types'
 import { shuffleArray, normalizeString, levenshteinDistance } from '../utils/helpers'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 import { MAX_TIME } from '../config/constants'
 
 interface Props {
@@ -101,7 +101,7 @@ function processAnswer(result: AnswerResult) {
   if (result === 'correct') {
     feedbackData.value = {
       type: 'simple',
-      message: TEXT_DE.game.correct
+      message: TEXT_DE.common.correct
     }
     nextCardTimer = setTimeout(() => emit('next'), 2000)
   } else {
@@ -319,7 +319,7 @@ const charDiff = computed(() => {
           v-if="showProceedButton"
           :disable="isProceedDisabled"
           color="primary"
-          :label="TEXT_DE.game.continue"
+          :label="TEXT_DE.common.continue"
           no-caps
           class="q-mt-sm full-width"
           @click="emit('next')"
@@ -353,7 +353,7 @@ const charDiff = computed(() => {
         <q-btn
           v-if="!isFlipped"
           color="primary"
-          :label="TEXT_DE.game.revealAnswer"
+          :label="TEXT_DE.wordplay.game.revealAnswer"
           no-caps
           class="full-width"
           @click="isFlipped = true"
@@ -362,13 +362,15 @@ const charDiff = computed(() => {
           v-else
           class="q-gutter-sm"
         >
-          <p class="text-center text-grey-7 q-mb-sm">{{ TEXT_DE.game.wasYourAnswerCorrect }}</p>
+          <p class="text-center text-grey-7 q-mb-sm">
+            {{ TEXT_DE.wordplay.game.wasYourAnswerCorrect }}
+          </p>
           <div class="row q-col-gutter-sm">
             <div class="col-6">
               <q-btn
                 :disable="!!answerStatus"
                 color="positive"
-                :label="TEXT_DE.game.yes"
+                :label="TEXT_DE.common.yes"
                 no-caps
                 class="full-width"
                 @click="handleBlindSubmit(true)"
@@ -378,7 +380,7 @@ const charDiff = computed(() => {
               <q-btn
                 :disable="!!answerStatus"
                 color="negative"
-                :label="TEXT_DE.game.no"
+                :label="TEXT_DE.common.no"
                 no-caps
                 class="full-width"
                 @click="handleBlindSubmit(false)"
@@ -398,7 +400,7 @@ const charDiff = computed(() => {
           :disable="!!answerStatus"
           autofocus
           outlined
-          :placeholder="TEXT_DE.game.typePlaceholder"
+          :placeholder="TEXT_DE.wordplay.game.typePlaceholder"
           autocapitalize="none"
           autocorrect="off"
           spellcheck="false"
@@ -408,7 +410,7 @@ const charDiff = computed(() => {
           :disable="!!answerStatus"
           type="submit"
           color="primary"
-          :label="TEXT_DE.game.check"
+          :label="TEXT_DE.common.check"
           no-caps
           class="full-width"
         />

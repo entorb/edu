@@ -4,8 +4,8 @@ import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
-import { TEXT_DE, helperStatsDataRead } from '@edu/shared'
-import { AppFooter } from '@edu/shared/components'
+import { TEXT_DE, helperStatsDataRead } from '@flashcards/shared'
+import { AppFooter } from '@flashcards/shared/components'
 import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
 import GameStatsDisplay from '../components/GameStatsDisplay.vue'
@@ -23,20 +23,20 @@ const settings = ref<GameSettings>({
 const totalGamesPlayedByAll = ref<number>(0)
 
 const modeOptions = [
-  { label: TEXT_DE.modes['multiple-choice'], value: 'multiple-choice' as const },
-  { label: TEXT_DE.modes.blind, value: 'blind' as const },
-  { label: TEXT_DE.modes.typing, value: 'typing' as const }
+  { label: TEXT_DE.wordplay.modes['multiple-choice'], value: 'multiple-choice' as const },
+  { label: TEXT_DE.wordplay.modes.blind, value: 'blind' as const },
+  { label: TEXT_DE.wordplay.modes.typing, value: 'typing' as const }
 ]
 
 const priorityOptions = [
-  { label: TEXT_DE.priority.low, value: 'low' as const },
-  { label: TEXT_DE.priority.high, value: 'high' as const },
-  { label: TEXT_DE.priority.slow, value: 'slow' as const }
+  { label: TEXT_DE.wordplay.priority.low, value: 'low' as const },
+  { label: TEXT_DE.wordplay.priority.high, value: 'high' as const },
+  { label: TEXT_DE.wordplay.priority.slow, value: 'slow' as const }
 ]
 
 const languageOptions = [
-  { label: TEXT_DE.language['en-de'], value: 'en-de' as const },
-  { label: TEXT_DE.language['de-en'], value: 'de-en' as const }
+  { label: TEXT_DE.wordplay.language['en-de'], value: 'en-de' as const },
+  { label: TEXT_DE.wordplay.language['de-en'], value: 'de-en' as const }
 ]
 
 onMounted(async () => {
@@ -92,7 +92,7 @@ function handleSubmit() {
               />
               <GameStatsDisplay :stats="gameStats" />
             </div>
-            <h2 class="text-h5 text-weight-bold">{{ TEXT_DE.home.welcome }}</h2>
+            <h2 class="text-h5 text-weight-bold">{{ TEXT_DE.wordplay.home.welcome }}</h2>
           </div>
 
           <!-- Settings Form -->
@@ -103,7 +103,7 @@ function handleSubmit() {
             <!-- Mode Selection -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.home.mode
+                TEXT_DE.wordplay.home.mode
               }}</label>
               <q-btn-toggle
                 v-model="settings.mode"
@@ -117,7 +117,7 @@ function handleSubmit() {
             <!-- Priority Selection -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.home.focus
+                TEXT_DE.wordplay.home.focus
               }}</label>
               <div class="row q-col-gutter-sm">
                 <div
@@ -140,7 +140,7 @@ function handleSubmit() {
             <!-- Language Direction -->
             <div>
               <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-                TEXT_DE.home.direction
+                TEXT_DE.wordplay.home.direction
               }}</label>
               <q-btn-toggle
                 v-model="settings.language"
@@ -155,7 +155,7 @@ function handleSubmit() {
             <q-btn
               type="submit"
               color="primary"
-              :label="TEXT_DE.home.startRound"
+              :label="TEXT_DE.wordplay.home.startRound"
               no-caps
               size="lg"
               class="full-width"
@@ -179,7 +179,7 @@ function handleSubmit() {
               <q-btn
                 outline
                 color="grey-8"
-                :label="TEXT_DE.home.cards"
+                :label="TEXT_DE.wordplay.home.cards"
                 no-caps
                 class="full-width"
                 @click="router.push('/cards')"
@@ -189,7 +189,7 @@ function handleSubmit() {
               <q-btn
                 outline
                 color="grey-8"
-                :label="TEXT_DE.home.history"
+                :label="TEXT_DE.wordplay.home.history"
                 no-caps
                 class="full-width"
                 @click="router.push('/history')"

@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 import { MIN_LEVEL, MAX_LEVEL, DEFAULT_TIME } from '../config/constants'
 import type { Card } from '../types'
 
@@ -11,7 +11,7 @@ const router = useRouter()
 const $q = useQuasar()
 const { allCards, resetCards, importCards, moveAllCards } = useGameStore()
 
-const exportButtonText = ref<string>(TEXT_DE.cardManagement.export)
+const exportButtonText = ref<string>(TEXT_DE.wordplay.cardManagement.export)
 const targetLevel = ref(1)
 
 function handleGoBack() {
@@ -38,8 +38,8 @@ function handleExport() {
   navigator.clipboard
     .writeText(header + tsvContent)
     .then(() => {
-      exportButtonText.value = TEXT_DE.cardManagement.copied
-      setTimeout(() => (exportButtonText.value = TEXT_DE.cardManagement.export), 2000)
+      exportButtonText.value = TEXT_DE.wordplay.cardManagement.copied
+      setTimeout(() => (exportButtonText.value = TEXT_DE.wordplay.cardManagement.export), 2000)
     })
     .catch(() => {
       $q.notify({
@@ -179,9 +179,11 @@ function getLevelColor(level: number): string {
           icon="arrow_back"
           @click="handleGoBack"
         >
-          <q-tooltip>{{ TEXT_DE.game.backToMenu }}</q-tooltip>
+          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.cardManagement.title }}</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{
+          TEXT_DE.wordplay.cardManagement.title
+        }}</q-toolbar-title>
         <q-btn
           flat
           round
@@ -223,7 +225,7 @@ function getLevelColor(level: number): string {
               <q-btn
                 outline
                 color="grey-8"
-                :label="TEXT_DE.cardManagement.import"
+                :label="TEXT_DE.wordplay.cardManagement.import"
                 no-caps
                 @click="showImportDialog"
               />
@@ -248,7 +250,7 @@ function getLevelColor(level: number): string {
                 <q-btn
                   outline
                   color="grey-8"
-                  :label="TEXT_DE.cardManagement.moveAll"
+                  :label="TEXT_DE.wordplay.cardManagement.moveAll"
                   no-caps
                   @click="handleMoveClick"
                 />
@@ -268,7 +270,7 @@ function getLevelColor(level: number): string {
               <q-btn
                 outline
                 color="negative"
-                :label="TEXT_DE.cardManagement.reset"
+                :label="TEXT_DE.wordplay.cardManagement.reset"
                 no-caps
                 @click="showResetDialog"
               />
@@ -280,7 +282,7 @@ function getLevelColor(level: number): string {
               style="border-top: 1px solid #e0e0e0"
             >
               <h3 class="text-h6 text-weight-bold q-mb-md">
-                {{ TEXT_DE.cardManagement.currentDeck }} ({{ allCards.length }})
+                {{ TEXT_DE.wordplay.cardManagement.currentDeck }} ({{ allCards.length }})
               </h3>
               <q-list
                 bordered

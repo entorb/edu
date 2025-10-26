@@ -2,7 +2,7 @@
 import { ref, computed, watch, onUnmounted, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 import { MAX_TIME } from '../config/constants'
 import type { AnswerResult } from '../types'
 import Flashcard from '../components/Flashcard.vue'
@@ -113,7 +113,7 @@ onUnmounted(() => {
           icon="arrow_back"
           @click="handleGoHome"
         >
-          <q-tooltip>{{ TEXT_DE.game.backToMenu }}</q-tooltip>
+          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
         <q-toolbar-title class="text-center">Spielen</q-toolbar-title>
         <q-btn

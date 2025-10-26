@@ -8,8 +8,10 @@ import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import { defineConfig, mergeConfig } from 'vite'
 import { fileURLToPath } from 'node:url'
 import { baseViteConfig } from '../../vite.config.base'
-import { BASE_PATH } from './src/config/constants'
-import { TEXT_DE } from '@edu/shared'
+
+// Hardcoded constants to avoid Node.js ESM resolution issues in vite.config
+const BASE_PATH = 'wordplay'
+const APP_TITLE = "Rabat's Wortspiel"
 
 // https://vite.dev/config/
 export default mergeConfig(
@@ -36,9 +38,9 @@ export default mergeConfig(
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
-          name: TEXT_DE.appTitle_wordplay,
+          name: APP_TITLE,
           short_name: BASE_PATH,
-          description: TEXT_DE.appTitle_wordplay,
+          description: APP_TITLE,
           theme_color: '#1976d2',
           background_color: '#ffffff',
           display: 'standalone',

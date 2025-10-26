@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 const router = useRouter()
 const { allCards } = useGameStore()
@@ -48,7 +48,7 @@ onUnmounted(() => {
           icon="arrow_back"
           @click="handleGoBack"
         >
-          <q-tooltip>{{ TEXT_DE.game.backToMenu }}</q-tooltip>
+          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
         <q-toolbar-title class="text-center">Alle Karten im Stapel</q-toolbar-title>
         <q-btn

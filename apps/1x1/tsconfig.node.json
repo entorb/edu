@@ -3,7 +3,8 @@
     "vite.config.ts",
     "vitest.config.ts",
     "cypress.config.ts",
-    "../../packages/shared/src/text-de.ts",
+    "../../packages/shared/src/**/*.ts",
+    "../../packages/shared/src/**/*.vue",
     "src/config/constants.ts",
     "../../vite.config.base.ts",
     "../../vitest.config.base.ts"
@@ -16,6 +17,9 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@flashcards/shared": ["../../packages/shared/src/index.ts"]
+    }
   }
 }

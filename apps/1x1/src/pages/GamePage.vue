@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
-import GameFeedbackDialog from '@/components/GameFeedbackDialog.vue'
+import GameFeedbackDialog from '@/components/ShowAnswer.vue'
 import type { Card, FocusType } from '@/types'
 import {
   AUTO_SUBMIT_DIGITS,
@@ -15,7 +15,7 @@ import {
   MAX_CARDS_PER_GAME,
   COUNTDOWN_INTERVAL
 } from '@/config/constants'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 const router = useRouter()
 
@@ -370,20 +370,16 @@ function goHome() {
 
 <template>
   <q-page class="game-page q-pa-md">
-    <div
-      v-if="!gameStarted"
-      class="text-center q-mt-xl"
-    >
-      <q-spinner
-        color="primary"
-        size="50px"
-      />
-      <p>Spiel wird geladen...</p>
-    </div>
-
-    <div v-else>
-      <!-- Game Progress -->
-      <div class="row justify-between items-center q-mb-md">
+    <div>
+      <!-- Header with Back Button and Game Progress -->
+      <div class="row items-center justify-between q-mb-md">
+        <q-btn
+          flat
+          round
+          icon="arrow_back"
+          @click="goHome"
+          size="md"
+        />
         <div class="text-h6 text-weight-bold">
           <q-icon
             name="emoji_events"
@@ -434,26 +430,19 @@ function goHome() {
         :rules="[val => val === null || Number.isInteger(val)]"
       />
 
-      <div class="row q-gutter-sm q-mb-md">
-        <q-btn
-          flat
-          color="grey"
-          size="lg"
-          @click="goHome"
-          icon="close"
-        />
-        <q-btn
-          color="primary"
-          size="lg"
-          class="col text-weight-bold"
-          @click="submitAnswer"
-          :disable="userAnswer === null || userAnswer === undefined || isButtonDisabled"
-          icon="check"
-          :label="
-            isButtonDisabled ? `${TEXT_DE.wait} ${buttonDisableCountdown}s...` : TEXT_DE.check
-          "
-        />
-      </div>
+      <q-btn
+        color="primary"
+        size="lg"
+        class="full-width q-mb-md"
+        @click="submitAnswer"
+        :disable="userAnswer === null || userAnswer === undefined || isButtonDisabled"
+        icon="check"
+        :label="
+          isButtonDisabled
+            ? `${TEXT_DE.common.wait} ${buttonDisableCountdown}s...`
+            : TEXT_DE.common.check
+        "
+      />
 
       <!-- Game Feedback Dialog Component -->
       <GameFeedbackDialog

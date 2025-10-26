@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Card } from '@/types'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 interface Props {
   show: boolean
@@ -54,9 +54,6 @@ function handleKeyup(event: KeyboardEvent) {
           size="100px"
           class="q-mb-md animate-scale-in"
         />
-        <div class="text-h3 text-weight-bold q-mb-sm">
-          {{ isCorrect ? TEXT_DE.correct : TEXT_DE.wrong }}
-        </div>
         <div
           v-if="isCorrect"
           class="q-mt-md"
@@ -99,7 +96,9 @@ function handleKeyup(event: KeyboardEvent) {
         <q-btn
           :color="isCorrect ? 'positive' : 'negative'"
           :label="
-            isButtonDisabled ? `${TEXT_DE.wait} ${buttonDisableCountdown}s...` : TEXT_DE.continue
+            isButtonDisabled
+              ? `${TEXT_DE.common.wait} ${buttonDisableCountdown}s...`
+              : TEXT_DE.common.continue
           "
           size="lg"
           unelevated
@@ -112,7 +111,7 @@ function handleKeyup(event: KeyboardEvent) {
           v-if="autoCloseCountdown > 0"
           class="text-caption q-mt-sm text-grey-7 full-width text-center"
         >
-          {{ TEXT_DE.autoCloseIn }} {{ autoCloseCountdown }}s...
+          {{ TEXT_DE.multiply.autoCloseIn }} {{ autoCloseCountdown }}s...
         </div>
       </q-card-actions>
     </q-card>

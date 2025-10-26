@@ -240,12 +240,12 @@ export const FONT_SIZE = {
 // ============================================================================
 // FOCUS OPTIONS
 // ============================================================================
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 export const FOCUS_OPTIONS = [
-  { label: TEXT_DE.focusWeak, value: 'weak', icon: 'school' },
-  { label: TEXT_DE.focusStrong, value: 'strong', icon: 'star' },
-  { label: TEXT_DE.focusSlow, value: 'slow', icon: 'schedule' }
+  { label: TEXT_DE.multiply.focusOptions.weak, value: 'weak', icon: 'school' },
+  { label: TEXT_DE.multiply.focusOptions.strong, value: 'strong', icon: 'star' },
+  { label: TEXT_DE.multiply.focusOptions.slow, value: 'slow', icon: 'schedule' }
 ] as const
 
 // ============================================================================

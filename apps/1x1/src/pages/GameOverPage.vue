@@ -10,8 +10,8 @@ import {
   STREAK_GAME_INTERVAL,
   BASE_PATH
 } from '@/config/constants'
-import { TEXT_DE } from '@edu/shared'
-import { helperStatsDataWrite } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
+import { helperStatsDataWrite } from '@flashcards/shared'
 
 const router = useRouter()
 
@@ -51,12 +51,12 @@ onMounted(async () => {
 
     if (dailyInfo.isFirstGame) {
       bonusPoints.value += FIRST_GAME_BONUS
-      bonusReasons.value.push(TEXT_DE.firstGameBonus)
+      bonusReasons.value.push(TEXT_DE.multiply.firstGameBonus)
     }
 
     if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
       bonusPoints.value += STREAK_GAME_BONUS
-      bonusReasons.value.push(`${dailyInfo.gamesPlayedToday}. ${TEXT_DE.streakGameBonus}`)
+      bonusReasons.value.push(`${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`)
     }
 
     // Update statistics with bonus points
@@ -104,33 +104,28 @@ function goHome() {
         />
       </div>
 
-      <!-- Title -->
-      <div class="text-h4 q-mt-md text-weight-bold text-primary">{{ TEXT_DE.gameOver.title }}</div>
-
       <!-- Results Card -->
       <q-card class="q-mt-lg results-card">
         <q-card-section class="q-pa-lg">
-          <div class="text-h5 q-mb-md text-weight-bold text-grey-8">{{ TEXT_DE.results }}</div>
           <div class="row q-gutter-md justify-center">
             <div class="stat-item">
-              <div class="text-caption text-uppercase text-grey-7 q-mb-xs">
-                {{ TEXT_DE.pointsLabel }}
-              </div>
               <div class="text-h4 text-primary text-weight-bold stat-value">
+                <q-icon
+                  name="emoji_events"
+                  color="amber"
+                  size="36px"
+                />
                 {{ result.points }}
               </div>
             </div>
             <div class="stat-item">
-              <div class="text-caption text-uppercase text-grey-7 q-mb-xs">
-                {{ TEXT_DE.correct_plural }}
-              </div>
-              <div class="text-h4 text-positive text-weight-bold stat-value">
+              <span class="text-h4 text-positive text-weight-bold stat-value">
                 {{ result.correctAnswers }}
-              </div>
-            </div>
-            <div class="stat-item">
-              <div class="text-caption text-uppercase text-grey-7 q-mb-xs">{{ TEXT_DE.from }}</div>
-              <div class="text-h4 text-weight-bold stat-value">{{ result.totalCards }}</div>
+              </span>
+              <span class="text-h4 text-weight-bold stat-value">
+                /
+                {{ result.totalCards }}
+              </span>
             </div>
           </div>
 
@@ -145,7 +140,7 @@ function goHome() {
                 name="star"
                 color="amber"
               />
-              {{ TEXT_DE.bonusPoints }}
+              {{ TEXT_DE.multiply.bonusPoints }}
             </div>
             <div
               v-for="(reason, index) in bonusReasons"
@@ -158,7 +153,9 @@ function goHome() {
                 icon="add"
                 dense
               >
-                +{{ reason === TEXT_DE.firstGameBonus ? FIRST_GAME_BONUS : STREAK_GAME_BONUS }}
+                +{{
+                  reason === TEXT_DE.multiply.firstGameBonus ? FIRST_GAME_BONUS : STREAK_GAME_BONUS
+                }}
                 {{ reason }}
               </q-chip>
             </div>
@@ -177,7 +174,7 @@ function goHome() {
         size="lg"
         class="full-width q-mt-lg home-btn text-weight-medium"
         icon="home"
-        :label="TEXT_DE.backToHome"
+        :label="TEXT_DE.common.backToHome"
         unelevated
         @click="goHome"
       />

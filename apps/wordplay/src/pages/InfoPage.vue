@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 const router = useRouter()
 
@@ -41,9 +41,9 @@ onUnmounted(() => {
           icon="arrow_back"
           @click="handleGoBack"
         >
-          <q-tooltip>{{ TEXT_DE.game.backToMenu }}</q-tooltip>
+          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.info.title }}</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.info.title }}</q-toolbar-title>
         <q-btn
           flat
           round

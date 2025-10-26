@@ -3,7 +3,7 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
 import { formatDate } from '../utils/helpers'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 const router = useRouter()
 const { history } = useGameStore()
@@ -59,9 +59,9 @@ onUnmounted(() => {
           icon="arrow_back"
           @click="handleGoBack"
         >
-          <q-tooltip>{{ TEXT_DE.game.backToMenu }}</q-tooltip>
+          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
         </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.home.history }}</q-toolbar-title>
+        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.home.history }}</q-toolbar-title>
         <q-btn
           flat
           round

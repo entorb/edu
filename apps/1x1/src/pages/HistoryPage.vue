@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
 import type { GameHistory } from '@/types'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '@flashcards/shared'
 
 const router = useRouter()
 const history = ref<GameHistory[]>([])
@@ -64,7 +64,7 @@ function goHome() {
         @click="goHome"
         size="md"
       />
-      <div class="text-h5 q-ml-sm text-weight-bold text-grey-8">{{ TEXT_DE.goToHistory }}</div>
+      <div class="text-h5 q-ml-sm text-weight-bold text-grey-8">{{ TEXT_DE.nav.history }}</div>
     </div>
 
     <!-- Empty State -->
@@ -77,7 +77,9 @@ function goHome() {
         size="80px"
         color="grey-5"
       />
-      <div class="text-h6 text-grey-6 q-mt-md text-weight-medium">{{ TEXT_DE.noGamesPlayed }}</div>
+      <div class="text-h6 text-grey-6 q-mt-md text-weight-medium">
+        {{ TEXT_DE.stats.noGamesPlayed }}
+      </div>
     </div>
 
     <!-- History List -->
@@ -106,7 +108,7 @@ function goHome() {
             {{ formatDate(game.date) }}
           </q-item-label>
           <q-item-label caption>
-            {{ TEXT_DE.selectionPrefix }}{{ formatSelection(game.select) }}
+            {{ TEXT_DE.multiply.selectionPrefix }}{{ formatSelection(game.select) }}
           </q-item-label>
         </q-item-section>
 
@@ -114,7 +116,7 @@ function goHome() {
           <div class="column items-end">
             <div class="text-h6 text-primary text-weight-bold">{{ game.points }}</div>
             <div class="text-caption text-grey-7">
-              {{ game.correctAnswers }}{{ TEXT_DE.correctSuffix }}
+              {{ game.correctAnswers }}{{ TEXT_DE.stats.correctSuffix }}
             </div>
           </div>
         </q-item-section>

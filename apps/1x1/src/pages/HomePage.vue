@@ -5,8 +5,8 @@ import { StorageService } from '@/services/storage'
 import type { FocusType, Statistics, SelectionType } from '@/types'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
-import { TEXT_DE } from '@edu/shared'
-import { AppFooter } from '@edu/shared/components'
+import { TEXT_DE } from '@flashcards/shared'
+import { AppFooter } from '@flashcards/shared/components'
 
 const router = useRouter()
 
@@ -127,15 +127,15 @@ function toggleSquares() {
           <q-card-section class="q-pa-sm">
             <div class="row text-center q-gutter-sm justify-around">
               <div class="col-3">
-                <div class="text-caption">{{ TEXT_DE.games }}</div>
+                <div class="text-caption">{{ TEXT_DE.stats.games }}</div>
                 <div class="text-h6">{{ statistics.gamesPlayed }}</div>
               </div>
               <div class="col-3">
-                <div class="text-caption">{{ TEXT_DE.points }}</div>
+                <div class="text-caption">{{ TEXT_DE.stats.points }}</div>
                 <div class="text-h6">{{ statistics.totalPoints }}</div>
               </div>
               <div class="col-4">
-                <div class="text-caption">{{ TEXT_DE.correct_plural }}</div>
+                <div class="text-caption">{{ TEXT_DE.stats.correctAnswers }}</div>
                 <div class="text-h6">{{ statistics.totalCorrectAnswers }}</div>
               </div>
             </div>
@@ -149,12 +149,12 @@ function toggleSquares() {
       <q-card-section class="q-pa-md">
         <div class="text-subtitle1 q-mb-sm">
           <q-icon name="settings" />
-          {{ TEXT_DE.settings }}
+          {{ TEXT_DE.multiply.settings }}
         </div>
 
         <!-- Select Rows -->
         <div class="q-mb-sm">
-          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.selection }}</div>
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.multiply.selection }}</div>
           <div class="row q-gutter-xs">
             <q-btn
               v-for="option in selectOptions"
@@ -176,14 +176,14 @@ function toggleSquares() {
               class="col squares-btn"
               @click="toggleSquares"
             >
-              <div class="text-body1">{{ TEXT_DE.selectionSquares }}</div>
+              <div class="text-body1">{{ TEXT_DE.multiply.selectionSquares }}</div>
             </q-btn>
           </div>
         </div>
 
         <!-- Focus Selection -->
         <div>
-          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.focus }}</div>
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.multiply.focus }}</div>
           <q-select
             v-model="focus"
             :options="focusOptions"
@@ -216,7 +216,7 @@ function toggleSquares() {
       :disable="typeof select === 'object' && select.length === 0"
       icon="play_arrow"
     >
-      <span class="text-body1">{{ TEXT_DE.start }}</span>
+      <span class="text-body1">{{ TEXT_DE.common.start }}</span>
     </q-btn>
 
     <!-- Navigation Buttons -->
@@ -228,7 +228,7 @@ function toggleSquares() {
         class="col"
         @click="goToStats"
         icon="bar_chart"
-        :label="TEXT_DE.goToStats"
+        :label="TEXT_DE.nav.stats"
       />
       <q-btn
         unelevated
@@ -237,7 +237,7 @@ function toggleSquares() {
         class="col"
         @click="goToHistory"
         icon="history"
-        :label="TEXT_DE.goToHistory"
+        :label="TEXT_DE.nav.history"
       />
     </div>
     <AppFooter :base-path="BASE_PATH" />
