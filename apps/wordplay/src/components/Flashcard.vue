@@ -99,10 +99,6 @@ function processAnswer(result: AnswerResult) {
   isFlipped.value = true
 
   if (result === 'correct') {
-    feedbackData.value = {
-      type: 'simple',
-      message: TEXT_DE.common.correct
-    }
     nextCardTimer = setTimeout(() => emit('next'), 2000)
   } else {
     showProceedButton.value = true
@@ -117,12 +113,7 @@ function processAnswer(result: AnswerResult) {
         correctText: mainCorrectAnswer
       }
     } else {
-      if (props.settings.mode === 'blind' || props.settings.mode === 'multiple-choice') {
-        feedbackData.value = {
-          type: 'simple',
-          message: 'Falsch!'
-        }
-      } else {
+      if (props.settings.mode === 'typing') {
         feedbackData.value = {
           type: 'typing-incorrect',
           userInput: userAnswer.value,
@@ -259,23 +250,12 @@ const charDiff = computed(() => {
     <div class="q-mt-md">
       <!-- Feedback -->
       <div
-        v-if="answerStatus"
+        v-if="answerStatus && feedbackData.type"
         class="text-center q-mb-md"
       >
-        <!-- Simple message (correct or incorrect) -->
-        <div
-          v-if="feedbackData.type === 'simple'"
-          :class="{
-            'text-positive text-weight-bold': answerStatus === 'correct',
-            'text-negative text-weight-bold': answerStatus === 'incorrect'
-          }"
-        >
-          {{ feedbackData.message }}
-        </div>
-
         <!-- Close answer feedback -->
         <div
-          v-else-if="feedbackData.type === 'close'"
+          v-if="feedbackData.type === 'close'"
           class="text-warning"
         >
           <p class="q-mb-xs">
