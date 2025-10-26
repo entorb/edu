@@ -105,7 +105,7 @@ function goHome() {
       </div>
 
       <!-- Title -->
-      <div class="text-h4 q-mt-md text-weight-bold text-primary">{{ TEXT_DE.gameOver }}</div>
+      <div class="text-h4 q-mt-md text-weight-bold text-primary">{{ TEXT_DE.gameOver.title }}</div>
 
       <!-- Results Card -->
       <q-card class="q-mt-lg results-card">

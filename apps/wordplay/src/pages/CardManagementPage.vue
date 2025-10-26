@@ -11,7 +11,7 @@ const router = useRouter()
 const $q = useQuasar()
 const { allCards, resetCards, importCards, moveAllCards } = useGameStore()
 
-const exportButtonText = ref(TEXT_DE.cardManagement.export)
+const exportButtonText = ref<string>(TEXT_DE.cardManagement.export)
 const targetLevel = ref(1)
 
 function handleGoBack() {

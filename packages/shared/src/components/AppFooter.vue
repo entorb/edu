@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { helperStatsDataRead } from '../utils/statsHelpers'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE } from '../text-de'
 
 interface Props {
   basePath: string

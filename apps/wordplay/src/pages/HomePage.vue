@@ -4,12 +4,12 @@ import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
-import { TEXT_DE } from '@edu/shared'
+import { TEXT_DE, helperStatsDataRead } from '@edu/shared'
+import { AppFooter } from '@edu/shared/components'
 import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
 import GameStatsDisplay from '../components/GameStatsDisplay.vue'
 import LevelDistribution from '../components/LevelDistribution.vue'
-import { helperStatsDataRead, AppFooter } from '@edu/shared'
 
 const router = useRouter()
 const { allCards, gameStats, startGame } = useGameStore()
@@ -67,7 +67,7 @@ function handleSubmit() {
         >
           <!-- Header -->
           <div class="flex items-start justify-between q-mb-md">
-            <h1 class="text-h4 text-weight-bold">{{ TEXT_DE.appTitle }}</h1>
+            <h1 class="text-h4 text-weight-bold">{{ TEXT_DE.appTitle_wordplay }}</h1>
             <q-btn
               flat
               round

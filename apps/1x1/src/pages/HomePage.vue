@@ -6,7 +6,7 @@ import type { FocusType, Statistics, SelectionType } from '@/types'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
 import { TEXT_DE } from '@edu/shared'
-import { AppFooter } from '@edu/shared'
+import { AppFooter } from '@edu/shared/components'
 
 const router = useRouter()
 
