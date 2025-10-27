@@ -25,15 +25,5 @@ export const baseViteConfig: UserConfig = {
 
   resolve: {
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue']
-  },
-
-  preview: {
-    port: 4173,
-    strictPort: false
-  },
-
-  server: {
-    port: 5173,
-    strictPort: false
   }
 }

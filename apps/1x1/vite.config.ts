@@ -19,10 +19,12 @@ export default mergeConfig(
   defineConfig({
     base: `/${BASE_PATH}/`,
     server: {
-      port: 5173
+      port: 5173,
+      strictPort: true
     },
     preview: {
-      port: 4173
+      port: 4173,
+      strictPort: true
     },
     plugins: [
       Vue({
