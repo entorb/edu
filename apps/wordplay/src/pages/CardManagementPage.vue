@@ -116,13 +116,19 @@ function handleParseText(text: string) {
 
   $q.dialog({
     title: TEXT_DE.wordplay.cardManagement.confirmImportTitle,
-    message: TEXT_DE.wordplay.cardManagement.confirmImportMessage.replace('{count}', newCards.length.toString()),
+    message: TEXT_DE.wordplay.cardManagement.confirmImportMessage.replace(
+      '{count}',
+      newCards.length.toString()
+    ),
     cancel: true
   }).onOk(() => {
     importCards(newCards)
     $q.notify({
       type: 'positive',
-      message: TEXT_DE.wordplay.cardManagement.importSuccess.replace('{count}', newCards.length.toString())
+      message: TEXT_DE.wordplay.cardManagement.importSuccess.replace(
+        '{count}',
+        newCards.length.toString()
+      )
     })
   })
 }
@@ -132,14 +138,18 @@ function handleMoveClick() {
   if (level < MIN_LEVEL || level > MAX_LEVEL) {
     $q.notify({
       type: 'negative',
-      message: TEXT_DE.wordplay.cardManagement.invalidLevelError.replace('{min}', MIN_LEVEL.toString()).replace('{max}', MAX_LEVEL.toString())
+      message: TEXT_DE.wordplay.cardManagement.invalidLevelError
+        .replace('{min}', MIN_LEVEL.toString())
+        .replace('{max}', MAX_LEVEL.toString())
     })
     return
   }
 
   $q.dialog({
     title: TEXT_DE.wordplay.cardManagement.confirmMoveTitle,
-    message: TEXT_DE.wordplay.cardManagement.confirmMoveMessage.replace('{count}', allCards.value.length.toString()).replace('{level}', level.toString()),
+    message: TEXT_DE.wordplay.cardManagement.confirmMoveMessage
+      .replace('{count}', allCards.value.length.toString())
+      .replace('{level}', level.toString()),
     cancel: true
   }).onOk(() => {
     moveAllCards(level)
@@ -166,149 +176,150 @@ function getLevelColor(level: number): string {
 </script>
 
 <template>
-  <q-layout
-    view="hHh lpR fFf"
-    class="bg-grey-3"
+  <q-header
+    elevated
+    class="bg-white text-grey-9"
   >
-    <q-header
-      elevated
-      class="bg-white text-grey-9"
+    <q-toolbar>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        @click="handleGoBack"
+      >
+        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
+      </q-btn>
+      <q-toolbar-title class="text-center">{{
+        TEXT_DE.wordplay.cardManagement.title
+      }}</q-toolbar-title>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        style="visibility: hidden"
+      />
+    </q-toolbar>
+  </q-header>
+
+  <q-page class="q-pa-md">
+    <div
+      class="q-mx-auto"
+      style="max-width: 700px"
     >
-      <q-toolbar>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          @click="handleGoBack"
-        >
-          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
-        </q-btn>
-        <q-toolbar-title class="text-center">{{
-          TEXT_DE.wordplay.cardManagement.title
-        }}</q-toolbar-title>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          style="visibility: hidden"
-        />
-      </q-toolbar>
-    </q-header>
+      <div class="q-gutter-lg">
+        <!-- Export -->
+        <div>
+          <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
+            {{ TEXT_DE.wordplay.cardManagement.exportTitle }}
+          </h3>
+          <p class="text-caption text-grey-7 q-mb-sm">
+            {{ TEXT_DE.wordplay.cardManagement.exportDescription }}
+          </p>
+          <q-btn
+            outline
+            color="grey-8"
+            :label="exportButtonText"
+            no-caps
+            @click="handleExport"
+          />
+        </div>
 
-    <q-page-container>
-      <q-page class="q-pa-md">
-        <div
-          class="q-mx-auto"
-          style="max-width: 700px"
-        >
-          <div class="q-gutter-lg">
-            <!-- Export -->
-            <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.exportTitle }}</h3>
-              <p class="text-caption text-grey-7 q-mb-sm">
-                {{ TEXT_DE.wordplay.cardManagement.exportDescription }}
-              </p>
-              <q-btn
-                outline
-                color="grey-8"
-                :label="exportButtonText"
-                no-caps
-                @click="handleExport"
-              />
-            </div>
+        <!-- Import -->
+        <div>
+          <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
+            {{ TEXT_DE.wordplay.cardManagement.importTitle }}
+          </h3>
+          <p class="text-caption text-grey-7 q-mb-sm">
+            {{ TEXT_DE.wordplay.cardManagement.importDescription }}
+          </p>
+          <q-btn
+            outline
+            color="grey-8"
+            :label="TEXT_DE.wordplay.cardManagement.import"
+            no-caps
+            @click="showImportDialog"
+          />
+        </div>
 
-            <!-- Import -->
-            <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.importTitle }}</h3>
-              <p class="text-caption text-grey-7 q-mb-sm">
-                {{ TEXT_DE.wordplay.cardManagement.importDescription }}
-              </p>
-              <q-btn
-                outline
-                color="grey-8"
-                :label="TEXT_DE.wordplay.cardManagement.import"
-                no-caps
-                @click="showImportDialog"
-              />
-            </div>
-
-            <!-- Move All Cards -->
-            <div>
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs">{{ TEXT_DE.wordplay.cardManagement.moveAllTitle }}</h3>
-              <p class="text-caption text-grey-7 q-mb-sm">
-                {{ TEXT_DE.wordplay.cardManagement.moveAllDescription }}
-              </p>
-              <div class="row q-gutter-sm items-center">
-                <q-input
-                  v-model.number="targetLevel"
-                  type="number"
-                  :min="MIN_LEVEL"
-                  :max="MAX_LEVEL"
-                  outlined
-                  dense
-                  style="width: 80px"
-                />
-                <q-btn
-                  outline
-                  color="grey-8"
-                  :label="TEXT_DE.wordplay.cardManagement.moveAll"
-                  no-caps
-                  @click="handleMoveClick"
-                />
-              </div>
-            </div>
-
-            <!-- Danger Zone -->
-            <div
-              class="q-pt-lg"
-              style="border-top: 1px solid #e0e0e0"
-            >
-              <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">{{ TEXT_DE.wordplay.cardManagement.dangerZoneTitle }}</h3>
-              <p class="text-caption text-grey-7 q-mb-sm">
-                {{ TEXT_DE.wordplay.cardManagement.dangerZoneDescription }}
-              </p>
-              <q-btn
-                outline
-                color="negative"
-                :label="TEXT_DE.wordplay.cardManagement.reset"
-                no-caps
-                @click="showResetDialog"
-              />
-            </div>
-
-            <!-- Current Deck -->
-            <div
-              class="q-pt-lg"
-              style="border-top: 1px solid #e0e0e0"
-            >
-              <h3 class="text-h6 text-weight-bold q-mb-md">
-                {{ TEXT_DE.wordplay.cardManagement.currentDeck }} ({{ allCards.length }})
-              </h3>
-              <q-list
-                bordered
-                separator
-              >
-                <q-item
-                  v-for="card in allCards"
-                  :key="card.id"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-badge
-                      :color="getLevelColor(card.level)"
-                      :label="`L${card.level}`"
-                    />
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
+        <!-- Move All Cards -->
+        <div>
+          <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
+            {{ TEXT_DE.wordplay.cardManagement.moveAllTitle }}
+          </h3>
+          <p class="text-caption text-grey-7 q-mb-sm">
+            {{ TEXT_DE.wordplay.cardManagement.moveAllDescription }}
+          </p>
+          <div class="row q-gutter-sm items-center">
+            <q-input
+              v-model.number="targetLevel"
+              type="number"
+              :min="MIN_LEVEL"
+              :max="MAX_LEVEL"
+              outlined
+              dense
+              style="width: 80px"
+            />
+            <q-btn
+              outline
+              color="grey-8"
+              :label="TEXT_DE.wordplay.cardManagement.moveAll"
+              no-caps
+              @click="handleMoveClick"
+            />
           </div>
         </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+
+        <!-- Danger Zone -->
+        <div
+          class="q-pt-lg"
+          style="border-top: 1px solid #e0e0e0"
+        >
+          <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">
+            {{ TEXT_DE.wordplay.cardManagement.dangerZoneTitle }}
+          </h3>
+          <p class="text-caption text-grey-7 q-mb-sm">
+            {{ TEXT_DE.wordplay.cardManagement.dangerZoneDescription }}
+          </p>
+          <q-btn
+            outline
+            color="negative"
+            :label="TEXT_DE.wordplay.cardManagement.reset"
+            no-caps
+            @click="showResetDialog"
+          />
+        </div>
+
+        <!-- Current Deck -->
+        <div
+          class="q-pt-lg"
+          style="border-top: 1px solid #e0e0e0"
+        >
+          <h3 class="text-h6 text-weight-bold q-mb-md">
+            {{ TEXT_DE.wordplay.cardManagement.currentDeck }} ({{ allCards.length }})
+          </h3>
+          <q-list
+            bordered
+            separator
+          >
+            <q-item
+              v-for="card in allCards"
+              :key="card.id"
+            >
+              <q-item-section>
+                <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-badge
+                  :color="getLevelColor(card.level)"
+                  :label="`L${card.level}`"
+                />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </div>
+    </div>
+  </q-page>
 </template>

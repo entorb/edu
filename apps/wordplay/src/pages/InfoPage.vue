@@ -28,83 +28,98 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-layout
-    view="hHh lpR fFf"
-    class="bg-grey-3"
+  <q-header
+    elevated
+    class="bg-white text-grey-9"
   >
-    <q-header
-      elevated
-      class="bg-white text-grey-9"
+    <q-toolbar>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        @click="handleGoBack"
+      >
+        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
+      </q-btn>
+      <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.info.title }}</q-toolbar-title>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        style="visibility: hidden"
+      />
+    </q-toolbar>
+  </q-header>
+
+  <q-page class="q-pa-md">
+    <div
+      class="q-mx-auto q-gutter-lg text-grey-8"
+      style="max-width: 700px"
     >
-      <q-toolbar>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          @click="handleGoBack"
-        >
-          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
-        </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.info.title }}</q-toolbar-title>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          style="visibility: hidden"
-        />
-      </q-toolbar>
-    </q-header>
+      <p>
+        {{ TEXT_DE.wordplay.info.description }}
+      </p>
 
-    <q-page-container>
-      <q-page class="q-pa-md">
-        <div
-          class="q-mx-auto q-gutter-lg text-grey-8"
-          style="max-width: 700px"
-        >
-          <p>
-            {{ TEXT_DE.wordplay.info.description }}
-          </p>
+      <div>
+        <h3 class="text-subtitle1 text-weight-bold q-mb-sm">
+          {{ TEXT_DE.wordplay.info.basePointsTitle }}
+        </h3>
+        <p>
+          {{ TEXT_DE.wordplay.info.basePointsDescription }}
+        </p>
+        <ul class="q-pl-md q-mt-sm">
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel1 }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel2 }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel3 }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel4 }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel5 }}</strong>
+          </li>
+        </ul>
+      </div>
 
-          <div>
-            <h3 class="text-subtitle1 text-weight-bold q-mb-sm">{{ TEXT_DE.wordplay.info.basePointsTitle }}</h3>
-            <p>
-              {{ TEXT_DE.wordplay.info.basePointsDescription }}
-            </p>
-            <ul class="q-pl-md q-mt-sm">
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel1 }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel2 }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel3 }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel4 }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.basePointsLevel5 }}</strong></li>
-            </ul>
-          </div>
+      <div>
+        <h3 class="text-subtitle1 text-weight-bold q-mb-sm">
+          {{ TEXT_DE.wordplay.info.modeMultiplierTitle }}
+        </h3>
+        <p>{{ TEXT_DE.wordplay.info.modeMultiplierDescription }}</p>
+        <ul class="q-pl-md q-mt-sm">
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierChoice }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierBlind }}</strong>
+          </li>
+          <li>
+            <strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierTyping }}</strong>
+          </li>
+        </ul>
+      </div>
 
-          <div>
-            <h3 class="text-subtitle1 text-weight-bold q-mb-sm">{{ TEXT_DE.wordplay.info.modeMultiplierTitle }}</h3>
-            <p>{{ TEXT_DE.wordplay.info.modeMultiplierDescription }}</p>
-            <ul class="q-pl-md q-mt-sm">
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierChoice }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierBlind }}</strong></li>
-              <li><strong class="text-primary">{{ TEXT_DE.wordplay.info.modeMultiplierTyping }}</strong></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 class="text-subtitle1 text-weight-bold q-mb-sm">{{ TEXT_DE.wordplay.info.additionalRulesTitle }}</h3>
-            <ul class="q-pl-md">
-              <li class="q-mb-sm">
-                {{ TEXT_DE.wordplay.info.additionalRuleFastCorrect }}
-              </li>
-              <li class="q-mb-sm">
-                {{ TEXT_DE.wordplay.info.additionalRuleLanguageBonus }}
-              </li>
-              <li>{{ TEXT_DE.wordplay.info.additionalRuleWrong }}</li>
-            </ul>
-          </div>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+      <div>
+        <h3 class="text-subtitle1 text-weight-bold q-mb-sm">
+          {{ TEXT_DE.wordplay.info.additionalRulesTitle }}
+        </h3>
+        <ul class="q-pl-md">
+          <li class="q-mb-sm">
+            {{ TEXT_DE.wordplay.info.additionalRuleFastCorrect }}
+          </li>
+          <li class="q-mb-sm">
+            {{ TEXT_DE.wordplay.info.additionalRuleLanguageBonus }}
+          </li>
+          <li>{{ TEXT_DE.wordplay.info.additionalRuleWrong }}</li>
+        </ul>
+      </div>
+    </div>
+  </q-page>
 </template>

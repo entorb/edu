@@ -32,62 +32,45 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-layout
-    view="hHh lpR fFf"
-    class="bg-grey-3"
-  >
-    <q-header
-      elevated
-      class="bg-white text-grey-9"
-    >
-      <q-toolbar>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          @click="handleGoBack"
-        >
-          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
-        </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.stats.allCardsTitle }}</q-toolbar-title>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          style="visibility: hidden"
-        />
-      </q-toolbar>
-    </q-header>
+  <q-page class="q-pa-md">
+    <!-- Header -->
+    <div class="row items-center q-mb-md">
+      <q-btn
+        flat
+        round
+        icon="arrow_back"
+        @click="handleGoBack"
+        size="md"
+      />
+      <div class="text-h5 q-ml-sm text-weight-bold text-grey-8">
+        {{ TEXT_DE.wordplay.stats.allCardsTitle }}
+      </div>
+    </div>
 
-    <q-page-container>
-      <q-page class="q-pa-md">
-        <div
-          class="q-mx-auto"
-          style="max-width: 700px"
+    <!-- Content -->
+    <div
+      class="q-mx-auto"
+      style="max-width: 700px"
+    >
+      <q-list
+        bordered
+        separator
+      >
+        <q-item
+          v-for="card in allCards"
+          :key="card.id"
         >
-          <q-list
-            bordered
-            separator
-          >
-            <q-item
-              v-for="card in allCards"
-              :key="card.id"
-            >
-              <q-item-section>
-                <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-badge
-                  :color="getLevelColor(card.level)"
-                  :label="`${TEXT_DE.stats.level} ${card.level}`"
-                />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+          <q-item-section>
+            <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-badge
+              :color="getLevelColor(card.level)"
+              :label="`${TEXT_DE.stats.level} ${card.level}`"
+            />
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </div>
+  </q-page>
 </template>

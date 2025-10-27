@@ -35,65 +35,56 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-layout
-    view="hHh lpR fFf"
-    class="bg-grey-3"
-  >
-    <q-page-container>
-      <q-page class="flex flex-center q-pa-md">
-        <div
-          class="text-center flex flex-center column q-mx-auto"
-          style="max-width: 600px; width: 100%"
-        >
-          <FoxIcon
-            :is-happy="isFoxHappy"
-            :size="100"
-          />
+  <q-page class="flex flex-center q-pa-md">
+    <div
+      class="text-center flex flex-center column q-mx-auto"
+      style="max-width: 600px; width: 100%"
+    >
+      <FoxIcon
+        :is-happy="isFoxHappy"
+        :size="100"
+      />
 
-          <h2 class="text-h4 text-primary text-weight-bold q-mt-md q-mb-sm">
-            {{ TEXT_DE.wordplay.gameOver.title }}
-          </h2>
-          <p class="text-grey-7 q-mb-lg">
-            {{
-              isFoxHappy ? TEXT_DE.wordplay.gameOver.greatJob : TEXT_DE.wordplay.gameOver.goodWork
-            }}
+      <h2 class="text-h4 text-primary text-weight-bold q-mt-md q-mb-sm">
+        {{ TEXT_DE.wordplay.gameOver.title }}
+      </h2>
+      <p class="text-grey-7 q-mb-lg">
+        {{ isFoxHappy ? TEXT_DE.wordplay.gameOver.greatJob : TEXT_DE.wordplay.gameOver.goodWork }}
+      </p>
+
+      <q-card
+        class="q-mb-xl"
+        flat
+        bordered
+        style="width: 100%; max-width: 400px; background-color: #f5f5f5"
+      >
+        <q-card-section>
+          <p class="text-subtitle1 text-grey-7">{{ TEXT_DE.wordplay.gameOver.finalScore }}</p>
+          <p class="text-h2 text-primary text-weight-bold q-my-sm">
+            {{ Math.round(score) }}
           </p>
+          <div class="row justify-around q-mt-md">
+            <div class="text-positive">
+              <div class="text-h5 text-weight-bold">{{ ups }}</div>
+              <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledUp }}</p>
+            </div>
+            <div class="text-negative">
+              <div class="text-h5 text-weight-bold">{{ downs }}</div>
+              <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledDown }}</p>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
 
-          <q-card
-            class="q-mb-xl"
-            flat
-            bordered
-            style="width: 100%; max-width: 400px; background-color: #f5f5f5"
-          >
-            <q-card-section>
-              <p class="text-subtitle1 text-grey-7">{{ TEXT_DE.wordplay.gameOver.finalScore }}</p>
-              <p class="text-h2 text-primary text-weight-bold q-my-sm">
-                {{ Math.round(score) }}
-              </p>
-              <div class="row justify-around q-mt-md">
-                <div class="text-positive">
-                  <div class="text-h5 text-weight-bold">{{ ups }}</div>
-                  <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledUp }}</p>
-                </div>
-                <div class="text-negative">
-                  <div class="text-h5 text-weight-bold">{{ downs }}</div>
-                  <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledDown }}</p>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
-
-          <q-btn
-            color="primary"
-            :label="TEXT_DE.wordplay.gameOver.playAgain"
-            no-caps
-            size="lg"
-            class="full-width"
-            style="max-width: 400px"
-            @click="handleGoHome"
-          />
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+      <q-btn
+        color="primary"
+        :label="TEXT_DE.wordplay.gameOver.playAgain"
+        no-caps
+        size="lg"
+        class="full-width"
+        style="max-width: 400px"
+        @click="handleGoHome"
+      />
+    </div>
+  </q-page>
 </template>

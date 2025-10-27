@@ -97,87 +97,80 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-layout
-    view="hHh lpR fFf"
-    class="bg-grey-3"
+  <q-header
+    elevated
+    class="bg-white text-grey-9"
   >
-    <q-header
-      elevated
-      class="bg-white text-grey-9"
+    <q-toolbar>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        @click="handleGoHome"
+      >
+        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
+      </q-btn>
+      <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.game.title }}</q-toolbar-title>
+      <q-btn
+        flat
+        round
+        dense
+        icon="arrow_back"
+        style="visibility: hidden"
+      />
+    </q-toolbar>
+  </q-header>
+
+  <q-page class="q-pa-md">
+    <div
+      class="q-mx-auto"
+      style="max-width: 700px"
     >
-      <q-toolbar>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          @click="handleGoHome"
-        >
-          <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
-        </q-btn>
-        <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.game.title }}</q-toolbar-title>
-        <q-btn
-          flat
-          round
-          dense
-          icon="arrow_back"
-          style="visibility: hidden"
-        />
-      </q-toolbar>
-    </q-header>
+      <!-- Level Distribution -->
+      <div class="q-mb-md">
+        <LevelDistribution :all-cards="allCards" />
+      </div>
 
-    <q-page-container>
-      <q-page class="q-pa-md">
-        <div
-          class="q-mx-auto"
-          style="max-width: 700px"
-        >
-          <!-- Level Distribution -->
-          <div class="q-mb-md">
-            <LevelDistribution :all-cards="allCards" />
-          </div>
+      <!-- Scoreboard -->
+      <Scoreboard
+        :score="score"
+        :current="currentCardIndex + 1"
+        :total="roundCards.length"
+      />
 
-          <!-- Scoreboard -->
-          <Scoreboard
-            :score="score"
-            :current="currentCardIndex + 1"
-            :total="roundCards.length"
-          />
-
-          <!-- Timer Progress Bar -->
-          <div class="q-mb-md">
-            <div class="flex justify-between items-center q-mb-xs">
-              <span class="text-caption text-grey-7">{{ TEXT_DE.wordplay.game.time }}</span>
-              <span
-                class="text-caption font-bold"
-                :class="`text-${timerColor}`"
-              >
-                {{ elapsedTime.toFixed(1) }}s
-              </span>
-            </div>
-            <q-linear-progress
-              :value="timerProgress / 100"
-              :color="timerColor"
-              size="8px"
-              rounded
-            />
-          </div>
-
-          <!-- Flashcard -->
-          <div class="flex flex-center q-mt-lg">
-            <Flashcard
-              v-if="currentCard"
-              :key="currentCard.id"
-              :card="currentCard"
-              :all-cards="allCards"
-              :settings="gameSettings!"
-              :elapsed-time="elapsedTime"
-              @answer="handleAnswer"
-              @next="handleNextCard"
-            />
-          </div>
+      <!-- Timer Progress Bar -->
+      <div class="q-mb-md">
+        <div class="flex justify-between items-center q-mb-xs">
+          <span class="text-caption text-grey-7">{{ TEXT_DE.wordplay.game.time }}</span>
+          <span
+            class="text-caption font-bold"
+            :class="`text-${timerColor}`"
+          >
+            {{ elapsedTime.toFixed(1) }}s
+          </span>
         </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+        <q-linear-progress
+          :value="timerProgress / 100"
+          :color="timerColor"
+          size="8px"
+          rounded
+        />
+      </div>
+
+      <!-- Flashcard -->
+      <div class="flex flex-center q-mt-lg">
+        <Flashcard
+          v-if="currentCard"
+          :key="currentCard.id"
+          :card="currentCard"
+          :all-cards="allCards"
+          :settings="gameSettings!"
+          :elapsed-time="elapsedTime"
+          @answer="handleAnswer"
+          @next="handleNextCard"
+        />
+      </div>
+    </div>
+  </q-page>
 </template>
