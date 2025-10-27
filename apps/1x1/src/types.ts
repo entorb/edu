@@ -1,5 +1,5 @@
 /**
- * Wordplay Vocabulary App - Type Definitions
+ * 1x1 Multiplication App - Type Definitions
  * Extends shared types from @flashcards/shared with app-specific types
  */
 
@@ -14,18 +14,17 @@ import type {
 // App-Specific Types
 // ============================================================================
 
-export type GameMode = 'multiple-choice' | 'blind' | 'typing'
-export type Language = 'en-de' | 'de-en'
+/** Selection type for multiplication tables */
+export type SelectionType = number[] | 'alle' | 'x²'
 
 // ============================================================================
 // Card Definition (extends BaseCard)
 // ============================================================================
 
 export interface Card extends BaseCard {
-  en: string // Used as unique key/identifier
-  de: string
-  time_blind: number // Seconds for last correct answer in blind mode (0.1-60s, default 60)
-  time_typing: number // Seconds for last correct answer in typing mode (0.1-60s, default 60)
+  question: string // Format: "XxY" e.g. "3x4"
+  answer: number // e.g. 12
+  time: number // seconds for last correct answer, default 60
 }
 
 // ============================================================================
@@ -33,9 +32,8 @@ export interface Card extends BaseCard {
 // ============================================================================
 
 export interface GameSettings {
-  mode: GameMode
+  select: SelectionType // Array of numbers 3-9, e.g. [3, 5, 7], or 'alle', or 'x²'
   focus: FocusType // 'weak', 'strong', or 'slow'
-  language: Language
 }
 
 // ============================================================================

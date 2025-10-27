@@ -1,17 +1,18 @@
-import type { Card, Priority, GameMode } from '../types'
-import { shuffleArray } from '../utils/helpers'
+import type { Card, GameMode } from '../types'
+import { shuffleArray, weightedRandomSelection } from '@flashcards/shared/utils'
 import { ROUND_SIZE } from '../config/constants'
+import type { FocusType } from '@flashcards/shared'
 
 /**
- * Select cards for a game round based on priority strategy
+ * Select cards for a game round based on focus/priority strategy
  */
-export function selectCardsForRound(allCards: Card[], priority: Priority, mode: GameMode): Card[] {
+export function selectCardsForRound(allCards: Card[], focus: FocusType, mode: GameMode): Card[] {
   if (allCards.length === 0) {
     return []
   }
 
-  // For 'slow' priority, sort by time descending based on mode
-  if (priority === 'slow') {
+  // For 'slow' focus, sort by time descending based on mode
+  if (focus === 'slow') {
     const sortedByTime = [...allCards].sort((a, b) => {
       let timeA: number
       let timeB: number
@@ -38,43 +39,23 @@ export function selectCardsForRound(allCards: Card[], priority: Priority, mode: 
   const weightedCards = allCards.map(card => {
     let weight = 1
 
-    if (priority === 'low') {
+    if (focus === 'weak') {
       // Prioritize lower level cards (weaker)
       // Level 1 = 5x weight, Level 5 = 1x weight
       weight = 6 - card.level
-    } else if (priority === 'high') {
+    } else if (focus === 'strong') {
       // Prioritize higher level cards (stronger)
       // Level 1 = 1x weight, Level 5 = 5x weight
       weight = card.level
     }
 
-    return { card, weight }
+    return { item: card, weight }
   })
-
-  // Select cards using weighted random selection
-  const selectedCards: Card[] = []
-  const availableCards = [...weightedCards]
 
   const cardsToSelect = Math.min(ROUND_SIZE, allCards.length)
 
-  for (let i = 0; i < cardsToSelect; i++) {
-    if (availableCards.length === 0) break
-
-    // Random weighted selection
-    let random = Math.random() * availableCards.reduce((sum, item) => sum + item.weight, 0)
-
-    let selectedIndex = 0
-    for (let j = 0; j < availableCards.length; j++) {
-      random -= availableCards[j].weight
-      if (random <= 0) {
-        selectedIndex = j
-        break
-      }
-    }
-
-    selectedCards.push(availableCards[selectedIndex].card)
-    availableCards.splice(selectedIndex, 1)
-  }
+  // Use shared weighted random selection utility
+  const selectedCards = weightedRandomSelection(weightedCards, cardsToSelect)
 
   // Shuffle the selected cards
   return shuffleArray(selectedCards)

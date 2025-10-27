@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { HistoryPage } from '@flashcards/shared/pages'
-import { StorageService } from '@/services/storage'
+import { loadHistory } from '@/services/storage'
 import type { GameHistory } from '@/types'
 import { TEXT_DE } from '@flashcards/shared'
 
 const history = ref<GameHistory[]>([])
 
 onMounted(() => {
-  history.value = StorageService.getHistory()
+  history.value = loadHistory()
 })
 
 function formatSelection(select: number[] | string): string {
@@ -18,8 +18,18 @@ function formatSelection(select: number[] | string): string {
   return select.join(', ')
 }
 
+function getFocusText(focus: string): string {
+  return focus === 'weak'
+    ? TEXT_DE.focusOptions.weak
+    : focus === 'strong'
+      ? TEXT_DE.focusOptions.strong
+      : TEXT_DE.focusOptions.slow
+}
+
 function formatDetails(game: any): string {
-  return `${TEXT_DE.multiply.selectionPrefix}${formatSelection(game.select)}`
+  const selection = `${TEXT_DE.multiply.selectionPrefix}${formatSelection(game.settings.select)}`
+  const focus = `${TEXT_DE.words.focus}: ${getFocusText(game.settings.focus)}`
+  return `${selection} | ${focus}`
 }
 
 function getPoints(game: any): number {

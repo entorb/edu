@@ -2,7 +2,11 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE, helperStatsDataWrite } from '@flashcards/shared'
+import {
+  helperStatsDataWrite,
+  calculateDailyBonuses,
+  type DailyBonusConfig
+} from '@flashcards/shared'
 import { GameOverPage } from '@flashcards/shared/pages'
 import {
   BASE_PATH,
@@ -15,13 +19,13 @@ import { incrementDailyGames } from '../services/storage'
 import { saveGameStats, loadGameStats } from '../services/storage'
 
 const router = useRouter()
-const { score, correctAnswersCount, roundCards, isFoxHappy } = useGameStore()
+const { points, correctAnswersCount, gameCards, isFoxHappy } = useGameStore()
 
 const bonusReasons = ref<Array<{ label: string; points: number }>>([])
 
 const successRate = computed(() => {
-  if (roundCards.value.length === 0) return 0
-  return correctAnswersCount.value / roundCards.value.length
+  if (gameCards.value.length === 0) return 0
+  return correctAnswersCount.value / gameCards.value.length
 })
 
 const showMascot = computed(() => {
@@ -39,19 +43,16 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
-  // Calculate daily bonuses
+  // Calculate daily bonuses using shared helper
   const dailyInfo = incrementDailyGames()
-
-  if (dailyInfo.isFirstGame) {
-    bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
+  const bonusConfig: DailyBonusConfig = {
+    firstGameBonus: FIRST_GAME_BONUS,
+    streakGameBonus: STREAK_GAME_BONUS,
+    streakGameInterval: STREAK_GAME_INTERVAL
   }
 
-  if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
-    bonusReasons.value.push({
-      label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`,
-      points: STREAK_GAME_BONUS
-    })
-  }
+  const calculatedBonuses = calculateDailyBonuses(dailyInfo, bonusConfig)
+  bonusReasons.value = calculatedBonuses
 
   // Update statistics with bonus points
   const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
@@ -59,7 +60,7 @@ onMounted(async () => {
     const stats = loadGameStats()
     saveGameStats({
       ...stats,
-      totalScore: stats.totalScore + totalBonusPoints
+      points: stats.points + totalBonusPoints
     })
   }
 
@@ -75,9 +76,9 @@ onUnmounted(() => {
 
 <template>
   <GameOverPage
-    :points="Math.round(score)"
+    :points="Math.round(points)"
     :correct-answers="correctAnswersCount"
-    :total-cards="roundCards.length"
+    :total-cards="gameCards.length"
     :bonus-reasons="bonusReasons"
     :show-mascot="showMascot"
     @go-home="handleGoHome"

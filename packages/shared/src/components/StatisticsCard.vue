@@ -2,11 +2,9 @@
 import { TEXT_DE } from '../text-de'
 
 interface Statistics {
-  gamesPlayed?: number
-  totalGamesPlayed?: number
-  totalPoints?: number
-  totalScore?: number
-  totalCorrectAnswers: number
+  gamesPlayed: number
+  points: number
+  correctAnswers: number
 }
 
 interface Props {
@@ -17,12 +15,12 @@ defineProps<Props>()
 
 // Normalize the games played property name
 function getGamesPlayed(stats: Statistics): number {
-  return stats.gamesPlayed ?? stats.totalGamesPlayed ?? 0
+  return stats.gamesPlayed ?? stats.gamesPlayed ?? 0
 }
 
 // Normalize the points/score property name
 function getPointsOrScore(stats: Statistics): number {
-  return stats.totalPoints ?? stats.totalScore ?? 0
+  return stats.points ?? stats.points ?? 0
 }
 </script>
 
@@ -36,15 +34,30 @@ function getPointsOrScore(stats: Statistics): number {
       <div class="row text-center q-gutter-sm justify-around">
         <div class="col-3">
           <div class="text-caption">{{ TEXT_DE.stats.games }}</div>
-          <div class="text-h6">{{ getGamesPlayed(statistics) }}</div>
+          <div
+            class="text-h6"
+            data-cy="stats-games-played"
+          >
+            {{ getGamesPlayed(statistics) }}
+          </div>
         </div>
         <div class="col-3">
           <div class="text-caption">{{ TEXT_DE.stats.points }}</div>
-          <div class="text-h6">{{ getPointsOrScore(statistics) }}</div>
+          <div
+            class="text-h6"
+            data-cy="stats-total-points"
+          >
+            {{ getPointsOrScore(statistics) }}
+          </div>
         </div>
         <div class="col-4">
           <div class="text-caption">{{ TEXT_DE.stats.correctAnswers }}</div>
-          <div class="text-h6">{{ statistics.totalCorrectAnswers }}</div>
+          <div
+            class="text-h6"
+            data-cy="stats-correct-answers"
+          >
+            {{ statistics.correctAnswers }}
+          </div>
         </div>
       </div>
     </q-card-section>

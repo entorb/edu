@@ -76,7 +76,16 @@ function getColor(status: FeedbackStatus): string {
 </script>
 
 <template>
-  <q-card class="q-mb-md">
+  <q-card
+    class="q-mb-md"
+    :data-cy="
+      status === 'correct'
+        ? 'correct-answer-feedback'
+        : status === 'incorrect'
+          ? 'wrong-answer-feedback'
+          : ''
+    "
+  >
     <!-- Icon Section -->
     <q-card-section
       :class="[getBackgroundClass(status)]"
@@ -116,6 +125,7 @@ function getColor(status: FeedbackStatus): string {
         class="full-width text-weight-medium"
         :disable="isButtonDisabled"
         @click="handleContinue"
+        data-cy="continue-button"
       />
     </q-card-actions>
   </q-card>

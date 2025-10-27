@@ -14,7 +14,7 @@ const { gameStats, startGame: startGameStore } = useGameStore()
 
 const settings = ref<GameSettings>({
   mode: 'multiple-choice',
-  priority: 'low',
+  focus: 'weak',
   language: 'en-de'
 })
 
@@ -26,10 +26,10 @@ const modeOptions = [
   { label: TEXT_DE.wordplay.modes.typing, value: 'typing' as const }
 ]
 
-const priorityOptions = [
-  { label: TEXT_DE.wordplay.priority.low, value: 'low' as const },
-  { label: TEXT_DE.wordplay.priority.high, value: 'high' as const },
-  { label: TEXT_DE.wordplay.priority.slow, value: 'slow' as const }
+const focusOptions = [
+  { label: TEXT_DE.focusOptions.weak, value: 'weak' as const },
+  { label: TEXT_DE.focusOptions.strong, value: 'strong' as const },
+  { label: TEXT_DE.focusOptions.slow, value: 'slow' as const }
 ]
 
 const languageOptions = [
@@ -68,7 +68,12 @@ function goToInfo() {
   <q-page class="q-pa-md">
     <!-- Header with Info Button -->
     <div class="row items-center justify-between q-mb-md">
-      <div class="text-h5">{{ TEXT_DE.appTitle_wordplay }}</div>
+      <div
+        class="text-h5"
+        data-cy="app-title"
+      >
+        {{ TEXT_DE.appTitle_wordplay }}
+      </div>
       <q-btn
         flat
         round
@@ -76,6 +81,7 @@ function goToInfo() {
         icon="info_outline"
         color="grey-6"
         @click="goToInfo"
+        data-cy="info-button"
       >
         <q-tooltip>{{ TEXT_DE.wordplay.home.infoTooltip }}</q-tooltip>
       </q-btn>
@@ -84,8 +90,9 @@ function goToInfo() {
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
+        <!-- TODO -->
         <FoxIcon
-          :is-happy="gameStats.totalScore > 1000"
+          :is-happy="gameStats.points > 1000"
           :size="100"
         />
       </div>
@@ -117,22 +124,22 @@ function goToInfo() {
           />
         </div>
 
-        <!-- Priority Selection -->
+        <!-- Focus Selection -->
         <div class="q-mb-sm">
           <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.focus }}</div>
           <div class="row q-col-gutter-sm">
             <div
               class="col-4"
-              v-for="option in priorityOptions"
+              v-for="option in focusOptions"
               :key="option.value"
             >
               <q-btn
-                :outline="settings.priority !== option.value"
-                :color="settings.priority === option.value ? 'primary' : 'grey-8'"
+                :outline="settings.focus !== option.value"
+                :color="settings.focus === option.value ? 'primary' : 'grey-8'"
                 :label="option.label"
                 no-caps
                 class="full-width"
-                @click="settings.priority = option.value"
+                @click="settings.focus = option.value"
               />
             </div>
           </div>
@@ -159,6 +166,7 @@ function goToInfo() {
       class="full-width q-mb-sm"
       @click="startGame"
       icon="play_arrow"
+      data-cy="btn-start"
     >
       <span class="text-body1">{{ TEXT_DE.common.start }}</span>
     </q-btn>
@@ -173,6 +181,7 @@ function goToInfo() {
         @click="goToCards"
         icon="style"
         :label="TEXT_DE.nav.cards"
+        data-cy="cards-button"
       />
       <q-btn
         unelevated
@@ -182,6 +191,7 @@ function goToInfo() {
         @click="goToHistory"
         icon="history"
         :label="TEXT_DE.nav.history"
+        data-cy="history-button"
       />
     </div>
     <AppFooter :base-path="BASE_PATH" />

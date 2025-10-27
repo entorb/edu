@@ -60,7 +60,10 @@ function handleGoHome() {
         <q-card-section class="q-pa-lg">
           <div class="row q-gutter-md justify-center">
             <div style="min-width: 90px">
-              <div class="text-h4 text-primary text-weight-bold">
+              <div
+                class="text-h4 text-primary text-weight-bold"
+                data-cy="final-points"
+              >
                 <q-icon
                   name="emoji_events"
                   color="amber"
@@ -70,12 +73,18 @@ function handleGoHome() {
               </div>
             </div>
             <div style="min-width: 90px">
-              <span class="text-h4 text-positive text-weight-bold">
+              <span
+                class="text-h4 text-positive text-weight-bold"
+                data-cy="correct-answers-count"
+              >
                 {{ correctAnswers }}
               </span>
-              <span class="text-h4 text-weight-bold">
-                /
-                {{ totalCards }}
+
+              <span
+                class="text-h4 text-weight-bold"
+                data-cy="total-questions-count"
+              >
+                / {{ totalCards }}
               </span>
             </div>
           </div>
@@ -125,6 +134,7 @@ function handleGoHome() {
         :label="TEXT_DE.common.backToHome"
         unelevated
         @click="handleGoHome"
+        data-cy="back-to-home-button"
       />
     </div>
   </q-page>

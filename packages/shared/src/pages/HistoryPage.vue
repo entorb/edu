@@ -69,8 +69,14 @@ function goHome() {
         icon="arrow_back"
         @click="goHome"
         size="md"
+        data-cy="back-button"
       />
-      <div class="text-h5 q-ml-sm text-weight-bold text-grey-8">{{ TEXT_DE.nav.history }}</div>
+      <div
+        class="text-h5 q-ml-sm text-weight-bold text-grey-8"
+        data-cy="history-page-title"
+      >
+        {{ TEXT_DE.nav.history }}
+      </div>
     </div>
 
     <!-- Empty State -->
@@ -101,6 +107,7 @@ function goHome() {
         class="q-pa-md"
         clickable
         v-ripple
+        :data-cy="`history-game-${index}`"
       >
         <q-item-section avatar>
           <q-avatar
@@ -123,8 +130,16 @@ function goHome() {
 
         <q-item-section side>
           <div class="column items-end">
-            <div class="text-h6 text-primary text-weight-bold">{{ getPoints(game) }}</div>
-            <div class="text-caption text-grey-7">
+            <div
+              class="text-h6 text-primary text-weight-bold"
+              :data-cy="`history-game-${index}-points`"
+            >
+              {{ getPoints(game) }}
+            </div>
+            <div
+              class="text-caption text-grey-7"
+              :data-cy="`history-game-${index}-correct`"
+            >
               {{ getCorrectAnswers(game) }}
             </div>
           </div>

@@ -37,3 +37,41 @@ export const helperStatsDataWrite = async (basePath: string): Promise<void> => {
     // Silently ignore errors - stats are not critical for app functionality
   }
 }
+
+/**
+ * Configuration for daily game bonuses
+ */
+export interface DailyBonusConfig {
+  firstGameBonus: number
+  streakGameBonus: number
+  streakGameInterval: number
+}
+
+/**
+ * Daily bonus calculation for game over page
+ * @param dailyInfo - Daily games info from incrementDailyGames()
+ * @param bonusConfig - Bonus configuration with point values
+ * @returns Array of bonus reasons with their point values
+ */
+export const calculateDailyBonuses = (
+  dailyInfo: { isFirstGame: boolean; gamesPlayedToday: number },
+  bonusConfig: DailyBonusConfig
+): Array<{ label: string; points: number }> => {
+  const bonuses: Array<{ label: string; points: number }> = []
+
+  if (dailyInfo.isFirstGame) {
+    bonuses.push({
+      label: 'First game of the day',
+      points: bonusConfig.firstGameBonus
+    })
+  }
+
+  if (dailyInfo.gamesPlayedToday % bonusConfig.streakGameInterval === 0) {
+    bonuses.push({
+      label: `${dailyInfo.gamesPlayedToday}. game bonus`,
+      points: bonusConfig.streakGameBonus
+    })
+  }
+
+  return bonuses
+}

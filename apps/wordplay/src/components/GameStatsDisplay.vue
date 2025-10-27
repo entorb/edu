@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GameStats } from '../types'
+import type { GameStats } from '@flashcards/shared'
 
 interface Props {
   stats: GameStats
@@ -10,21 +10,21 @@ defineProps<Props>()
 
 <template>
   <div
-    v-if="stats.totalGamesPlayed && stats.totalGamesPlayed > 0"
+    v-if="stats.gamesPlayed && stats.gamesPlayed > 0"
     class="relative bg-primary/10 p-4 rounded-lg shadow-md"
   >
     <div class="grid grid-cols-3 gap-4 text-center">
       <div>
         <div class="text-xs text-primary uppercase tracking-wider font-semibold">Runden</div>
-        <div class="text-2xl font-bold text-primary">{{ stats.totalGamesPlayed }}</div>
+        <div class="text-2xl font-bold text-primary">{{ stats.gamesPlayed }}</div>
       </div>
       <div>
         <div class="text-xs text-primary uppercase tracking-wider font-semibold">Punkte</div>
-        <div class="text-2xl font-bold text-primary">{{ Math.round(stats.totalScore) }}</div>
+        <div class="text-2xl font-bold text-primary">{{ Math.round(stats.points) }}</div>
       </div>
       <div>
         <div class="text-xs text-primary uppercase tracking-wider font-semibold">Richtig</div>
-        <div class="text-2xl font-bold text-primary">{{ stats.totalCorrectAnswers }}</div>
+        <div class="text-2xl font-bold text-primary">{{ stats.correctAnswers }}</div>
       </div>
     </div>
     <!-- Speech bubble tail -->

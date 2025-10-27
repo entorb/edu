@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { StorageService } from '@/services/storage'
+import {
+  getGameResult,
+  incrementDailyGames,
+  updateBonusPoints,
+  clearGameResult,
+  loadHistory,
+  saveHistory
+} from '@/services/storage'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
-import type { GameResult } from '@/types'
+import type { GameResult } from '@flashcards/shared'
 import {
   FIRST_GAME_BONUS,
   STREAK_GAME_BONUS,
@@ -34,14 +41,14 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
-  result.value = StorageService.getGameResult()
+  result.value = getGameResult()
 
   if (!result.value) {
     // No result found, redirect to home
     router.push({ name: '/' })
   } else {
     // Calculate daily bonuses
-    const dailyInfo = StorageService.incrementDailyGames()
+    const dailyInfo = incrementDailyGames()
 
     if (dailyInfo.isFirstGame) {
       bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
@@ -57,7 +64,16 @@ onMounted(async () => {
     // Update statistics with bonus points
     const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
     if (totalBonusPoints > 0) {
-      StorageService.updateStatistics(totalBonusPoints, 0)
+      // Update the last history entry to include bonus points
+      const history = loadHistory()
+      if (history.length > 0) {
+        const lastEntry = history[history.length - 1]
+        lastEntry.points += totalBonusPoints
+        saveHistory(history)
+      }
+
+      // Update bonus points in stats (doesn't increment gamesPlayed - already done by saveGameResults)
+      updateBonusPoints(totalBonusPoints)
     }
 
     // update usage stats in DB
@@ -73,7 +89,7 @@ onUnmounted(() => {
 
 function goHome() {
   // Clear game result from session storage
-  StorageService.clearGameResult()
+  clearGameResult()
   router.push({ name: '/' })
 }
 </script>

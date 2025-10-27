@@ -1,70 +1,47 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, onMounted } from 'vue'
+import { onUnmounted, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
+import { useGameTimer, type AnswerResult } from '@flashcards/shared'
 import { MAX_TIME } from '../config/constants'
-import type { AnswerResult } from '../types'
-import FlashCard from '../components/FlashCard.vue'
+import Flashcard from '../components/Flashcard.vue'
 
 const router = useRouter()
 const {
   allCards,
-  roundCards,
+  gameCards,
   gameSettings,
   currentCardIndex,
-  score,
+  points,
   currentCard,
   handleAnswer: storeHandleAnswer,
   nextCard,
-  finishGame
+  finishGame,
+  discardGame,
+  startGame
 } = useGameStore()
 
-// Timer
-const elapsedTime = ref(0)
-let timerInterval: ReturnType<typeof setInterval> | null = null
-
-// Redirect to home if no game settings
-if (!gameSettings.value) {
-  router.push('/')
-}
-
-// Start timer when card changes
-watch(
-  () => currentCard.value,
-  () => {
-    elapsedTime.value = 0
-    if (timerInterval) clearInterval(timerInterval)
-    timerInterval = setInterval(() => {
-      elapsedTime.value += 0.1
-      if (elapsedTime.value >= MAX_TIME) {
-        elapsedTime.value = MAX_TIME
-      }
-    }, 100)
-  },
-  { immediate: true }
-)
-
-onUnmounted(() => {
-  if (timerInterval) clearInterval(timerInterval)
-})
+// Use shared timer logic with maxTime
+const { elapsedTime, stopTimer } = useGameTimer(currentCard, MAX_TIME)
 
 function handleAnswer(result: AnswerResult, answerTime: number) {
-  if (timerInterval) clearInterval(timerInterval)
+  stopTimer()
   storeHandleAnswer(result, answerTime)
 }
 
 function handleNextCard() {
   const isGameOver = nextCard()
   if (isGameOver) {
-    if (timerInterval) clearInterval(timerInterval)
+    stopTimer()
     finishGame()
-    router.push('/game-over')
+    router.push({ name: '/game-over' })
   }
 }
 
 function handleGoHome() {
-  if (timerInterval) clearInterval(timerInterval)
-  router.push('/')
+  stopTimer()
+  discardGame()
+  router.push({ name: '/' })
 }
 
 // Handle Escape key
@@ -75,6 +52,9 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
+  if (gameSettings.value) {
+    startGame(gameSettings.value)
+  }
   window.addEventListener('keydown', handleKeyDown)
 })
 
@@ -103,16 +83,16 @@ onUnmounted(() => {
           color="amber"
           size="24px"
         />
-        {{ score }}
+        {{ points }}
       </div>
       <div class="text-h6 text-weight-bold">
-        {{ currentCardIndex + 1 }} / {{ roundCards.length }}
+        {{ currentCardIndex + 1 }} / {{ gameCards.length }}
       </div>
     </div>
 
-    <FlashCard
+    <Flashcard
       v-if="currentCard"
-      :key="currentCard.id"
+      :key="currentCard.en"
       :card="currentCard"
       :all-cards="allCards"
       :settings="gameSettings!"

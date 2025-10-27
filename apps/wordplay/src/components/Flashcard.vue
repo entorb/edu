@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
-import type { Card, GameSettings, AnswerResult } from '../types'
-import { shuffleArray, normalizeString, levenshteinDistance } from '../utils/helpers'
-import { TEXT_DE } from '@flashcards/shared'
-import { AnswerFeedback } from '@flashcards/shared/components'
+import { ref, computed, watch, onUnmounted, onMounted } from 'vue'
+import type { Card, GameSettings } from '../types'
+import { normalizeString, levenshteinDistance } from '../utils/helpers'
+import { shuffleArray } from '@flashcards/shared/utils'
+import { TEXT_DE, type AnswerResult } from '@flashcards/shared'
 import { MAX_TIME, LEVENSHTEIN_THRESHOLD } from '../config/constants'
 
 interface Props {
@@ -67,7 +67,7 @@ watch(
   () => {
     if (props.settings.mode === 'multiple-choice') {
       const otherAnswers = props.allCards
-        .filter(c => c.id !== props.card.id)
+        .filter(c => c.en !== props.card.en)
         .map(c => c[targetLang.value])
 
       const shuffledOthers = shuffleArray(otherAnswers)
@@ -96,7 +96,20 @@ watch(
   { immediate: true }
 )
 
+// Handle Enter key to proceed when button is enabled
+function handleKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Enter' && showProceedButton.value && !isProceedDisabled.value) {
+    event.preventDefault()
+    emit('next')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
 onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown)
   if (nextCardTimer) clearTimeout(nextCardTimer)
   if (proceedEnableTimer) clearTimeout(proceedEnableTimer)
 })
@@ -110,10 +123,15 @@ function processAnswer(result: AnswerResult) {
   answerStatus.value = result
   showAnswer.value = true
 
+  // Always show proceed button for all answer types
+  showProceedButton.value = true
+
   if (result === 'correct') {
-    nextCardTimer = setTimeout(() => emit('next'), 1000)
+    // For correct answers: auto-advance after 3 seconds, but allow manual continue
+    isProceedDisabled.value = false
+    nextCardTimer = setTimeout(() => emit('next'), 3000)
   } else {
-    showProceedButton.value = true
+    // For incorrect/close answers: disable button for 3 seconds
     isProceedDisabled.value = true
     disableStartTime.value = Date.now()
     proceedEnableTimer = setTimeout(() => (isProceedDisabled.value = false), 3000)
@@ -143,14 +161,16 @@ function handleMultipleChoiceSubmit(option: string) {
 
 function handleBlindSubmit(correct: boolean) {
   if (correct) {
-    // For correct answers in blind mode, proceed immediately
+    // For correct answers in blind mode, show button and auto-advance
     if (answerStatus.value) return
     const answerTime = (Date.now() - startTime.value) / 1000
     emit('answer', 'correct', answerTime)
     answerStatus.value = 'correct'
     showAnswer.value = true
-    // Proceed immediately without delay
-    emit('next')
+    showProceedButton.value = true
+    isProceedDisabled.value = false
+    // Auto-advance after 3 seconds, but allow manual continue
+    nextCardTimer = setTimeout(() => emit('next'), 3000)
   } else {
     processAnswer('incorrect')
   }
@@ -206,13 +226,16 @@ function handleTypingSubmit() {
             {{ displayTime.toFixed(1) }}s
           </div>
         </div>
-        <div class="q-my-md text-weight-bold text-h4">
+        <div
+          class="q-my-md text-weight-bold text-h4"
+          data-cy="game-page-question"
+        >
           {{ question }}
         </div>
         <!-- Show answer if revealed -->
         <div
           v-if="showAnswer"
-          class="q-mt-md text-h5 text-grey-7"
+          class="q-mt-md text-weight-bold text-h4"
         >
           {{ correctAnswer }}
         </div>
@@ -221,47 +244,17 @@ function handleTypingSubmit() {
 
     <!-- Input Section -->
     <div class="q-mt-md">
-      <!-- Feedback with Visual Icon (using shared component) -->
-      <AnswerFeedback
-        v-if="answerStatus"
-        :status="answerStatus"
-        :show-continue-button="showProceedButton"
-        :is-button-disabled="isProceedDisabled"
-        :button-disable-countdown="Math.ceil((3000 - (Date.now() - disableStartTime)) / 1000)"
-        @continue="emit('next')"
+      <!-- Feedback Details (without big colored card) -->
+      <q-card
+        v-if="answerStatus && answerStatus !== 'correct' && feedbackData.type !== 'simple'"
+        class="q-mb-md"
       >
-        <template #header>
-          <div
-            v-if="answerStatus === 'correct'"
-            class="text-h6 text-weight-bold"
-          >
-            Richtig!
-          </div>
-          <div
-            v-else-if="answerStatus === 'close'"
-            class="text-h6 text-weight-bold"
-          >
-            Fast richtig!
-          </div>
-          <div
-            v-else
-            class="text-h6 text-weight-bold"
-          >
-            Falsch
-          </div>
-        </template>
-
-        <template
-          v-if="answerStatus !== 'correct'"
-          #details
-        >
-          <!-- Question -->
-          <div class="text-h6 q-mb-md text-grey-8 text-weight-medium">
-            {{ question }}
-          </div>
-
+        <q-card-section class="text-center q-pa-md">
           <!-- Close answer feedback -->
           <div v-if="feedbackData.type === 'close'">
+            <div class="text-subtitle1 text-weight-medium q-mb-md text-warning">
+              {{ TEXT_DE.wordplay.game.closeAnswer }}
+            </div>
             <div class="row items-center justify-center text-h6">
               <span
                 class="text-warning text-weight-bold"
@@ -293,16 +286,33 @@ function handleTypingSubmit() {
               <span class="text-positive text-weight-bold">{{ feedbackData.correctText }}</span>
             </div>
           </div>
+        </q-card-section>
+      </q-card>
 
-          <!-- Multiple choice / Blind incorrect -->
-          <div
-            v-else
-            class="text-h5 text-positive text-weight-bold"
-          >
-            {{ correctAnswer }}
-          </div>
-        </template>
-      </AnswerFeedback>
+      <!-- Continue Button with icon when feedback is shown -->
+      <q-btn
+        v-if="answerStatus && showProceedButton"
+        size="lg"
+        class="full-width q-mb-md"
+        :color="
+          answerStatus === 'correct'
+            ? 'positive'
+            : answerStatus === 'close'
+              ? 'warning'
+              : 'negative'
+        "
+        :disable="isProceedDisabled"
+        :label="isProceedDisabled ? `${TEXT_DE.common.wait}` : TEXT_DE.common.continue"
+        @click="emit('next')"
+        data-cy="continue-button"
+        :icon="
+          answerStatus === 'correct'
+            ? 'check_circle'
+            : answerStatus === 'close'
+              ? 'warning'
+              : 'cancel'
+        "
+      />
 
       <!-- Multiple Choice -->
       <div
@@ -322,6 +332,7 @@ function handleTypingSubmit() {
             no-caps
             class="full-width"
             @click="handleMultipleChoiceSubmit(option)"
+            data-cy="multiple-choice-option"
           />
         </div>
       </div>
@@ -335,6 +346,7 @@ function handleTypingSubmit() {
           no-caps
           class="full-width"
           @click="showAnswer = true"
+          data-cy="reveal-answer-button"
         />
         <div
           v-else
@@ -352,6 +364,7 @@ function handleTypingSubmit() {
                 no-caps
                 class="full-width"
                 @click="handleBlindSubmit(false)"
+                data-cy="blind-no-button"
               />
             </div>
             <div class="col-6">
@@ -362,6 +375,7 @@ function handleTypingSubmit() {
                 no-caps
                 class="full-width"
                 @click="handleBlindSubmit(true)"
+                data-cy="blind-yes-button"
               />
             </div>
           </div>
@@ -370,12 +384,11 @@ function handleTypingSubmit() {
 
       <!-- Typing Mode -->
       <q-form
-        v-else-if="settings.mode === 'typing'"
+        v-else-if="settings.mode === 'typing' && !answerStatus"
         @submit.prevent="handleTypingSubmit"
       >
         <q-input
           v-model="userAnswer"
-          :disable="!!answerStatus"
           autofocus
           outlined
           :placeholder="TEXT_DE.wordplay.game.typePlaceholder"
@@ -383,14 +396,15 @@ function handleTypingSubmit() {
           autocorrect="off"
           spellcheck="false"
           class="q-mb-sm"
+          data-cy="typing-input"
         />
         <q-btn
-          :disable="!!answerStatus"
           type="submit"
           color="primary"
           :label="TEXT_DE.common.check"
           no-caps
           class="full-width"
+          data-cy="check-answer-button"
         />
       </q-form>
     </div>

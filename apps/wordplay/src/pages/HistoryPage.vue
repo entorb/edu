@@ -14,22 +14,22 @@ function getModeText(mode: string): string {
   return modes[mode] || mode
 }
 
-function getPriorityText(priority: string): string {
-  return priority === 'low'
+function getFocusText(focus: string): string {
+  return focus === 'weak'
     ? TEXT_DE.wordplay.history.focusWeak
     : TEXT_DE.wordplay.history.focusStrong
 }
 
 function formatDetails(entry: any): string {
-  return `${getModeText(entry.settings.mode)} | ${getPriorityText(entry.settings.priority)} | ${entry.settings.language.toUpperCase()}`
+  return `${getModeText(entry.settings.mode)} | ${getFocusText(entry.settings.focus)} | ${entry.settings.language.toUpperCase()}`
 }
 
 function getPoints(entry: any): number {
-  return Math.round(entry.score)
+  return Math.round(entry.points)
 }
 
 function getCorrectAnswers(entry: any): string {
-  return `${entry.correctAnswers} / ${entry.totalCards} ${TEXT_DE.wordplay.history.correct}`
+  return `${entry.correctAnswers} ${TEXT_DE.wordplay.history.correct}`
 }
 </script>
 

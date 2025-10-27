@@ -93,7 +93,6 @@ function handleParseText(text: string) {
     const parts = line.split(delimiter)
     if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
       newCards.push({
-        id: Date.now() + index,
         en: parts[0].trim(),
         de: parts[1].trim(),
         level: parseInt(parts[2], 10) || 1,
@@ -173,39 +172,64 @@ function getLevelColor(level: number): string {
 </script>
 
 <template>
-  <q-header
-    elevated
-    class="bg-white text-grey-9"
-  >
-    <q-toolbar>
+  <q-page class="q-pa-md card-management-page">
+    <!-- Header-like section with back button and title -->
+    <div class="row items-center justify-between q-mb-lg">
       <q-btn
         flat
         round
         dense
         icon="arrow_back"
         @click="handleGoBack"
+        data-cy="back-button"
       >
         <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
       </q-btn>
-      <q-toolbar-title class="text-center">{{
-        TEXT_DE.wordplay.cardManagement.title
-      }}</q-toolbar-title>
-      <q-btn
-        flat
-        round
-        dense
-        icon="arrow_back"
-        style="visibility: hidden"
-      />
-    </q-toolbar>
-  </q-header>
+      <h1
+        class="text-h5 text-weight-bold q-my-none"
+        data-cy="card-management-page-title"
+      >
+        {{ TEXT_DE.wordplay.cardManagement.title }}
+      </h1>
+      <div style="width: 40px" />
+    </div>
 
-  <q-page class="q-pa-md">
     <div
-      class="q-mx-auto"
+      class="q-mx-auto q-pb-xl"
       style="max-width: 700px"
     >
       <div class="q-gutter-lg">
+        <!-- Current Deck -->
+        <div
+          class="q-pt-lg"
+          style="border-top: 1px solid #e0e0e0"
+        >
+          <h3 class="text-h6 text-weight-bold q-mb-md">
+            {{ TEXT_DE.wordplay.cardManagement.currentDeck }} ({{ allCards.length }})
+          </h3>
+          <div style="max-height: 150px; overflow-y: auto">
+            <q-list
+              bordered
+              separator
+            >
+              <q-item
+                v-for="card in allCards"
+                :key="card.en"
+              >
+                <q-item-section>
+                  <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-badge
+                    :color="getLevelColor(card.level)"
+                    :label="`Level ${card.level}`"
+                  />
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+        </div>
+
         <!-- Export -->
         <div>
           <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
@@ -287,36 +311,14 @@ function getLevelColor(level: number): string {
             @click="showResetDialog"
           />
         </div>
-
-        <!-- Current Deck -->
-        <div
-          class="q-pt-lg"
-          style="border-top: 1px solid #e0e0e0"
-        >
-          <h3 class="text-h6 text-weight-bold q-mb-md">
-            {{ TEXT_DE.wordplay.cardManagement.currentDeck }} ({{ allCards.length }})
-          </h3>
-          <q-list
-            bordered
-            separator
-          >
-            <q-item
-              v-for="card in allCards"
-              :key="card.id"
-            >
-              <q-item-section>
-                <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-badge
-                  :color="getLevelColor(card.level)"
-                  :label="`L${card.level}`"
-                />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
       </div>
     </div>
   </q-page>
 </template>
+
+<style scoped>
+.card-management-page {
+  min-height: 100vh;
+  padding-bottom: 100px !important;
+}
+</style>

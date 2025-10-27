@@ -1,193 +1,292 @@
-import type { Card, GameHistory, Statistics, GameConfig, GameResult } from '@/types'
+/**
+ * 1x1 Multiplication App - Storage Service
+ * Handles localStorage operations for cards, history, stats, and game configuration
+ */
+
+import type { Card, GameHistory, GameSettings } from '@/types'
+import type { GameStats, GameResult } from '@flashcards/shared'
+import {
+  saveJSON,
+  incrementDailyGames as sharedIncrementDailyGames,
+  createHistoryOperations,
+  createStatsOperations,
+  createGamePersistence
+} from '@flashcards/shared'
 import { MIN_CARD_LEVEL, MAX_CARD_TIME, MIN_CARD_TIME, SELECT_OPTIONS } from '@/config/constants'
 
-export const CARDS_KEY = '1x1-cards'
-export const HISTORY_KEY = '1x1-history'
-export const STATS_KEY = '1x1-stats'
-export const GAME_CONFIG_KEY = '1x1-game-config'
-export const GAME_RESULT_KEY = '1x1-game-result'
-export const DAILY_STATS_KEY = '1x1-daily-stats'
+const STORAGE_KEYS = {
+  CARDS: '1x1-cards',
+  HISTORY: '1x1-history',
+  STATS: '1x1-stats',
+  GAME_CONFIG: '1x1-game-config',
+  GAME_RESULT: '1x1-game-result',
+  DAILY_STATS: '1x1-daily-stats',
+  GAME_STATE: '1x1-game-state'
+}
+
+// Game persistence factory for session storage
+interface GameState {
+  gameCards: Card[]
+  currentCardIndex: number
+  points: number
+  correctAnswersCount: number
+}
+
+const gamePersistence = createGamePersistence<GameSettings, GameState>(
+  STORAGE_KEYS.GAME_CONFIG,
+  STORAGE_KEYS.GAME_STATE
+)
 
 // Expected card count for 3x3 to 9x9 where y <= x
 const EXPECTED_CARD_COUNT = 28
 
-interface DailyStats {
-  date: string // ISO date string (YYYY-MM-DD)
-  gamesPlayed: number
+/**
+ * Initialize all multiplication cards for the app
+ * Generates cards from 3x3 to 9x9 where y <= x (avoiding duplicates)
+ */
+function initializeCards(): Card[] {
+  const cards: Card[] = []
+  const minTable = Math.min(...SELECT_OPTIONS)
+  const maxTable = Math.max(...SELECT_OPTIONS)
+
+  for (let x = minTable; x <= maxTable; x++) {
+    for (let y = minTable; y <= x; y++) {
+      cards.push({
+        question: `${y}x${x}`,
+        answer: x * y,
+        level: MIN_CARD_LEVEL,
+        time: MAX_CARD_TIME
+      })
+    }
+  }
+
+  saveJSON(STORAGE_KEYS.CARDS, cards)
+  return cards
+}
+/**
+ * Load all multiplication cards from storage
+ */
+export function loadCards(): Card[] {
+  const stored = localStorage.getItem(STORAGE_KEYS.CARDS)
+  if (!stored) {
+    return initializeCards()
+  }
+  try {
+    return JSON.parse(stored) as Card[]
+  } catch {
+    console.error('Error parsing 1x1 cards from localStorage. Reinitializing.')
+    return initializeCards()
+  }
 }
 
-export class StorageService {
-  // Cards
-  static getCards(): Card[] {
-    const stored = localStorage.getItem(CARDS_KEY)
-    if (stored) {
-      return JSON.parse(stored)
+/**
+ * Save all cards to storage
+ */
+export function saveCards(cards: Card[]): void {
+  saveJSON(STORAGE_KEYS.CARDS, cards)
+}
+
+/**
+ * Verify card data integrity - ensures all expected cards exist
+ */
+export function verifyAndFixCards(): void {
+  const cards = loadCards()
+
+  if (cards.length !== EXPECTED_CARD_COUNT) {
+    console.warn(
+      `Card count mismatch: ${cards.length} !== ${EXPECTED_CARD_COUNT}. Reinitializing...`
+    )
+    initializeCards()
+  }
+}
+
+/**
+ * Update a specific card by question
+ * @param question - Card question (e.g., "3x4")
+ * @param updates - Partial card updates
+ */
+export function updateCard(question: string, updates: Partial<Card>): void {
+  const cards = loadCards()
+  const index = cards.findIndex(c => c.question === question)
+
+  if (index !== -1) {
+    // Clamp time within allowed range
+    if (updates.time !== undefined) {
+      updates.time = Math.max(MIN_CARD_TIME, Math.min(MAX_CARD_TIME, updates.time))
     }
-    return this.initializeCards()
+    cards[index] = { ...cards[index], ...updates }
+    saveCards(cards)
   }
+}
 
-  static saveCards(cards: Card[]): void {
-    localStorage.setItem(CARDS_KEY, JSON.stringify(cards))
-  }
+/**
+ * Reset all cards to initial state (level 1, time 60s)
+ */
+export function resetCards(): void {
+  const cards = loadCards()
+  cards.forEach(card => {
+    card.level = MIN_CARD_LEVEL
+    card.time = MAX_CARD_TIME
+  })
+  saveCards(cards)
+}
 
-  static initializeCards(): Card[] {
-    const cards: Card[] = []
-    // Generate cards for all multiplication table combinations
-    // where y <= x (to avoid duplicates like 3x4 and 4x3)
-    const minTable = Math.min(...SELECT_OPTIONS)
-    const maxTable = Math.max(...SELECT_OPTIONS)
+// Game History - Using shared operations
 
-    for (let x = minTable; x <= maxTable; x++) {
-      for (let y = minTable; y <= x; y++) {
-        cards.push({
-          question: `${y}x${x}`,
-          answer: x * y,
-          level: MIN_CARD_LEVEL,
-          time: MAX_CARD_TIME
-        })
-      }
-    }
-    this.saveCards(cards)
-    return cards
-  }
+const historyOps = createHistoryOperations<GameHistory>(STORAGE_KEYS.HISTORY)
 
-  // Verify and fix card data - ensures all expected cards exist
-  static verifyAndFixCards(): void {
-    const cards = this.getCards()
+/**
+ * Load all game history entries
+ */
+export function loadHistory(): GameHistory[] {
+  return historyOps.load()
+}
 
-    if (cards.length !== EXPECTED_CARD_COUNT) {
-      // Reinitialize if card count is wrong
-      console.warn(
-        `Card count mismatch: ${cards.length} !== ${EXPECTED_CARD_COUNT}. Reinitializing...`
-      )
-      this.initializeCards()
-    }
-  }
+/**
+ * Save all game history
+ */
+export function saveHistory(history: GameHistory[]): void {
+  historyOps.save(history)
+}
 
-  static updateCard(question: string, updates: Partial<Card>): void {
-    const cards = this.getCards()
-    const index = cards.findIndex(c => c.question === question)
-    if (index !== -1) {
-      // Clamp time within allowed range
-      if (updates.time !== undefined) {
-        updates.time = Math.max(MIN_CARD_TIME, Math.min(MAX_CARD_TIME, updates.time))
-      }
-      cards[index] = { ...cards[index], ...updates }
-      this.saveCards(cards)
-    }
-  }
+/**
+ * Add a single game entry to history
+ */
+export function addHistory(history: GameHistory): void {
+  historyOps.add(history)
+}
 
-  // Game History
-  static getHistory(): GameHistory[] {
-    const stored = localStorage.getItem(HISTORY_KEY)
-    return stored ? JSON.parse(stored) : []
-  }
+// Statistics - Using shared operations
 
-  static addHistory(history: GameHistory): void {
-    const allHistory = this.getHistory()
-    allHistory.push(history)
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(allHistory))
-  }
+const statsOps = createStatsOperations<GameStats>(STORAGE_KEYS.STATS, {
+  gamesPlayed: 0,
+  points: 0,
+  correctAnswers: 0
+})
 
-  // Statistics
-  static getStatistics(): Statistics {
-    const stored = localStorage.getItem(STATS_KEY)
-    if (stored) {
-      return JSON.parse(stored)
-    }
-    return {
-      gamesPlayed: 0,
-      totalPoints: 0,
-      totalCorrectAnswers: 0
-    }
-  }
+/**
+ * Load overall game statistics
+ */
+export function loadGameStats(): GameStats {
+  return statsOps.load()
+}
 
-  static updateStatistics(points: number, correctAnswers: number): void {
-    const stats = this.getStatistics()
-    stats.gamesPlayed++
-    stats.totalPoints += points
-    stats.totalCorrectAnswers += correctAnswers
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats))
-  }
+/**
+ * Save statistics
+ */
+export function saveGameStats(stats: GameStats): void {
+  statsOps.save(stats)
+}
 
-  // Game Configuration (Session Storage)
-  static setGameConfig(config: GameConfig): void {
-    sessionStorage.setItem(GAME_CONFIG_KEY, JSON.stringify(config))
-  }
+/**
+ * Update statistics after a game
+ * Note: For 1x1, use updateBonusPoints() instead to avoid double-incrementing gamesPlayed
+ */
+export function updateStatistics(points: number, correctAnswers: number): void {
+  statsOps.update(points, correctAnswers)
+}
 
-  static getGameConfig(): GameConfig | null {
-    const stored = sessionStorage.getItem(GAME_CONFIG_KEY)
-    return stored ? JSON.parse(stored) : null
-  }
+/**
+ * Update only bonus points without incrementing gamesPlayed
+ * Used for daily bonuses in GameOverPage after saveGameResults() has already incremented gamesPlayed
+ */
+export function updateBonusPoints(points: number): void {
+  const stats = statsOps.load()
+  // Don't increment gamesPlayed - it's already incremented by saveGameResults()
+  stats.points += points
+  statsOps.save(stats)
+}
 
-  static clearGameConfig(): void {
-    sessionStorage.removeItem(GAME_CONFIG_KEY)
-  }
+// Game Configuration (Session Storage)
 
-  // Game Result (Session Storage)
-  static setGameResult(result: GameResult): void {
-    sessionStorage.setItem(GAME_RESULT_KEY, JSON.stringify(result))
-  }
+/**
+ * Save current game configuration to session storage
+ */
+export function setGameConfig(config: GameSettings): void {
+  gamePersistence.saveSettings(config)
+}
 
-  static getGameResult(): GameResult | null {
-    const stored = sessionStorage.getItem(GAME_RESULT_KEY)
-    return stored ? JSON.parse(stored) : null
-  }
+/**
+ * Load game configuration from session storage
+ */
+export function getGameConfig(): GameSettings | null {
+  return gamePersistence.loadSettings()
+}
 
-  static clearGameResult(): void {
-    sessionStorage.removeItem(GAME_RESULT_KEY)
-  }
+/**
+ * Clear game configuration from session storage
+ */
+export function clearGameConfig(): void {
+  gamePersistence.clearSettings()
+}
 
-  // Reset all cards to default level and time
-  static resetCards(): void {
-    const cards = this.getCards()
-    cards.forEach(card => {
-      card.level = MIN_CARD_LEVEL
-      card.time = MAX_CARD_TIME
-    })
-    this.saveCards(cards)
-  }
+// Game Result (Session Storage)
 
-  // Daily Stats
-  static getDailyStats(): DailyStats {
-    const stored = localStorage.getItem(DAILY_STATS_KEY)
-    if (stored) {
-      return JSON.parse(stored)
-    }
-    const today = new Date().toISOString().split('T')[0]
-    return {
-      date: today,
-      gamesPlayed: 0
-    }
-  }
+/**
+ * Save game result to session storage
+ */
+export function setGameResult(result: GameResult): void {
+  sessionStorage.setItem(STORAGE_KEYS.GAME_RESULT, JSON.stringify(result))
+}
 
-  static incrementDailyGames(): { isFirstGame: boolean; gamesPlayedToday: number } {
-    const stats = this.getDailyStats()
-    const today = new Date().toISOString().split('T')[0]
+/**
+ * Load game result from session storage
+ */
+export function getGameResult(): GameResult | null {
+  const stored = sessionStorage.getItem(STORAGE_KEYS.GAME_RESULT)
+  return stored ? JSON.parse(stored) : null
+}
 
-    if (stats.date !== today) {
-      // New day, reset counter
-      const newStats: DailyStats = {
-        date: today,
-        gamesPlayed: 1
-      }
-      localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(newStats))
-      return { isFirstGame: true, gamesPlayedToday: 1 }
-    } else {
-      // Same day, increment counter
-      stats.gamesPlayed++
-      localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(stats))
-      return { isFirstGame: false, gamesPlayedToday: stats.gamesPlayed }
-    }
-  }
+/**
+ * Clear game result from session storage
+ */
+export function clearGameResult(): void {
+  sessionStorage.removeItem(STORAGE_KEYS.GAME_RESULT)
+}
 
-  // Reset all data
-  static resetAll(): void {
-    localStorage.removeItem(CARDS_KEY)
-    localStorage.removeItem(HISTORY_KEY)
-    localStorage.removeItem(STATS_KEY)
-    localStorage.removeItem(DAILY_STATS_KEY)
-    sessionStorage.removeItem(GAME_CONFIG_KEY)
-    sessionStorage.removeItem(GAME_RESULT_KEY)
-  }
+// Daily Stats
+
+/**
+ * Track daily games and detect first game of the day
+ * Used for bonus points
+ */
+export function incrementDailyGames(): { isFirstGame: boolean; gamesPlayedToday: number } {
+  return sharedIncrementDailyGames(STORAGE_KEYS.DAILY_STATS)
+}
+
+// Game State (for reload recovery)
+
+/**
+ * Save current game state to session storage for reload recovery
+ */
+export function saveGameState(state: GameState): void {
+  gamePersistence.saveState(state)
+}
+
+/**
+ * Load game state from session storage
+ */
+export function loadGameState(): GameState | null {
+  return gamePersistence.loadState()
+}
+
+/**
+ * Clear game state from session storage
+ */
+export function clearGameState(): void {
+  gamePersistence.clearState()
+}
+
+// Reset All
+
+/**
+ * Reset all stored data (cards, history, stats, session storage)
+ */
+export function resetAll(): void {
+  localStorage.removeItem(STORAGE_KEYS.CARDS)
+  localStorage.removeItem(STORAGE_KEYS.HISTORY)
+  localStorage.removeItem(STORAGE_KEYS.STATS)
+  localStorage.removeItem(STORAGE_KEYS.DAILY_STATS)
+  sessionStorage.removeItem(STORAGE_KEYS.GAME_RESULT)
+  gamePersistence.clearAll()
 }

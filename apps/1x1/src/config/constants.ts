@@ -243,9 +243,9 @@ export const FONT_SIZE = {
 import { TEXT_DE } from '@flashcards/shared'
 
 export const FOCUS_OPTIONS = [
-  { label: TEXT_DE.multiply.focusOptions.weak, value: 'weak', icon: 'school' },
-  { label: TEXT_DE.multiply.focusOptions.strong, value: 'strong', icon: 'star' },
-  { label: TEXT_DE.multiply.focusOptions.slow, value: 'slow', icon: 'schedule' }
+  { label: TEXT_DE.focusOptions.weak, value: 'weak', icon: 'school' },
+  { label: TEXT_DE.focusOptions.strong, value: 'strong', icon: 'star' },
+  { label: TEXT_DE.focusOptions.slow, value: 'slow', icon: 'schedule' }
 ] as const
 
 // ============================================================================

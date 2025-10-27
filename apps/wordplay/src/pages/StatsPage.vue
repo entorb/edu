@@ -58,7 +58,7 @@ onUnmounted(() => {
       >
         <q-item
           v-for="card in allCards"
-          :key="card.id"
+          :key="card.en"
         >
           <q-item-section>
             <q-item-label>{{ card.en }} → {{ card.de }}</q-item-label>

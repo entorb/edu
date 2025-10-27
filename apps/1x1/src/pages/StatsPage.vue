@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { StorageService } from '@/services/storage'
+import { loadCards, resetCards } from '@/services/storage'
 import type { Card } from '@/types'
 import {
   MIN_CARD_TIME,
@@ -35,7 +35,7 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  cards.value = StorageService.getCards()
+  cards.value = loadCards()
   window.addEventListener('keydown', handleKeyDown)
 })
 
@@ -91,7 +91,7 @@ function getCellStyle(y: number, x: number): Record<string, string> {
   }
 }
 
-function resetCards() {
+function resetCardsHandler() {
   $q.dialog({
     title: TEXT_DE.multiply.resetCards.title,
     message: TEXT_DE.multiply.resetCards.message,
@@ -105,8 +105,8 @@ function resetCards() {
     },
     persistent: true
   }).onOk(() => {
-    StorageService.resetCards()
-    cards.value = StorageService.getCards()
+    resetCards()
+    cards.value = loadCards()
     $q.notify({
       type: 'positive',
       message: TEXT_DE.multiply.resetCards.success,
@@ -133,8 +133,14 @@ function goHome() {
         icon="arrow_back"
         @click="goHome"
         size="md"
+        data-cy="back-button"
       />
-      <div class="text-h5 q-ml-sm">{{ TEXT_DE.stats.title }}</div>
+      <div
+        class="text-h5 q-ml-sm"
+        data-cy="stats-page-title"
+      >
+        {{ TEXT_DE.stats.title }}
+      </div>
     </div>
 
     <!-- Empty State -->
@@ -170,7 +176,7 @@ function goHome() {
               icon="refresh"
               :label="TEXT_DE.common.reset"
               size="sm"
-              @click="resetCards"
+              @click="resetCardsHandler"
             />
           </div>
 

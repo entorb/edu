@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { StorageService } from '@/services/storage'
-import type { FocusType, Statistics, SelectionType } from '@/types'
+import { useGameStore } from '@/composables/useGameStore'
+import type { SelectionType } from '@/types'
+import type { FocusType } from '@flashcards/shared'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
 import { TEXT_DE } from '@flashcards/shared'
 import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
+import { loadGameStats } from '@/services/storage'
 
 const router = useRouter()
 
-const statistics = ref<Statistics>({
-  gamesPlayed: 0,
-  totalPoints: 0,
-  totalCorrectAnswers: 0
-})
+const { gameStats, gameSettings, startGame: storeStartGame } = useGameStore()
 
 const select = ref<SelectionType>(DEFAULT_SELECT)
 const focus = ref<FocusType>('weak')
@@ -31,34 +29,31 @@ const isNumberSelected = computed(() => (num: number) => {
 const isSquaresSelected = computed(() => select.value === 'x²')
 
 onMounted(() => {
-  statistics.value = StorageService.getStatistics()
-  // Initialize cards if not already done and verify all cards exist
-  StorageService.getCards()
-  StorageService.verifyAndFixCards()
-
-  // Restore select and focus from session storage
-  const savedConfig = StorageService.getGameConfig()
-  if (savedConfig) {
-    select.value = savedConfig.select
-    focus.value = savedConfig.focus
+  // Restore select and focus from gameSettings in store
+  if (gameSettings.value) {
+    select.value = gameSettings.value.select
+    focus.value = gameSettings.value.focus
   }
+
+  // Reload stats from storage in case they were updated during a game
+  gameStats.value = loadGameStats()
 })
 
-// Watch for changes and save to session storage
+// Watch for changes and save to gameSettings in store
 watch(
   [select, focus],
   () => {
-    StorageService.setGameConfig({
-      select: select.value,
-      focus: focus.value
-    })
+    if (gameSettings.value) {
+      gameSettings.value.select = select.value
+      gameSettings.value.focus = focus.value
+    }
   },
   { deep: true }
 )
 
 function startGame() {
-  // Save game config to session storage
-  StorageService.setGameConfig({
+  // Save game config to store and navigate
+  storeStartGame({
     select: select.value,
     focus: focus.value
   })
@@ -111,18 +106,29 @@ function toggleSquares() {
 
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h5 q-mb-md">{{ TEXT_DE.appTitle_1x1 }}</div>
+    <div
+      class="text-h5 q-mb-md"
+      data-cy="app-title"
+    >
+      {{ TEXT_DE.appTitle_1x1 }}
+    </div>
 
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
-        <GroundhogMascot style="width: 100px; height: 100px" />
+        <GroundhogMascot
+          style="width: 100px; height: 100px"
+          data-cy="mascot"
+        />
       </div>
       <div
         class="col-12 col-sm"
         :class="$q.screen.gt.xs ? 'q-ml-md' : ''"
       >
-        <StatisticsCard :statistics="statistics" />
+        <StatisticsCard
+          :statistics="gameStats"
+          data-cy="statistics-card"
+        />
       </div>
     </div>
 
@@ -147,6 +153,7 @@ function toggleSquares() {
               size="md"
               class="col"
               @click="toggleSelect(option)"
+              :data-cy="`table-selection-button-${option}`"
             >
               <div class="text-body1">{{ option }}</div>
             </q-btn>
@@ -157,6 +164,7 @@ function toggleSquares() {
               size="md"
               class="col squares-btn"
               @click="toggleSquares"
+              data-cy="table-selection-button-squares"
             >
               <div class="text-body1">{{ TEXT_DE.multiply.selectionSquares }}</div>
             </q-btn>
@@ -173,6 +181,7 @@ function toggleSquares() {
             dense
             emit-value
             map-options
+            data-cy="focus-select"
           >
             <template #option="scope">
               <q-item v-bind="scope.itemProps">
@@ -196,6 +205,7 @@ function toggleSquares() {
       class="full-width q-mb-sm"
       @click="startGame"
       icon="play_arrow"
+      data-cy="start-button"
     >
       <span class="text-body1">{{ TEXT_DE.common.start }}</span>
     </q-btn>
@@ -210,6 +220,7 @@ function toggleSquares() {
         @click="goToStats"
         icon="bar_chart"
         :label="TEXT_DE.nav.stats"
+        data-cy="stats-button"
       />
       <q-btn
         unelevated
@@ -219,6 +230,7 @@ function toggleSquares() {
         @click="goToHistory"
         icon="history"
         :label="TEXT_DE.nav.history"
+        data-cy="history-button"
       />
     </div>
     <AppFooter :base-path="BASE_PATH" />

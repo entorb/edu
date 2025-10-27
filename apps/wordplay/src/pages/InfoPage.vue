@@ -36,10 +36,15 @@ onUnmounted(() => {
         dense
         icon="arrow_back"
         @click="handleGoBack"
+        data-cy="back-button"
       >
         <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
       </q-btn>
-      <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.info.title }}</q-toolbar-title>
+      <q-toolbar-title
+        class="text-center"
+        data-cy="info-page-title"
+        >{{ TEXT_DE.wordplay.info.title }}</q-toolbar-title
+      >
       <q-btn
         flat
         round
