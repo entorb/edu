@@ -5,14 +5,12 @@ import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
 import { TEXT_DE, helperStatsDataRead } from '@flashcards/shared'
-import { AppFooter } from '@flashcards/shared/components'
+import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
 import { BASE_PATH } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
-import GameStatsDisplay from '../components/GameStatsDisplay.vue'
-import LevelDistribution from '../components/LevelDistribution.vue'
 
 const router = useRouter()
-const { allCards, gameStats, startGame } = useGameStore()
+const { gameStats, startGame: startGameStore } = useGameStore()
 
 const settings = ref<GameSettings>({
   mode: 'multiple-choice',
@@ -48,58 +46,68 @@ onMounted(async () => {
   totalGamesPlayedByAll.value = await helperStatsDataRead(BASE_PATH)
 })
 
-function handleSubmit() {
-  startGame(settings.value)
-  router.push('/game')
+function startGame() {
+  startGameStore(settings.value)
+  router.push({ name: '/game' })
+}
+
+function goToHistory() {
+  router.push({ name: '/history' })
+}
+
+function goToCards() {
+  router.push({ name: '/cards' })
+}
+
+function goToInfo() {
+  router.push({ name: '/info' })
 }
 </script>
 
 <template>
-  <q-page class="q-pa-md flex flex-center">
-    <div
-      class="q-mx-auto"
-      style="max-width: 600px; width: 100%"
-    >
-      <!-- Header -->
-      <div class="flex items-start justify-between q-mb-md">
-        <h1 class="text-h4 text-weight-bold">{{ TEXT_DE.appTitle_wordplay }}</h1>
-        <q-btn
-          flat
-          round
-          dense
-          icon="info_outline"
-          color="grey-6"
-          @click="router.push('/info')"
-        >
-          <q-tooltip>{{ TEXT_DE.wordplay.home.infoTooltip }}</q-tooltip>
-        </q-btn>
-      </div>
-
-      <!-- Fox and Stats -->
-      <div class="text-center q-mb-md">
-        <div
-          class="flex justify-center items-center gap-4 q-mb-md"
-          style="min-height: 96px"
-        >
-          <FoxIcon
-            :is-happy="gameStats.totalScore > 1000"
-            :size="80"
-          />
-          <GameStatsDisplay :stats="gameStats" />
-        </div>
-        <h2 class="text-h5 text-weight-bold">{{ TEXT_DE.wordplay.home.welcome }}</h2>
-      </div>
-
-      <!-- Settings Form -->
-      <q-form
-        @submit="handleSubmit"
-        class="q-gutter-md"
+  <q-page class="q-pa-md">
+    <!-- Header with Info Button -->
+    <div class="row items-center justify-between q-mb-md">
+      <div class="text-h5">{{ TEXT_DE.appTitle_wordplay }}</div>
+      <q-btn
+        flat
+        round
+        dense
+        icon="info_outline"
+        color="grey-6"
+        @click="goToInfo"
       >
+        <q-tooltip>{{ TEXT_DE.wordplay.home.infoTooltip }}</q-tooltip>
+      </q-btn>
+    </div>
+
+    <!-- Mascot and Statistics -->
+    <div class="row items-center justify-center q-mb-md">
+      <div class="col-12 col-sm-auto text-center">
+        <FoxIcon
+          :is-happy="gameStats.totalScore > 1000"
+          :size="100"
+        />
+      </div>
+      <div
+        class="col-12 col-sm"
+        :class="$q.screen.gt.xs ? 'q-ml-md' : ''"
+      >
+        <StatisticsCard :statistics="gameStats" />
+      </div>
+    </div>
+
+    <!-- Game Configuration -->
+    <q-card class="q-mb-md">
+      <q-card-section class="q-pa-md">
+        <div class="text-subtitle1 q-mb-sm">
+          <q-icon name="settings" />
+          {{ TEXT_DE.common.settings }}
+        </div>
+
         <!-- Mode Selection -->
-        <div>
-          <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-            TEXT_DE.words.mode
-          }}</label>
+        <div class="q-mb-sm">
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.mode }}</div>
           <q-btn-toggle
             v-model="settings.mode"
             spread
@@ -110,10 +118,8 @@ function handleSubmit() {
         </div>
 
         <!-- Priority Selection -->
-        <div>
-          <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-            TEXT_DE.words.focus
-          }}</label>
+        <div class="q-mb-sm">
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.focus }}</div>
           <div class="row q-col-gutter-sm">
             <div
               class="col-4"
@@ -134,9 +140,7 @@ function handleSubmit() {
 
         <!-- Language Direction -->
         <div>
-          <label class="text-subtitle2 text-weight-bold q-mb-sm block">{{
-            TEXT_DE.words.direction
-          }}</label>
+          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.direction }}</div>
           <q-btn-toggle
             v-model="settings.language"
             spread
@@ -145,59 +149,41 @@ function handleSubmit() {
             :options="languageOptions"
           />
         </div>
+      </q-card-section>
+    </q-card>
 
-        <!-- Start Button -->
-        <q-btn
-          type="submit"
-          color="primary"
-          :label="TEXT_DE.wordplay.home.startRound"
-          no-caps
-          size="lg"
-          class="full-width"
-        />
-      </q-form>
+    <!-- Start Game Button -->
+    <q-btn
+      color="positive"
+      size="lg"
+      class="full-width q-mb-sm"
+      @click="startGame"
+      icon="play_arrow"
+    >
+      <span class="text-body1">{{ TEXT_DE.common.start }}</span>
+    </q-btn>
 
-      <!-- Level Distribution -->
-      <div
-        class="q-mt-lg q-pt-lg"
-        style="border-top: 1px solid #e0e0e0"
-      >
-        <LevelDistribution
-          :all-cards="allCards"
-          @click="router.push('/stats')"
-        />
-      </div>
-
-      <!-- Navigation Buttons -->
-      <div class="row q-gutter-sm q-mt-md">
-        <div class="col">
-          <q-btn
-            outline
-            color="grey-8"
-            :label="TEXT_DE.nav.cards"
-            no-caps
-            class="full-width"
-            @click="router.push('/cards')"
-          />
-        </div>
-        <div class="col">
-          <q-btn
-            outline
-            color="grey-8"
-            :label="TEXT_DE.nav.history"
-            no-caps
-            class="full-width"
-            @click="router.push('/history')"
-          />
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <AppFooter
-        :total-games-played-by-all="totalGamesPlayedByAll"
-        :base-path="BASE_PATH"
-        :text-de="TEXT_DE"
+    <!-- Navigation Buttons -->
+    <div class="row q-gutter-sm">
+      <q-btn
+        unelevated
+        color="primary"
+        size="md"
+        class="col"
+        @click="goToCards"
+        icon="style"
+        :label="TEXT_DE.nav.cards"
+      />
+      <q-btn
+        unelevated
+        color="primary"
+        size="md"
+        class="col"
+        @click="goToHistory"
+        icon="history"
+        :label="TEXT_DE.nav.history"
       />
     </div>
+    <AppFooter :base-path="BASE_PATH" />
   </q-page>
 </template>

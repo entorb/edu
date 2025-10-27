@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// TODO:
-// cspell:disable
-
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'

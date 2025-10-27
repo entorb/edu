@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// TODO:
-// cspell:disable
-
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { TEXT_DE } from '@flashcards/shared'

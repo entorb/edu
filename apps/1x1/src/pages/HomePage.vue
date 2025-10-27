@@ -6,7 +6,7 @@ import type { FocusType, Statistics, SelectionType } from '@/types'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
 import { TEXT_DE } from '@flashcards/shared'
-import { AppFooter } from '@flashcards/shared/components'
+import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
 
 const router = useRouter()
 
@@ -111,41 +111,18 @@ function toggleSquares() {
 
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h5 text-center q-mb-md">{{ TEXT_DE.appTitle_1x1 }}</div>
+    <div class="text-h5 q-mb-md">{{ TEXT_DE.appTitle_1x1 }}</div>
 
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
-        <GroundhogMascot
-          :style="$q.screen.gt.xs ? 'width: 130px; height: 130px' : 'width: 100px; height: 100px'"
-        />
+        <GroundhogMascot style="width: 100px; height: 100px" />
       </div>
       <div
         class="col-12 col-sm"
         :class="$q.screen.gt.xs ? 'q-ml-md' : ''"
       >
-        <q-card
-          flat
-          bordered
-          class="rounded-borders"
-        >
-          <q-card-section class="q-pa-sm">
-            <div class="row text-center q-gutter-sm justify-around">
-              <div class="col-3">
-                <div class="text-caption">{{ TEXT_DE.stats.games }}</div>
-                <div class="text-h6">{{ statistics.gamesPlayed }}</div>
-              </div>
-              <div class="col-3">
-                <div class="text-caption">{{ TEXT_DE.stats.points }}</div>
-                <div class="text-h6">{{ statistics.totalPoints }}</div>
-              </div>
-              <div class="col-4">
-                <div class="text-caption">{{ TEXT_DE.stats.correctAnswers }}</div>
-                <div class="text-h6">{{ statistics.totalCorrectAnswers }}</div>
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
+        <StatisticsCard :statistics="statistics" />
       </div>
     </div>
 
@@ -154,7 +131,7 @@ function toggleSquares() {
       <q-card-section class="q-pa-md">
         <div class="text-subtitle1 q-mb-sm">
           <q-icon name="settings" />
-          {{ TEXT_DE.multiply.settings }}
+          {{ TEXT_DE.common.settings }}
         </div>
 
         <!-- Select Rows -->
@@ -218,7 +195,6 @@ function toggleSquares() {
       size="lg"
       class="full-width q-mb-sm"
       @click="startGame"
-      :disable="typeof select === 'object' && select.length === 0"
       icon="play_arrow"
     >
       <span class="text-body1">{{ TEXT_DE.common.start }}</span>

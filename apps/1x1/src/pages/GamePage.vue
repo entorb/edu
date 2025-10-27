@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { StorageService } from '@/services/storage'
-import GameFeedbackDialog from '@/components/ShowAnswer.vue'
+import ShowAnswer from '@/components/ShowAnswer.vue'
 import type { Card, FocusType } from '@/types'
 import {
   AUTO_SUBMIT_DIGITS,
@@ -464,7 +464,7 @@ function goHome() {
       />
 
       <!-- Game Feedback Dialog Component -->
-      <GameFeedbackDialog
+      <ShowAnswer
         :show="showFeedback"
         :is-correct="isCorrect"
         :current-card="currentCard"

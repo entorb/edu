@@ -1,20 +1,35 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@flashcards/shared'
-import { BASE_PATH } from '../config/constants'
+import { TEXT_DE, helperStatsDataWrite } from '@flashcards/shared'
+import { GameOverPage } from '@flashcards/shared/pages'
+import {
+  BASE_PATH,
+  FIRST_GAME_BONUS,
+  STREAK_GAME_BONUS,
+  STREAK_GAME_INTERVAL
+} from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
-import { helperStatsDataWrite } from '@flashcards/shared'
+import { incrementDailyGames } from '../services/storage'
+import { saveGameStats, loadGameStats } from '../services/storage'
 
 const router = useRouter()
-const { score, lastRoundUpdates, isFoxHappy } = useGameStore()
+const { score, correctAnswersCount, roundCards, isFoxHappy } = useGameStore()
 
-const ups = computed(() => lastRoundUpdates.value.filter(u => u.change === 'up').length)
-const downs = computed(() => lastRoundUpdates.value.filter(u => u.change === 'down').length)
+const bonusReasons = ref<Array<{ label: string; points: number }>>([])
+
+const successRate = computed(() => {
+  if (roundCards.value.length === 0) return 0
+  return correctAnswersCount.value / roundCards.value.length
+})
+
+const showMascot = computed(() => {
+  return successRate.value >= 0.7
+})
 
 function handleGoHome() {
-  router.push('/')
+  router.push({ name: '/' })
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -24,6 +39,30 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
+  // Calculate daily bonuses
+  const dailyInfo = incrementDailyGames()
+
+  if (dailyInfo.isFirstGame) {
+    bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
+  }
+
+  if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
+    bonusReasons.value.push({
+      label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`,
+      points: STREAK_GAME_BONUS
+    })
+  }
+
+  // Update statistics with bonus points
+  const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
+  if (totalBonusPoints > 0) {
+    const stats = loadGameStats()
+    saveGameStats({
+      ...stats,
+      totalScore: stats.totalScore + totalBonusPoints
+    })
+  }
+
   window.addEventListener('keydown', handleKeyDown)
   // Update usage stats in DB
   await helperStatsDataWrite(BASE_PATH)
@@ -35,56 +74,19 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-page class="flex flex-center q-pa-md">
-    <div
-      class="text-center flex flex-center column q-mx-auto"
-      style="max-width: 600px; width: 100%"
-    >
+  <GameOverPage
+    :points="Math.round(score)"
+    :correct-answers="correctAnswersCount"
+    :total-cards="roundCards.length"
+    :bonus-reasons="bonusReasons"
+    :show-mascot="showMascot"
+    @go-home="handleGoHome"
+  >
+    <template #mascot>
       <FoxIcon
         :is-happy="isFoxHappy"
-        :size="100"
+        :size="150"
       />
-
-      <h2 class="text-h4 text-primary text-weight-bold q-mt-md q-mb-sm">
-        {{ TEXT_DE.wordplay.gameOver.title }}
-      </h2>
-      <p class="text-grey-7 q-mb-lg">
-        {{ isFoxHappy ? TEXT_DE.wordplay.gameOver.greatJob : TEXT_DE.wordplay.gameOver.goodWork }}
-      </p>
-
-      <q-card
-        class="q-mb-xl"
-        flat
-        bordered
-        style="width: 100%; max-width: 400px; background-color: #f5f5f5"
-      >
-        <q-card-section>
-          <p class="text-subtitle1 text-grey-7">{{ TEXT_DE.wordplay.gameOver.finalScore }}</p>
-          <p class="text-h2 text-primary text-weight-bold q-my-sm">
-            {{ Math.round(score) }}
-          </p>
-          <div class="row justify-around q-mt-md">
-            <div class="text-positive">
-              <div class="text-h5 text-weight-bold">{{ ups }}</div>
-              <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledUp }}</p>
-            </div>
-            <div class="text-negative">
-              <div class="text-h5 text-weight-bold">{{ downs }}</div>
-              <p class="text-caption">{{ TEXT_DE.wordplay.gameOver.leveledDown }}</p>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-
-      <q-btn
-        color="primary"
-        :label="TEXT_DE.wordplay.gameOver.playAgain"
-        no-caps
-        size="lg"
-        class="full-width"
-        style="max-width: 400px"
-        @click="handleGoHome"
-      />
-    </div>
-  </q-page>
+    </template>
+  </GameOverPage>
 </template>

@@ -5,7 +5,13 @@ const STORAGE_KEYS = {
   CARDS: 'wordplay_cards',
   HISTORY: 'wordplay_history',
   SETTINGS: 'wordplay_last_settings',
-  STATS: 'wordplay_stats'
+  STATS: 'wordplay_stats',
+  DAILY_STATS: 'wordplay_daily_stats'
+}
+
+interface DailyStats {
+  date: string // ISO date string (YYYY-MM-DD)
+  gamesPlayed: number
 }
 
 // Cards
@@ -104,4 +110,35 @@ export function loadGameStats(): GameStats {
 
 export function saveGameStats(stats: GameStats): void {
   localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(stats))
+}
+
+// Daily Stats (for bonus points tracking)
+export function incrementDailyGames(): { isFirstGame: boolean; gamesPlayedToday: number } {
+  const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+  const stored = localStorage.getItem(STORAGE_KEYS.DAILY_STATS)
+
+  let dailyStats: DailyStats = { date: today, gamesPlayed: 0 }
+
+  if (stored) {
+    try {
+      dailyStats = JSON.parse(stored)
+    } catch {
+      // Ignore parse errors
+    }
+  }
+
+  // Reset if it's a new day
+  if (dailyStats.date !== today) {
+    dailyStats = { date: today, gamesPlayed: 0 }
+  }
+
+  const isFirstGame = dailyStats.gamesPlayed === 0
+  dailyStats.gamesPlayed++
+
+  localStorage.setItem(STORAGE_KEYS.DAILY_STATS, JSON.stringify(dailyStats))
+
+  return {
+    isFirstGame,
+    gamesPlayedToday: dailyStats.gamesPlayed
+  }
 }

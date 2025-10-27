@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted, onMounted } from 'vue'
+import { ref, watch, onUnmounted, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@flashcards/shared'
 import { MAX_TIME } from '../config/constants'
 import type { AnswerResult } from '../types'
-import Flashcard from '../components/Flashcard.vue'
-import Scoreboard from '../components/Scoreboard.vue'
-import LevelDistribution from '../components/LevelDistribution.vue'
+import FlashCard from '../components/FlashCard.vue'
 
 const router = useRouter()
 const {
@@ -30,16 +27,6 @@ let timerInterval: ReturnType<typeof setInterval> | null = null
 if (!gameSettings.value) {
   router.push('/')
 }
-
-const timerProgress = computed(() => {
-  return Math.min((elapsedTime.value / MAX_TIME) * 100, 100)
-})
-
-const timerColor = computed(() => {
-  if (elapsedTime.value < 20) return 'positive'
-  if (elapsedTime.value < 40) return 'warning'
-  return 'negative'
-})
 
 // Start timer when card changes
 watch(
@@ -97,80 +84,41 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-header
-    elevated
-    class="bg-white text-grey-9"
+  <q-page
+    class="q-pa-md"
+    style="max-width: 600px; margin: 0 auto"
   >
-    <q-toolbar>
+    <!-- Header with Back Button and Game Progress -->
+    <div class="row items-center justify-between q-mb-md">
       <q-btn
         flat
         round
-        dense
         icon="arrow_back"
         @click="handleGoHome"
-      >
-        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
-      </q-btn>
-      <q-toolbar-title class="text-center">{{ TEXT_DE.wordplay.game.title }}</q-toolbar-title>
-      <q-btn
-        flat
-        round
-        dense
-        icon="arrow_back"
-        style="visibility: hidden"
+        size="md"
       />
-    </q-toolbar>
-  </q-header>
-
-  <q-page class="q-pa-md">
-    <div
-      class="q-mx-auto"
-      style="max-width: 700px"
-    >
-      <!-- Level Distribution -->
-      <div class="q-mb-md">
-        <LevelDistribution :all-cards="allCards" />
-      </div>
-
-      <!-- Scoreboard -->
-      <Scoreboard
-        :score="score"
-        :current="currentCardIndex + 1"
-        :total="roundCards.length"
-      />
-
-      <!-- Timer Progress Bar -->
-      <div class="q-mb-md">
-        <div class="flex justify-between items-center q-mb-xs">
-          <span class="text-caption text-grey-7">{{ TEXT_DE.wordplay.game.time }}</span>
-          <span
-            class="text-caption font-bold"
-            :class="`text-${timerColor}`"
-          >
-            {{ elapsedTime.toFixed(1) }}s
-          </span>
-        </div>
-        <q-linear-progress
-          :value="timerProgress / 100"
-          :color="timerColor"
-          size="8px"
-          rounded
+      <div class="text-h6 text-weight-bold">
+        <q-icon
+          name="emoji_events"
+          color="amber"
+          size="24px"
         />
+        {{ score }}
       </div>
-
-      <!-- Flashcard -->
-      <div class="flex flex-center q-mt-lg">
-        <Flashcard
-          v-if="currentCard"
-          :key="currentCard.id"
-          :card="currentCard"
-          :all-cards="allCards"
-          :settings="gameSettings!"
-          :elapsed-time="elapsedTime"
-          @answer="handleAnswer"
-          @next="handleNextCard"
-        />
+      <div class="text-h6 text-weight-bold">
+        {{ currentCardIndex + 1 }} / {{ roundCards.length }}
       </div>
     </div>
+
+    <FlashCard
+      v-if="currentCard"
+      :key="currentCard.id"
+      :card="currentCard"
+      :all-cards="allCards"
+      :settings="gameSettings!"
+      :elapsed-time="elapsedTime"
+      @answer="handleAnswer"
+      @next="handleNextCard"
+    />
   </q-page>
 </template>

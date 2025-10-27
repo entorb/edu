@@ -1,12 +1,10 @@
 <script setup lang="ts">
-// TODO:
-// cspell:disable
-
 import { ref, computed, watch, onUnmounted } from 'vue'
 import type { Card, GameSettings, AnswerResult } from '../types'
 import { shuffleArray, normalizeString, levenshteinDistance } from '../utils/helpers'
 import { TEXT_DE } from '@flashcards/shared'
-import { MAX_TIME } from '../config/constants'
+import { AnswerFeedback } from '@flashcards/shared/components'
+import { MAX_TIME, LEVENSHTEIN_THRESHOLD } from '../config/constants'
 
 interface Props {
   card: Card
@@ -21,7 +19,7 @@ const emit = defineEmits<{
   next: []
 }>()
 
-const isFlipped = ref(false)
+const showAnswer = ref(false)
 const answerStatus = ref<AnswerResult | null>(null)
 const userAnswer = ref('')
 const options = ref<string[]>([])
@@ -35,6 +33,7 @@ const feedbackData = ref<{
 const showProceedButton = ref(false)
 const isProceedDisabled = ref(false)
 const startTime = ref<number>(0)
+const disableStartTime = ref<number>(0)
 
 let nextCardTimer: ReturnType<typeof setTimeout> | null = null
 let proceedEnableTimer: ReturnType<typeof setTimeout> | null = null
@@ -50,6 +49,16 @@ const correctAnswer = computed(() => {
 
 const targetLang = computed(() => {
   return props.settings.language === 'en-de' ? 'de' : 'en'
+})
+
+// Determine which time to display based on mode
+const displayTime = computed(() => {
+  if (props.settings.mode === 'blind') {
+    return props.card.time_blind
+  } else if (props.settings.mode === 'typing') {
+    return props.card.time_typing
+  }
+  return MAX_TIME // Don't show time for multiple-choice
 })
 
 // Generate options for multiple choice
@@ -74,7 +83,7 @@ watch(
 watch(
   () => props.card,
   () => {
-    isFlipped.value = false
+    showAnswer.value = false
     answerStatus.value = null
     userAnswer.value = ''
     feedbackData.value = { type: 'simple' }
@@ -99,13 +108,14 @@ function processAnswer(result: AnswerResult) {
   const answerTime = (Date.now() - startTime.value) / 1000
   emit('answer', result, answerTime)
   answerStatus.value = result
-  isFlipped.value = true
+  showAnswer.value = true
 
   if (result === 'correct') {
-    nextCardTimer = setTimeout(() => emit('next'), 2000)
+    nextCardTimer = setTimeout(() => emit('next'), 1000)
   } else {
     showProceedButton.value = true
     isProceedDisabled.value = true
+    disableStartTime.value = Date.now()
     proceedEnableTimer = setTimeout(() => (isProceedDisabled.value = false), 3000)
 
     if (result === 'close') {
@@ -132,7 +142,18 @@ function handleMultipleChoiceSubmit(option: string) {
 }
 
 function handleBlindSubmit(correct: boolean) {
-  processAnswer(correct ? 'correct' : 'incorrect')
+  if (correct) {
+    // For correct answers in blind mode, proceed immediately
+    if (answerStatus.value) return
+    const answerTime = (Date.now() - startTime.value) / 1000
+    emit('answer', 'correct', answerTime)
+    answerStatus.value = 'correct'
+    showAnswer.value = true
+    // Proceed immediately without delay
+    emit('next')
+  } else {
+    processAnswer('incorrect')
+  }
 }
 
 function handleTypingSubmit() {
@@ -154,160 +175,134 @@ function handleTypingSubmit() {
     return
   }
 
-  // Check for "close" answers
-  if (possibleAnswers.some(ans => levenshteinDistance(normalizedUserAnswer, ans) === 1)) {
+  // Check for "close" answers using configurable threshold
+  if (
+    possibleAnswers.some(
+      ans => levenshteinDistance(normalizedUserAnswer, ans) <= LEVENSHTEIN_THRESHOLD
+    )
+  ) {
     processAnswer('close')
     return
   }
 
   processAnswer('incorrect')
 }
-
-// Compute character-by-character diff for "close" answers
-const charDiff = computed(() => {
-  if (feedbackData.value.type !== 'close') return []
-
-  const userInput = feedbackData.value.userInput || ''
-  const correctText = feedbackData.value.correctText || ''
-
-  return correctText.split('').map((correctChar, index) => ({
-    char: correctChar,
-    isDifferent:
-      index >= userInput.length ||
-      userInput.charAt(index).toLowerCase() !== correctChar.toLowerCase()
-  }))
-})
 </script>
 
 <template>
   <div class="flashcard-container">
-    <!-- Card with flip animation -->
-    <div
-      class="flip-container"
-      :style="{ perspective: '1000px' }"
-    >
-      <div
-        class="flip-card"
-        :style="{
-          transformStyle: 'preserve-3d',
-          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          transition: 'transform 0.5s'
-        }"
-      >
-        <!-- Front of card -->
-        <q-card
-          class="flip-card-face flip-card-front"
-          :style="{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }"
+    <!-- Question Card - 1x1 style -->
+    <q-card class="q-mb-md">
+      <q-card-section class="text-center q-pa-md">
+        <div class="row justify-between items-center q-mb-sm">
+          <q-badge
+            color="primary"
+            :label="`Level ${card.level}`"
+          />
+          <div
+            v-if="displayTime < MAX_TIME"
+            class="text-caption text-weight-medium text-grey-7"
+          >
+            {{ displayTime.toFixed(1) }}s
+          </div>
+        </div>
+        <div class="q-my-md text-weight-bold text-h4">
+          {{ question }}
+        </div>
+        <!-- Show answer if revealed -->
+        <div
+          v-if="showAnswer"
+          class="q-mt-md text-h5 text-grey-7"
         >
-          <q-card-section style="min-height: 144px">
-            <div class="row justify-between items-center q-mb-sm">
-              <q-badge
-                color="primary"
-                :label="`Level ${card.level}`"
-              />
-              <div
-                v-if="elapsedTime !== undefined && elapsedTime < MAX_TIME"
-                class="text-caption text-weight-medium text-grey-7"
-              >
-                {{ elapsedTime.toFixed(1) }}s
-              </div>
-            </div>
-            <div class="flex flex-center text-center">
-              <h2 class="text-h5 text-weight-bold">{{ question }}</h2>
-            </div>
-          </q-card-section>
-        </q-card>
-
-        <!-- Back of card -->
-        <q-card
-          class="flip-card-face flip-card-back"
-          :style="{
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)'
-          }"
-        >
-          <q-card-section style="min-height: 144px">
-            <div class="row justify-between items-center q-mb-sm">
-              <q-badge
-                color="primary"
-                :label="`Level ${card.level}`"
-              />
-              <div
-                v-if="elapsedTime !== undefined && elapsedTime < MAX_TIME"
-                class="text-caption text-weight-medium text-grey-7"
-              >
-                {{ elapsedTime.toFixed(1) }}s
-              </div>
-            </div>
-            <div class="flex flex-center text-center column">
-              <p class="text-h6 text-grey-6 q-mb-sm">{{ question }}</p>
-              <h2 class="text-h5 text-weight-bold">{{ correctAnswer }}</h2>
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
+          {{ correctAnswer }}
+        </div>
+      </q-card-section>
+    </q-card>
 
     <!-- Input Section -->
     <div class="q-mt-md">
-      <!-- Feedback -->
-      <div
-        v-if="answerStatus && feedbackData.type"
-        class="text-center q-mb-md"
+      <!-- Feedback with Visual Icon (using shared component) -->
+      <AnswerFeedback
+        v-if="answerStatus"
+        :status="answerStatus"
+        :show-continue-button="showProceedButton"
+        :is-button-disabled="isProceedDisabled"
+        :button-disable-countdown="Math.ceil((3000 - (Date.now() - disableStartTime)) / 1000)"
+        @continue="emit('next')"
       >
-        <!-- Close answer feedback -->
-        <div
-          v-if="feedbackData.type === 'close'"
-          class="text-warning"
+        <template #header>
+          <div
+            v-if="answerStatus === 'correct'"
+            class="text-h6 text-weight-bold"
+          >
+            Richtig!
+          </div>
+          <div
+            v-else-if="answerStatus === 'close'"
+            class="text-h6 text-weight-bold"
+          >
+            Fast richtig!
+          </div>
+          <div
+            v-else
+            class="text-h6 text-weight-bold"
+          >
+            Falsch
+          </div>
+        </template>
+
+        <template
+          v-if="answerStatus !== 'correct'"
+          #details
         >
-          <p class="q-mb-xs">
-            Du hast getippt:
-            <code class="bg-warning-1 text-warning px-1 rounded">{{ feedbackData.userInput }}</code>
-          </p>
-          <p class="q-mt-xs">
-            Fast richtig! Korrekt:
-            <span class="text-weight-bold">
-              <template
-                v-for="(item, idx) in charDiff"
-                :key="idx"
+          <!-- Question -->
+          <div class="text-h6 q-mb-md text-grey-8 text-weight-medium">
+            {{ question }}
+          </div>
+
+          <!-- Close answer feedback -->
+          <div v-if="feedbackData.type === 'close'">
+            <div class="row items-center justify-center text-h6">
+              <span
+                class="text-warning text-weight-bold"
+                style="text-decoration: line-through; text-decoration-thickness: 2px"
+                >{{ feedbackData.userInput }}</span
               >
-                <strong
-                  v-if="item.isDifferent"
-                  class="text-negative text-decoration-underline"
-                  >{{ item.char }}</strong
-                >
-                <template v-else>{{ item.char }}</template>
-              </template>
-            </span>
-          </p>
-        </div>
+              <q-icon
+                name="arrow_forward"
+                size="sm"
+                class="q-mx-sm"
+              />
+              <span class="text-positive text-weight-bold">{{ feedbackData.correctText }}</span>
+            </div>
+          </div>
 
-        <!-- Typing mode incorrect feedback -->
-        <div
-          v-else-if="feedbackData.type === 'typing-incorrect'"
-          class="text-negative"
-        >
-          <p>
-            Du hast getippt:
-            <code class="bg-negative-1 text-negative px-1 rounded">{{
-              feedbackData.userInput
-            }}</code
-            >, richtig ist:
-            <strong class="text-positive">{{ feedbackData.correctText }}</strong>
-          </p>
-        </div>
+          <!-- Typing mode incorrect feedback -->
+          <div v-else-if="feedbackData.type === 'typing-incorrect'">
+            <div class="row items-center justify-center text-h6">
+              <span
+                class="text-negative text-weight-bold"
+                style="text-decoration: line-through; text-decoration-thickness: 2px"
+                >{{ feedbackData.userInput }}</span
+              >
+              <q-icon
+                name="arrow_forward"
+                size="sm"
+                class="q-mx-sm"
+              />
+              <span class="text-positive text-weight-bold">{{ feedbackData.correctText }}</span>
+            </div>
+          </div>
 
-        <q-btn
-          v-if="showProceedButton"
-          :disable="isProceedDisabled"
-          color="primary"
-          :label="TEXT_DE.common.continue"
-          no-caps
-          class="q-mt-sm full-width"
-          @click="emit('next')"
-        />
-      </div>
+          <!-- Multiple choice / Blind incorrect -->
+          <div
+            v-else
+            class="text-h5 text-positive text-weight-bold"
+          >
+            {{ correctAnswer }}
+          </div>
+        </template>
+      </AnswerFeedback>
 
       <!-- Multiple Choice -->
       <div
@@ -334,12 +329,12 @@ const charDiff = computed(() => {
       <!-- Blind Mode -->
       <div v-else-if="settings.mode === 'blind'">
         <q-btn
-          v-if="!isFlipped"
+          v-if="!showAnswer"
           color="primary"
           :label="TEXT_DE.wordplay.game.revealAnswer"
           no-caps
           class="full-width"
-          @click="isFlipped = true"
+          @click="showAnswer = true"
         />
         <div
           v-else
@@ -352,21 +347,21 @@ const charDiff = computed(() => {
             <div class="col-6">
               <q-btn
                 :disable="!!answerStatus"
-                color="positive"
-                :label="TEXT_DE.common.yes"
-                no-caps
-                class="full-width"
-                @click="handleBlindSubmit(true)"
-              />
-            </div>
-            <div class="col-6">
-              <q-btn
-                :disable="!!answerStatus"
                 color="negative"
                 :label="TEXT_DE.common.no"
                 no-caps
                 class="full-width"
                 @click="handleBlindSubmit(false)"
+              />
+            </div>
+            <div class="col-6">
+              <q-btn
+                :disable="!!answerStatus"
+                color="positive"
+                :label="TEXT_DE.common.yes"
+                no-caps
+                class="full-width"
+                @click="handleBlindSubmit(true)"
               />
             </div>
           </div>
@@ -406,28 +401,5 @@ const charDiff = computed(() => {
 .flashcard-container {
   width: 100%;
   max-width: 500px;
-}
-
-.flip-container {
-  width: 100%;
-}
-
-.flip-card {
-  position: relative;
-  width: 100%;
-  min-height: 144px;
-}
-
-.flip-card-face {
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-}
-
-.flip-card-front,
-.flip-card-back {
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>
