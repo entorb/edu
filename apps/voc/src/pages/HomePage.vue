@@ -5,7 +5,12 @@ import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
 import { TEXT_DE, helperStatsDataRead } from '@flashcards/shared'
-import { AppFooter, StatisticsCard, PwaInstallInfo } from '@flashcards/shared/components'
+import {
+  AppFooter,
+  StatisticsCard,
+  PwaInstallInfo,
+  FocusSelector
+} from '@flashcards/shared/components'
 import { BASE_PATH } from '../constants'
 import FoxIcon from '../components/FoxIcon.vue'
 
@@ -21,15 +26,9 @@ const settings = ref<GameSettings>({
 const totalGamesPlayedByAll = ref<number>(0)
 
 const modeOptions = [
-  { label: TEXT_DE.voc.modes['multiple-choice'], value: 'multiple-choice' as const },
-  { label: TEXT_DE.voc.modes.blind, value: 'blind' as const },
-  { label: TEXT_DE.voc.modes.typing, value: 'typing' as const }
-]
-
-const focusOptions = [
-  { label: TEXT_DE.focusOptions.weak, value: 'weak' as const },
-  { label: TEXT_DE.focusOptions.strong, value: 'strong' as const },
-  { label: TEXT_DE.focusOptions.slow, value: 'slow' as const }
+  { label: TEXT_DE.voc.mode.multipleChoice, value: 'multiple-choice' as const },
+  { label: TEXT_DE.voc.mode.blind, value: 'blind' as const },
+  { label: TEXT_DE.voc.mode.typing, value: 'typing' as const }
 ]
 
 const languageOptions = [
@@ -83,7 +82,7 @@ function goToInfo() {
         @click="goToInfo"
         data-cy="info-button"
       >
-        <q-tooltip>{{ TEXT_DE.voc.home.infoTooltip }}</q-tooltip>
+        <q-tooltip>{{ TEXT_DE.nav.infoTooltip }}</q-tooltip>
       </q-btn>
     </div>
 
@@ -119,27 +118,6 @@ function goToInfo() {
           />
         </div>
 
-        <!-- Focus Selection -->
-        <div class="q-mb-sm">
-          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.focus }}</div>
-          <div class="row q-col-gutter-sm">
-            <div
-              class="col-4"
-              v-for="option in focusOptions"
-              :key="option.value"
-            >
-              <q-btn
-                :outline="settings.focus !== option.value"
-                :color="settings.focus === option.value ? 'primary' : 'grey-8'"
-                :label="option.label"
-                no-caps
-                class="full-width"
-                @click="settings.focus = option.value"
-              />
-            </div>
-          </div>
-        </div>
-
         <!-- Language Direction -->
         <div>
           <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.direction }}</div>
@@ -150,6 +128,11 @@ function goToInfo() {
             toggle-color="primary"
             :options="languageOptions"
           />
+        </div>
+
+        <!-- Focus Selection -->
+        <div class="q-mb-sm">
+          <FocusSelector v-model="settings.focus" />
         </div>
       </q-card-section>
     </q-card>

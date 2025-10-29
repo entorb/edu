@@ -79,24 +79,8 @@ function goHome() {
       </div>
     </div>
 
-    <!-- Empty State -->
-    <div
-      v-if="history.length === 0"
-      class="text-center q-mt-xl"
-    >
-      <q-icon
-        name="inbox"
-        size="80px"
-        color="grey-5"
-      />
-      <div class="text-h6 text-grey-6 q-mt-md text-weight-medium">
-        {{ TEXT_DE.stats.noGamesPlayed }}
-      </div>
-    </div>
-
     <!-- History List -->
     <q-list
-      v-else
       separator
       bordered
       class="rounded-borders"
@@ -135,12 +119,21 @@ function goHome() {
               :data-cy="`history-game-${index}-points`"
             >
               {{ getPoints(game) }}
+              <q-icon
+                name="emoji_events"
+                color="amber"
+                size="24px"
+              />
             </div>
             <div
-              class="text-caption text-grey-7"
+              class="text-h6 text-primary text-weight-bold"
               :data-cy="`history-game-${index}-correct`"
             >
-              {{ getCorrectAnswers(game) }}
+              <span>{{ getCorrectAnswers(game) }}</span>
+              <q-icon
+                name="check"
+                size="24px"
+              />
             </div>
           </div>
         </q-item-section>

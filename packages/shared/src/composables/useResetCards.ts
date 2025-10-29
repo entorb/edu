@@ -10,8 +10,8 @@ export function useResetCards() {
 
   function showResetDialog(onConfirm: () => void): void {
     $q.dialog({
-      title: TEXT_DE.voc.cardManagement.confirmResetTitle,
-      message: TEXT_DE.voc.cardManagement.confirmResetMessage,
+      title: TEXT_DE.voc.cards.confirmResetTitle,
+      message: TEXT_DE.voc.cards.confirmResetMessage,
       cancel: true,
       ok: {
         label: TEXT_DE.common.reset,
@@ -22,7 +22,7 @@ export function useResetCards() {
       onConfirm()
       $q.notify({
         type: 'positive',
-        message: TEXT_DE.voc.cardManagement.resetSuccess,
+        message: TEXT_DE.voc.cards.resetSuccess,
         position: 'top'
       })
     })

@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { HistoryPage } from '@flashcards/shared/pages'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE } from '@flashcards/shared'
+import { TEXT_DE, getFocusText } from '@flashcards/shared'
 
 const { history } = useGameStore()
 
 function getModeText(mode: string): string {
   const modes: Record<string, string> = {
-    'multiple-choice': TEXT_DE.voc.modes['multiple-choice'],
-    blind: TEXT_DE.voc.modes.blind,
-    typing: TEXT_DE.voc.modes.typing
+    'multiple-choice': TEXT_DE.voc.mode.multipleChoice,
+    blind: TEXT_DE.voc.mode.blind,
+    typing: TEXT_DE.voc.mode.typing
   }
   return modes[mode] || mode
 }
 
-function getFocusText(focus: string): string {
-  return focus === 'weak' ? TEXT_DE.voc.history.focusWeak : TEXT_DE.voc.history.focusStrong
-}
+function formatDetails(game: any): string {
+  const mode = getModeText(game.settings.mode)
+  const focus = `${TEXT_DE.words.focus}: ${getFocusText(game.settings.focus)}`
 
-function formatDetails(entry: any): string {
-  return `${getModeText(entry.settings.mode)} | ${getFocusText(entry.settings.focus)} | ${entry.settings.language.toUpperCase()}`
+  return `${mode} | ${focus} | ${game.settings.language}`
+  // .toUpperCase()
 }
 
 function getPoints(entry: any): number {
@@ -27,7 +27,7 @@ function getPoints(entry: any): number {
 }
 
 function getCorrectAnswers(entry: any): string {
-  return `${entry.correctAnswers} ${TEXT_DE.voc.history.correct}`
+  return `${entry.correctAnswers}`
 }
 </script>
 

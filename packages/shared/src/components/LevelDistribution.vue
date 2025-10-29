@@ -31,11 +31,7 @@ function handleReset() {
     <q-card-section>
       <div class="row items-center justify-between q-mb-md">
         <div class="text-h6">
-          <q-icon
-            name="layers"
-            class="q-mr-xs"
-          />
-          {{ TEXT_DE.stats.cardsPerLevel }}
+          {{ TEXT_DE.cards.cardsPerLevel }}
         </div>
         <q-btn
           flat
@@ -61,7 +57,7 @@ function handleReset() {
             :style="{ backgroundColor: getLevelBackgroundColor(level) }"
           >
             <q-card-section class="text-center q-pa-sm">
-              <div class="text-caption text-grey-8">{{ TEXT_DE.stats.level }} {{ level }}</div>
+              <div class="text-caption text-grey-8">{{ TEXT_DE.words.level }} {{ level }}</div>
               <div class="text-h5 text-weight-bold text-grey-9">
                 {{ getCardCountByLevel(level) }}
               </div>

@@ -394,11 +394,12 @@ function handleTypingSubmit() {
           data-cy="typing-input"
         />
         <q-btn
-          type="submit"
           color="primary"
+          size="lg"
+          class="full-width q-mb-md"
           :label="TEXT_DE.common.check"
-          no-caps
-          class="full-width"
+          icon="check"
+          type="submit"
           data-cy="check-answer-button"
         />
       </q-form>

@@ -1,3 +1,21 @@
+import { TEXT_DE } from '../text-de'
+
+/**
+ * Get focus type text from focus value
+ * @param focus - The focus type ('weak', 'strong', or 'slow')
+ * @returns The localized focus text
+ */
+export const getFocusText = (focus: string): string => {
+  switch (focus) {
+    case 'weak':
+      return TEXT_DE.focusOptions.weak
+    case 'strong':
+      return TEXT_DE.focusOptions.strong
+    default:
+      return TEXT_DE.focusOptions.slow
+  }
+}
+
 /**
  * Fetch app stats from database
  * @param basePath - The app identifier (e.g., '1x1', 'voc')

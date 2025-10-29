@@ -292,7 +292,7 @@ onUnmounted(() => {
         @click="submitAnswer"
         :disable="userAnswer === null || userAnswer === undefined || isButtonDisabled"
         icon="check"
-        :label="isButtonDisabled ? `${TEXT_DE.common.wait}` : TEXT_DE.common.check"
+        :label="TEXT_DE.common.check"
         data-cy="submit-answer-button"
       />
     </div>

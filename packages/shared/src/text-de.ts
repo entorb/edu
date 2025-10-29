@@ -11,51 +11,42 @@ export const TEXT_DE = {
   appTitle_1x1: "Vyvit's 1x1 Spiel",
   appTitle_voc: "Rabat's Wortspiel",
 
-  // Footer
-  totalGamesPlayedByAll: 'Spiele gespielt.',
-  footerNoDataStored: 'Es werden keine persönlichen Daten gespeichert.',
+  footer: {
+    gamesPlayedByAll: 'Spiele gespielt.',
+    noDataStored: 'Es werden keine persönlichen Daten gespeichert.'
+  },
 
-  // Common actions (shared across both apps)
+  pwaInstall: {
+    title: 'Als App installieren',
+    android: 'Android:',
+    androidInstructions: 'Menü (3 Punkte) → "Zum Startbildschirm hinzufügen"',
+    iPhone: 'iPhone:',
+    iPhoneInstructions: 'Teilen-Symbol → "Zum Home-Bildschirm"'
+  },
+
+  // Common actions
   common: {
     start: 'Starten',
     continue: 'Weiter',
-    continueWithEnter: 'Weiter (Enter)',
-    cancel: 'Abbrechen',
-    reset: 'Zurücksetzen',
+    reset: 'Zurücksetzen', // in LevelDistribution
     check: 'Prüfen',
     wait: 'Merken...',
     yes: 'Ja',
-    no: 'Nein',
-    backToHome: 'Zurück zur Startseite',
-    backToMenu: 'Zurück zum Menü',
-    pwaInstall: {
-      title: 'Als App installieren',
-      android: 'Android:',
-      androidInstructions: 'Menü (3 Punkte) → "Zum Startbildschirm hinzufügen"',
-      iPhone: 'iPhone:',
-      iPhoneInstructions: 'Teilen-Symbol → "Zum Home-Bildschirm"'
-    }
+    no: 'Nein'
   },
 
   // Navigation
   nav: {
     history: 'Verlauf',
-    cards: 'Karten'
+    cards: 'Karten',
+    backToHome: 'Zurück zur Startseite',
+    infoTooltip: 'Info zu Scoring-Regeln'
   },
 
-  // Statistics (shared)
-  stats: {
-    title: 'Statistiken',
-    games: 'Spiele',
-    points: 'Punkte',
-    correctAnswers: 'Richtige',
-    correctSuffix: ' richtig',
-    from: 'Von',
-    noGamesPlayed: 'Noch keine Spiele gespielt',
-    noDataAvailable: 'Keine Kartendaten verfügbar',
+  history: {},
+
+  cards: {
     cardsPerLevel: 'Karten pro Level',
-    cardsOverview: 'Karten-Übersicht',
-    level: 'Level',
     legend: 'Legende',
     legendBackground: 'Hintergrund: Level (Rot=1 → Grün=5)',
     legendTextColor: 'Schriftfarbe: Zeit (Grün=schnell → Rot=langsam)'
@@ -63,45 +54,34 @@ export const TEXT_DE = {
 
   // Common words
   words: {
+    cards: 'Karten',
+    level: 'Level',
     focus: 'Fokus',
     mode: 'Modus',
-    direction: 'Richtung'
+    direction: 'Richtung',
+    bonusPoints: 'Bonus',
+    firstGameBonus: 'Erstes Spiel heute',
+    streakGameBonus: 'Spiel des Tages'
   },
 
-  // Common focus options (shared across both apps)
+  // Common focus options
   focusOptions: {
-    weak: 'Schwache Wörter',
-    strong: 'Starke Wörter',
-    slow: 'Langsame Wörter'
+    weak: 'Niedrige Level',
+    strong: 'Hohe Level',
+    slow: 'Langsame'
   },
 
   // 1x1 App specific
   multiply: {
     selection: 'Reihe',
-    selectionPrefix: 'Reihe: ',
     selectionSquares: 'x²',
-    selectionAll: 'alle',
-    autoCloseIn: 'Automatisch weiter in',
-    gameStarted: 'Spiel starten',
-    bonusPoints: 'Bonus',
-    firstGameBonus: 'Erstes Spiel heute',
-    streakGameBonus: 'Spiel des Tages',
-    resetCards: {
-      title: 'Karten zurücksetzen',
-      message: 'Möchten Sie alle Karten auf Level 1 und Zeit 60s zurücksetzen?',
-      success: 'Alle Karten wurden zurückgesetzt'
-    }
+    selectionAll: 'alle'
   },
 
   // Wordplay App specific
   voc: {
-    home: {
-      welcome: 'Willkommen zurück!',
-      startRound: 'Runde starten',
-      infoTooltip: 'Info zu Scoring-Regeln'
-    },
-    modes: {
-      'multiple-choice': 'Multiple Choice',
+    mode: {
+      multipleChoice: 'Multiple Choice',
       blind: 'Blind',
       typing: 'Tippen'
     },
@@ -110,29 +90,17 @@ export const TEXT_DE = {
       'de-en': 'DE → EN'
     },
     game: {
-      title: 'Spielen',
-      time: 'Zeit',
       revealAnswer: 'Antwort aufdecken',
       wasYourAnswerCorrect: 'War deine Antwort richtig?',
       typePlaceholder: 'Antwort tippen...'
     },
-    gameOver: {
-      title: 'Runde beendet!',
-      greatJob: 'Super gemacht!',
-      goodWork: 'Gute Arbeit, weiter so!',
-      finalScore: 'Endstand',
-      leveledUp: 'Aufgestiegen',
-      leveledDown: 'Abgestiegen',
-      playAgain: 'Neue Runde spielen'
-    },
-    cardManagement: {
-      title: 'Kartenverwaltung',
+    cards: {
+      // title: 'Kartenverwaltung',
       export: 'Exportieren',
       import: 'Importieren...',
       copied: 'Kopiert!',
       reset: 'Kartenstapel zurücksetzen',
       moveAll: 'Verschieben',
-      currentDeck: 'Karten',
       exportTitle: 'Karten Exportieren',
       exportDescription: 'Kopiere deine Karten um sie in Excel einzufügen.',
       importTitle: 'Karten Importieren',
@@ -160,13 +128,8 @@ export const TEXT_DE = {
       moveSuccess: 'Alle Karten verschoben!',
       resetSuccess: 'Kartenstapel wurde zurückgesetzt!'
     },
-    stats: {
-      allCardsTitle: 'Alle Karten im Stapel'
-    },
     history: {
-      noGamesPlayed: 'Keine Runden bisher gespielt.',
       points: 'Pkt.',
-      correct: 'richtig',
       focusWeak: 'Fokus: Schwach',
       focusStrong: 'Fokus: Stark'
     },

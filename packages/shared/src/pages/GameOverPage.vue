@@ -97,7 +97,7 @@ function handleGoHome() {
                 name="star"
                 color="amber"
               />
-              {{ TEXT_DE.multiply.bonusPoints }}
+              {{ TEXT_DE.words.bonusPoints }}
             </div>
             <div
               v-for="(reason, index) in bonusReasons"
@@ -129,7 +129,7 @@ function handleGoHome() {
         size="lg"
         class="full-width q-mt-lg"
         icon="home"
-        :label="TEXT_DE.common.backToHome"
+        :label="TEXT_DE.nav.backToHome"
         unelevated
         @click="handleGoHome"
         data-cy="back-to-home-button"

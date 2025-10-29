@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { TEXT_DE } from '../text-de'
-
 interface Statistics {
   gamesPlayed: number
   points: number
@@ -33,30 +31,36 @@ function getPointsOrScore(stats: Statistics): number {
     <q-card-section class="q-pa-sm">
       <div class="row text-center q-gutter-sm justify-around">
         <div class="col-3">
-          <div class="text-caption">{{ TEXT_DE.stats.games }}</div>
           <div
             class="text-h6"
             data-cy="stats-games-played"
           >
-            {{ getGamesPlayed(statistics) }}
+            {{ getGamesPlayed(statistics) }} x
           </div>
         </div>
         <div class="col-3">
-          <div class="text-caption">{{ TEXT_DE.stats.points }}</div>
           <div
             class="text-h6"
             data-cy="stats-total-points"
           >
             {{ getPointsOrScore(statistics) }}
+            <q-icon
+              name="emoji_events"
+              color="amber"
+              size="24px"
+            />
           </div>
         </div>
         <div class="col-4">
-          <div class="text-caption">{{ TEXT_DE.stats.correctAnswers }}</div>
           <div
             class="text-h6"
             data-cy="stats-correct-answers"
           >
             {{ statistics.correctAnswers }}
+            <q-icon
+              name="check"
+              size="16px"
+            />
           </div>
         </div>
       </div>

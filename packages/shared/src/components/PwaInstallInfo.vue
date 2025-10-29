@@ -16,17 +16,17 @@ import { TEXT_DE } from '../text-de'
           class="q-mr-sm"
         />
         <div class="text-subtitle1 text-weight-medium">
-          {{ TEXT_DE.common.pwaInstall.title }}
+          {{ TEXT_DE.pwaInstall.title }}
         </div>
       </div>
       <div>
         <div class="q-mb-xs">
-          <strong>{{ TEXT_DE.common.pwaInstall.android }}</strong>
-          {{ TEXT_DE.common.pwaInstall.androidInstructions }}
+          <strong>{{ TEXT_DE.pwaInstall.android }}</strong>
+          {{ TEXT_DE.pwaInstall.androidInstructions }}
         </div>
         <div>
-          <strong>{{ TEXT_DE.common.pwaInstall.iPhone }}</strong>
-          {{ TEXT_DE.common.pwaInstall.iPhoneInstructions }}
+          <strong>{{ TEXT_DE.pwaInstall.iPhone }}</strong>
+          {{ TEXT_DE.pwaInstall.iPhoneInstructions }}
         </div>
       </div>
     </q-card-section>

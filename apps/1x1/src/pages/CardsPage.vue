@@ -111,21 +111,8 @@ function goHome() {
       />
     </div>
 
-    <!-- Empty State -->
-    <div
-      v-if="cards.length === 0"
-      class="text-center q-mt-xl"
-    >
-      <q-icon
-        name="bar_chart"
-        size="80px"
-        color="grey-5"
-      />
-      <div class="text-h6 text-grey-6 q-mt-md">{{ TEXT_DE.stats.noDataAvailable }}</div>
-    </div>
-
     <!-- Content -->
-    <div v-else>
+    <div>
       <!-- Level Distribution -->
       <LevelDistribution
         :cards="cards"
@@ -141,7 +128,7 @@ function goHome() {
               name="grid_on"
               class="q-mr-xs"
             />
-            {{ TEXT_DE.stats.cardsOverview }}
+            {{ TEXT_DE.words.cards }}
           </div>
 
           <div class="cards-grid-container">
@@ -194,7 +181,7 @@ function goHome() {
                 size="18px"
                 class="q-mr-xs"
               />
-              {{ TEXT_DE.stats.legend }}
+              {{ TEXT_DE.cards.legend }}
             </div>
             <div class="row q-col-gutter-sm">
               <div class="col-12 col-sm-6">
@@ -208,7 +195,7 @@ function goHome() {
                     size="16px"
                     class="q-mr-xs"
                   />
-                  <span class="text-caption">{{ TEXT_DE.stats.legendBackground }}</span>
+                  <span class="text-caption">{{ TEXT_DE.cards.legendBackground }}</span>
                 </q-chip>
               </div>
               <div class="col-12 col-sm-6">
@@ -222,7 +209,7 @@ function goHome() {
                     size="16px"
                     class="q-mr-xs"
                   />
-                  <span class="text-caption">{{ TEXT_DE.stats.legendTextColor }}</span>
+                  <span class="text-caption">{{ TEXT_DE.cards.legendTextColor }}</span>
                 </q-chip>
               </div>
             </div>

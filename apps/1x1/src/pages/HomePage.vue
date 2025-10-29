@@ -5,9 +5,14 @@ import { useGameStore } from '@/composables/useGameStore'
 import type { SelectionType } from '@/types'
 import type { FocusType } from '@flashcards/shared'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
-import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/constants'
+import { SELECT_OPTIONS, DEFAULT_SELECT, BASE_PATH } from '@/constants'
 import { TEXT_DE } from '@flashcards/shared'
-import { AppFooter, StatisticsCard, PwaInstallInfo } from '@flashcards/shared/components'
+import {
+  AppFooter,
+  StatisticsCard,
+  PwaInstallInfo,
+  FocusSelector
+} from '@flashcards/shared/components'
 import { loadGameStats } from '@/services/storage'
 
 const router = useRouter()
@@ -17,7 +22,6 @@ const { gameStats, gameSettings, startGame: storeStartGame } = useGameStore()
 const select = ref<SelectionType>(DEFAULT_SELECT)
 const focus = ref<FocusType>('weak')
 const selectOptions = SELECT_OPTIONS
-const focusOptions = FOCUS_OPTIONS
 
 // Check if a number is selected
 const isNumberSelected = computed(() => (num: number) => {
@@ -167,29 +171,7 @@ function toggleSquares() {
         </div>
 
         <!-- Focus Selection -->
-        <div>
-          <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.focus }}</div>
-          <q-select
-            v-model="focus"
-            :options="focusOptions"
-            outlined
-            dense
-            emit-value
-            map-options
-            data-cy="focus-select"
-          >
-            <template #option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section avatar>
-                  <q-icon :name="scope.opt.icon" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
+        <FocusSelector v-model="focus" />
       </q-card-section>
     </q-card>
 

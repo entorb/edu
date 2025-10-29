@@ -52,12 +52,12 @@ onMounted(async () => {
   const dailyInfo = incrementDailyGames()
 
   if (dailyInfo.isFirstGame) {
-    bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
+    bonusReasons.value.push({ label: TEXT_DE.words.firstGameBonus, points: FIRST_GAME_BONUS })
   }
 
   if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
     bonusReasons.value.push({
-      label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`,
+      label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.words.streakGameBonus}`,
       points: STREAK_GAME_BONUS
     })
   }

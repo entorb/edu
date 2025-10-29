@@ -24,8 +24,8 @@ onMounted(async () => {
       class="q-mt-sm text-grey-6"
     >
       {{ numTotalGamesPlayedByAll.toLocaleString('de-DE') }}
-      {{ TEXT_DE.totalGamesPlayedByAll }}
-      {{ TEXT_DE.footerNoDataStored }}
+      {{ TEXT_DE.footer.gamesPlayedByAll }}
+      {{ TEXT_DE.footer.noDataStored }}
     </div>
     <div class="q-gutter-x-md q-mt-sm">
       <a

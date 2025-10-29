@@ -38,7 +38,7 @@ onUnmounted(() => {
         @click="handleGoBack"
         data-cy="back-button"
       >
-        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
+        <q-tooltip>{{ TEXT_DE.nav.backToHome }}</q-tooltip>
       </q-btn>
       <q-toolbar-title
         class="text-center"

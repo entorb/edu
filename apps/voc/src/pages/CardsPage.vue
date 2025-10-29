@@ -13,7 +13,7 @@ const $q = useQuasar()
 const { showResetDialog } = useResetCards()
 const { allCards, importCards, moveAllCards } = useGameStore()
 
-const exportButtonText = ref<string>(TEXT_DE.voc.cardManagement.export)
+const exportButtonText = ref<string>(TEXT_DE.voc.cards.export)
 const targetLevel = ref(1)
 
 function handleGoBack() {
@@ -40,21 +40,21 @@ function handleExport() {
   navigator.clipboard
     .writeText(header + tsvContent)
     .then(() => {
-      exportButtonText.value = TEXT_DE.voc.cardManagement.copied
-      setTimeout(() => (exportButtonText.value = TEXT_DE.voc.cardManagement.export), 2000)
+      exportButtonText.value = TEXT_DE.voc.cards.copied
+      setTimeout(() => (exportButtonText.value = TEXT_DE.voc.cards.export), 2000)
     })
     .catch(() => {
       $q.notify({
         type: 'negative',
-        message: TEXT_DE.voc.cardManagement.clipboardError
+        message: TEXT_DE.voc.cards.clipboardError
       })
     })
 }
 
 function showImportDialog() {
   $q.dialog({
-    title: TEXT_DE.voc.cardManagement.importDialogTitle,
-    message: TEXT_DE.voc.cardManagement.importDialogMessage,
+    title: TEXT_DE.voc.cards.importDialogTitle,
+    message: TEXT_DE.voc.cards.importDialogMessage,
     prompt: {
       model: '',
       type: 'textarea',
@@ -69,7 +69,7 @@ function showImportDialog() {
 
 function handleParseText(text: string) {
   if (!text) {
-    $q.notify({ type: 'negative', message: TEXT_DE.voc.cardManagement.emptyTextError })
+    $q.notify({ type: 'negative', message: TEXT_DE.voc.cards.emptyTextError })
     return
   }
 
@@ -83,7 +83,7 @@ function handleParseText(text: string) {
   else {
     $q.notify({
       type: 'negative',
-      message: TEXT_DE.voc.cardManagement.noDelimiterError
+      message: TEXT_DE.voc.cards.noDelimiterError
     })
     return
   }
@@ -109,26 +109,20 @@ function handleParseText(text: string) {
   if (newCards.length === 0) {
     $q.notify({
       type: 'negative',
-      message: TEXT_DE.voc.cardManagement.noCardsFoundError.replace('{delimiter}', delimiter)
+      message: TEXT_DE.voc.cards.noCardsFoundError.replace('{delimiter}', delimiter)
     })
     return
   }
 
   $q.dialog({
-    title: TEXT_DE.voc.cardManagement.confirmImportTitle,
-    message: TEXT_DE.voc.cardManagement.confirmImportMessage.replace(
-      '{count}',
-      newCards.length.toString()
-    ),
+    title: TEXT_DE.voc.cards.confirmImportTitle,
+    message: TEXT_DE.voc.cards.confirmImportMessage.replace('{count}', newCards.length.toString()),
     cancel: true
   }).onOk(() => {
     importCards(newCards)
     $q.notify({
       type: 'positive',
-      message: TEXT_DE.voc.cardManagement.importSuccess.replace(
-        '{count}',
-        newCards.length.toString()
-      )
+      message: TEXT_DE.voc.cards.importSuccess.replace('{count}', newCards.length.toString())
     })
   })
 }
@@ -138,7 +132,7 @@ function handleMoveClick() {
   if (level < MIN_LEVEL || level > MAX_LEVEL) {
     $q.notify({
       type: 'negative',
-      message: TEXT_DE.voc.cardManagement.invalidLevelError
+      message: TEXT_DE.voc.cards.invalidLevelError
         .replace('{min}', MIN_LEVEL.toString())
         .replace('{max}', MAX_LEVEL.toString())
     })
@@ -146,14 +140,14 @@ function handleMoveClick() {
   }
 
   $q.dialog({
-    title: TEXT_DE.voc.cardManagement.confirmMoveTitle,
-    message: TEXT_DE.voc.cardManagement.confirmMoveMessage
+    title: TEXT_DE.voc.cards.confirmMoveTitle,
+    message: TEXT_DE.voc.cards.confirmMoveMessage
       .replace('{count}', allCards.value.length.toString())
       .replace('{level}', level.toString()),
     cancel: true
   }).onOk(() => {
     moveAllCards(level)
-    $q.notify({ type: 'positive', message: TEXT_DE.voc.cardManagement.moveSuccess })
+    $q.notify({ type: 'positive', message: TEXT_DE.voc.cards.moveSuccess })
   })
 }
 
@@ -183,7 +177,7 @@ function getLevelColor(level: number): string {
         @click="handleGoBack"
         data-cy="back-button"
       >
-        <q-tooltip>{{ TEXT_DE.common.backToMenu }}</q-tooltip>
+        <q-tooltip>{{ TEXT_DE.nav.backToHome }}</q-tooltip>
       </q-btn>
     </div>
 
@@ -197,7 +191,7 @@ function getLevelColor(level: number): string {
       <!-- Current Deck -->
       <div class="q-pt-lg">
         <h3 class="text-h6 text-weight-bold q-mb-md">
-          {{ TEXT_DE.voc.cardManagement.currentDeck }} ({{ allCards.length }})
+          {{ TEXT_DE.words.cards }} ({{ allCards.length }})
         </h3>
         <div style="max-height: 300px; overflow-y: auto">
           <q-list
@@ -225,10 +219,10 @@ function getLevelColor(level: number): string {
       <!-- Export -->
       <div>
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
-          {{ TEXT_DE.voc.cardManagement.exportTitle }}
+          {{ TEXT_DE.voc.cards.exportTitle }}
         </h3>
         <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cardManagement.exportDescription }}
+          {{ TEXT_DE.voc.cards.exportDescription }}
         </p>
         <q-btn
           outline
@@ -242,15 +236,15 @@ function getLevelColor(level: number): string {
       <!-- Import -->
       <div>
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
-          {{ TEXT_DE.voc.cardManagement.importTitle }}
+          {{ TEXT_DE.voc.cards.importTitle }}
         </h3>
         <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cardManagement.importDescription }}
+          {{ TEXT_DE.voc.cards.importDescription }}
         </p>
         <q-btn
           outline
           color="grey-8"
-          :label="TEXT_DE.voc.cardManagement.import"
+          :label="TEXT_DE.voc.cards.import"
           no-caps
           @click="showImportDialog"
         />
@@ -259,10 +253,10 @@ function getLevelColor(level: number): string {
       <!-- Move All Cards -->
       <div>
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
-          {{ TEXT_DE.voc.cardManagement.moveAllTitle }}
+          {{ TEXT_DE.voc.cards.moveAllTitle }}
         </h3>
         <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cardManagement.moveAllDescription }}
+          {{ TEXT_DE.voc.cards.moveAllDescription }}
         </p>
         <div class="row q-gutter-sm items-center">
           <q-input
@@ -277,7 +271,7 @@ function getLevelColor(level: number): string {
           <q-btn
             outline
             color="grey-8"
-            :label="TEXT_DE.voc.cardManagement.moveAll"
+            :label="TEXT_DE.voc.cards.moveAll"
             no-caps
             @click="handleMoveClick"
           />
@@ -290,15 +284,15 @@ function getLevelColor(level: number): string {
         style="border-top: 1px solid #e0e0e0"
       >
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">
-          {{ TEXT_DE.voc.cardManagement.dangerZoneTitle }}
+          {{ TEXT_DE.voc.cards.dangerZoneTitle }}
         </h3>
         <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cardManagement.dangerZoneDescription }}
+          {{ TEXT_DE.voc.cards.dangerZoneDescription }}
         </p>
         <q-btn
           outline
           color="negative"
-          :label="TEXT_DE.voc.cardManagement.reset"
+          :label="TEXT_DE.voc.cards.reset"
           no-caps
           @click="handleResetCards"
         />
