@@ -1,0 +1,28 @@
+{
+  "name": "@flashcards/shared",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./layouts": "./src/layouts/index.ts",
+    "./pages": "./src/pages/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "types": "vue-tsc --noEmit",
+    "test": "vitest --watch=false",
+    "test:cov": "vitest --watch=false --coverage"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.22",
+    "vue-router": "^4.5.0",
+    "quasar": "^2.18.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vue-tsc": "^2.2.12"
+  }
+}

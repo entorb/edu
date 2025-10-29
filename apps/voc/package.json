@@ -1,0 +1,34 @@
+{
+  "name": "voc",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24.2.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "cy:open": "cypress open --e2e",
+    "cy:run": "cypress run --e2e",
+    "dev": "vite",
+    "format": "prettier --cache --write src/ cypress/ *.html *.ts *.json *.md",
+    "lint": "eslint . --cache --fix --ignore-pattern .gitignore",
+    "preview": "vite preview",
+    "run": "run-s build preview",
+    "spell": "cspell --cache --quiet \"src/**/*.{txt,md,html,js,ts,vue,json,yml,py}\"",
+    "spell:store": "cspell --cache --quiet --words-only --unique \"src/**/*.{txt,md,html,js,ts,vue,json,yml,py}\" > cspell-unknown-words.txt",
+    "test": "vitest --watch=false",
+    "test:cov": "vitest --watch=false --coverage",
+    "test:unit": "vitest --watch=true",
+    "types": "vue-tsc --build",
+    "check": "run-p format lint types spell test"
+  },
+  "dependencies": {
+    "@flashcards/shared": "workspace:*",
+    "@quasar/extras": "^1.17.0",
+    "quasar": "^2.18.5",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.3",
+    "workbox-window": "^7.3.0"
+  }
+}
