@@ -107,11 +107,6 @@ function goToInfo() {
     <!-- Game Configuration -->
     <q-card class="q-mb-md">
       <q-card-section class="q-pa-md">
-        <div class="text-subtitle1 q-mb-sm">
-          <q-icon name="settings" />
-          {{ TEXT_DE.common.settings }}
-        </div>
-
         <!-- Mode Selection -->
         <div class="q-mb-sm">
           <div class="text-subtitle2 q-mb-xs">{{ TEXT_DE.words.mode }}</div>
