@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     { "path": "./apps/1x1" },
-    { "path": "./apps/wordplay" },
+    { "path": "./apps/voc" },
     { "path": "./packages/shared" }
   ]
 }

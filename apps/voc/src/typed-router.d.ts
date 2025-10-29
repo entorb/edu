@@ -58,6 +58,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/InfoPage': RouteRecordInfo<
+      '/InfoPage',
+      '/InfoPage',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -98,6 +105,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/HomePage.vue': {
       routes:
         | '/HomePage'
+      views:
+        | never
+    }
+    'src/pages/InfoPage.vue': {
+      routes:
+        | '/InfoPage'
       views:
         | never
     }

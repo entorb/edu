@@ -1,5 +1,5 @@
 import type { Card } from '@/types'
-import { MAX_CARD_LEVEL } from '@/config/constants'
+import { MAX_CARD_LEVEL } from '@/constants'
 import { weightedRandomSelection } from '@flashcards/shared/utils'
 
 import type { FocusType } from '@flashcards/shared'

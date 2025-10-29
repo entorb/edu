@@ -8,7 +8,7 @@ import {
   BUTTON_DISABLE_DURATION,
   MAX_CARD_TIME,
   COUNTDOWN_INTERVAL
-} from '@/config/constants'
+} from '@/constants'
 
 interface Props {
   card: Card

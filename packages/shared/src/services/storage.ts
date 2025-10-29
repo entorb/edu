@@ -1,6 +1,6 @@
 /**
  * Shared Storage Utilities
- * Common patterns used by both 1x1 and wordplay apps
+ * Common patterns used by both 1x1 and voc apps
  */
 
 import type { DailyStats } from '../types'

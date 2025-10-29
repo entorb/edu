@@ -16,12 +16,7 @@ import {
   clearGameState as storageClearGameState
 } from '@/services/storage'
 import { selectCards } from '@/services/cardSelector'
-import {
-  MIN_CARD_LEVEL,
-  MAX_CARD_LEVEL,
-  MAX_CARDS_PER_GAME,
-  SELECT_OPTIONS
-} from '@/config/constants'
+import { MIN_CARD_LEVEL, MAX_CARD_LEVEL, MAX_CARDS_PER_GAME, SELECT_OPTIONS } from '@/constants'
 
 export interface AnswerData {
   isCorrect: boolean

@@ -1,6 +1,6 @@
 /**
  * Fetch app stats from database
- * @param basePath - The app identifier (e.g., '1x1', 'wordplay')
+ * @param basePath - The app identifier (e.g., '1x1', 'voc')
  * @returns number of games completed metered, or 0 on error
  */
 export const helperStatsDataRead = async (basePath: string): Promise<number> => {
@@ -26,7 +26,7 @@ export const helperStatsDataRead = async (basePath: string): Promise<number> => 
 
 /**
  * Write app stats to database
- * @param basePath - The app identifier (e.g., '1x1', 'wordplay')
+ * @param basePath - The app identifier (e.g., '1x1', 'voc')
  */
 export const helperStatsDataWrite = async (basePath: string): Promise<void> => {
   try {

@@ -12,12 +12,7 @@ import {
 } from '@/services/storage'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import type { GameResult } from '@flashcards/shared'
-import {
-  FIRST_GAME_BONUS,
-  STREAK_GAME_BONUS,
-  STREAK_GAME_INTERVAL,
-  BASE_PATH
-} from '@/config/constants'
+import { FIRST_GAME_BONUS, STREAK_GAME_BONUS, STREAK_GAME_INTERVAL, BASE_PATH } from '@/constants'
 import { TEXT_DE, helperStatsDataWrite } from '@flashcards/shared'
 import { GameOverPage } from '@flashcards/shared/pages'
 

@@ -3,7 +3,7 @@ import HomePage from './pages/HomePage.vue'
 import GamePage from './pages/GamePage.vue'
 import GameOverPage from './pages/GameOverPage.vue'
 import HistoryPage from './pages/HistoryPage.vue'
-import StatsPage from './pages/StatsPage.vue'
+import CardsPage from './pages/CardsPage.vue'
 
 export const router = createRouter({
   history: createWebHistory('/1x1/'),
@@ -29,9 +29,9 @@ export const router = createRouter({
       component: HistoryPage
     },
     {
-      path: '/stats',
-      name: '/stats',
-      component: StatsPage
+      path: '/cards',
+      name: '/cards',
+      component: CardsPage
     }
   ]
 })

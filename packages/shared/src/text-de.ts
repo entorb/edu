@@ -9,7 +9,7 @@
 export const TEXT_DE = {
   // App titles (used in vite.config.ts manifests)
   appTitle_1x1: "Vyvit's 1x1 Spiel",
-  appTitle_wordplay: "Rabat's Wortspiel",
+  appTitle_voc: "Rabat's Wortspiel",
 
   // Footer
   totalGamesPlayedByAll: 'Spiele gespielt.',
@@ -94,7 +94,7 @@ export const TEXT_DE = {
   },
 
   // Wordplay App specific
-  wordplay: {
+  voc: {
     home: {
       welcome: 'Willkommen zurück!',
       startRound: 'Runde starten',
@@ -114,8 +114,7 @@ export const TEXT_DE = {
       time: 'Zeit',
       revealAnswer: 'Antwort aufdecken',
       wasYourAnswerCorrect: 'War deine Antwort richtig?',
-      typePlaceholder: 'Antwort tippen...',
-      closeAnswer: 'Knapp daneben'
+      typePlaceholder: 'Antwort tippen...'
     },
     gameOver: {
       title: 'Runde beendet!',

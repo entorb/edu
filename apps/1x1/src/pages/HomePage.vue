@@ -5,7 +5,7 @@ import { useGameStore } from '@/composables/useGameStore'
 import type { SelectionType } from '@/types'
 import type { FocusType } from '@flashcards/shared'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
-import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/config/constants'
+import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/constants'
 import { TEXT_DE } from '@flashcards/shared'
 import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
 import { loadGameStats } from '@/services/storage'
@@ -66,8 +66,8 @@ function goToHistory() {
   router.push({ name: '/history' })
 }
 
-function goToStats() {
-  router.push({ name: '/stats' })
+function goToCards() {
+  router.push({ name: '/cards' })
 }
 
 function toggleSelect(option: number) {
@@ -212,10 +212,10 @@ function toggleSquares() {
         color="primary"
         size="md"
         class="col"
-        @click="goToStats"
+        @click="goToCards"
         icon="layers"
         :label="TEXT_DE.nav.cards"
-        data-cy="stats-button"
+        data-cy="cards-button"
       />
       <q-btn
         unelevated

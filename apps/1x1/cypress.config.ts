@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import { BASE_PATH } from './src/config/constants'
+import { BASE_PATH } from './src/constants'
 import baseConfig from '../../cypress.config.base'
 
 export default defineConfig({

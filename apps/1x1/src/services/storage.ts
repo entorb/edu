@@ -12,7 +12,7 @@ import {
   createStatsOperations,
   createGamePersistence
 } from '@flashcards/shared'
-import { MIN_CARD_LEVEL, MAX_CARD_TIME, MIN_CARD_TIME, SELECT_OPTIONS } from '@/config/constants'
+import { MIN_CARD_LEVEL, MAX_CARD_TIME, MIN_CARD_TIME, SELECT_OPTIONS } from '@/constants'
 
 const STORAGE_KEYS = {
   CARDS: '1x1-cards',

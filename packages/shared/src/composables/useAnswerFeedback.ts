@@ -1,7 +1,7 @@
 /**
  * Shared Answer Feedback State Management Composable
  * Handles feedback display, auto-close timers, and button disable logic
- * Used by both 1x1 and wordplay apps for consistent feedback behavior
+ * Used by both 1x1 and voc apps for consistent feedback behavior
  */
 
 import { ref } from 'vue'
