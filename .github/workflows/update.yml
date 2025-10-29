@@ -1,0 +1,47 @@
+name: Update
+
+on:
+  schedule:
+    - cron: '51 5 12 * *' # At 05:51 on 12th day-of-month
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Update Vite, etc.
+        run: pnpm up vite cspell eslint prettier vue-tsc
+
+      - name: Run code checks
+        run: pnpm run check
+
+      - name: Commit changes if any
+        run: |
+          if [[ $(git status --porcelain) ]]; then
+            git config --local user.name "GitHub Action"
+            git config --local user.email "action@github.com"
+            git add pnpm-lock.yaml
+            git commit -m "Lock" || true
+            git add package.json
+            git commit -m "Auto-Update Vite, etc." || true
+            git push
+          fi

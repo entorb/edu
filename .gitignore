@@ -1,0 +1,16 @@
+.vite/
+coverage/
+apps/*/cypress/screenshots/
+dist/
+example/
+node_modules/
+
+.cspellcache
+.DS_Store
+.env
+.eslintcache
+*.tsbuildinfo
+CLAUDE.md
+GEMINI.md
+sonar-report.xml
+.github/copilot-instructions.md
