@@ -70,26 +70,6 @@ export function createBaseGameStore<
           { deep: true }
         )
       }
-
-      // Watch for changes in history and save to storage
-      watch(
-        history,
-        newHistory => {
-          if (newHistory.length > 0) {
-            config.saveHistory(newHistory)
-          }
-        },
-        { deep: true }
-      )
-
-      // Watch for changes in gameStats and save to storage
-      watch(
-        gameStats,
-        newStats => {
-          config.saveGameStats(newStats)
-        },
-        { deep: true }
-      )
     }
   }
 

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useGameStore } from '@/composables/useGameStore'
 import {
   getGameResult,
   incrementDailyGames,
-  updateBonusPoints,
   clearGameResult,
-  loadHistory,
-  saveHistory
+  saveHistory,
+  loadGameStats,
+  saveGameStats
 } from '@/services/storage'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import type { GameResult } from '@flashcards/shared'
@@ -21,6 +22,7 @@ import { TEXT_DE, helperStatsDataWrite } from '@flashcards/shared'
 import { GameOverPage } from '@flashcards/shared/pages'
 
 const router = useRouter()
+const { history: gameStoreHistory } = useGameStore()
 
 const result = ref<GameResult | null>(null)
 const bonusReasons = ref<Array<{ label: string; points: number }>>([])
@@ -47,6 +49,8 @@ onMounted(async () => {
     // No result found, redirect to home
     router.push({ name: '/' })
   } else {
+    // ONLY place where history and stats are persisted
+
     // Calculate daily bonuses
     const dailyInfo = incrementDailyGames()
 
@@ -61,20 +65,20 @@ onMounted(async () => {
       })
     }
 
-    // Update statistics with bonus points
+    // Persist history and stats with bonus points
     const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
-    if (totalBonusPoints > 0) {
-      // Update the last history entry to include bonus points
-      const history = loadHistory()
-      if (history.length > 0) {
-        const lastEntry = history[history.length - 1]
-        lastEntry.points += totalBonusPoints
-        saveHistory(history)
-      }
 
-      // Update bonus points in stats (doesn't increment gamesPlayed - already done by saveGameResults)
-      updateBonusPoints(totalBonusPoints)
+    // Use history from game store (which includes the new entry added by finishGame)
+    if (gameStoreHistory.value.length > 0) {
+      const lastEntry = gameStoreHistory.value[gameStoreHistory.value.length - 1]
+      lastEntry.points += totalBonusPoints
+      saveHistory(gameStoreHistory.value)
     }
+
+    // Load and update stats
+    const stats = loadGameStats()
+    stats.points += totalBonusPoints
+    saveGameStats(stats)
 
     // update usage stats in DB
     await helperStatsDataWrite(BASE_PATH)

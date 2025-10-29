@@ -75,6 +75,7 @@ export function useGameStore() {
 
   watch(
     () => [
+      baseStore.gameCards.value.length,
       baseStore.currentCardIndex.value,
       baseStore.points.value,
       baseStore.correctAnswersCount.value
@@ -157,11 +158,12 @@ export function useGameStore() {
       correctAnswers: baseStore.correctAnswersCount.value
     }
 
-    baseStore.saveGameResults(historyEntry)
-    // Note: baseStore.saveGameResults() updates gameStats which triggers the watcher to save to storage
-
-    // Explicitly save history to storage to ensure it's persisted
-    storageSaveHistory(baseStore.history.value)
+    // Store the history entry in memory for GameOverPage to persist
+    baseStore.history.value = [...baseStore.history.value, historyEntry]
+    // Update game stats in memory for GameOverPage to persist
+    baseStore.gameStats.value.gamesPlayed++
+    baseStore.gameStats.value.points += baseStore.points.value
+    baseStore.gameStats.value.correctAnswers += baseStore.correctAnswersCount.value
 
     storageSetGameResult({
       points: baseStore.points.value,

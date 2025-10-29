@@ -166,7 +166,7 @@ function goToInfo() {
       class="full-width q-mb-sm"
       @click="startGame"
       icon="play_arrow"
-      data-cy="btn-start"
+      data-cy="start-button"
     >
       <span class="text-body1">{{ TEXT_DE.common.start }}</span>
     </q-btn>

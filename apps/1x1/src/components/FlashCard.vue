@@ -292,11 +292,7 @@ onUnmounted(() => {
         @click="submitAnswer"
         :disable="userAnswer === null || userAnswer === undefined || isButtonDisabled"
         icon="check"
-        :label="
-          isButtonDisabled
-            ? `${TEXT_DE.common.wait} ${buttonDisableCountdown}s...`
-            : TEXT_DE.common.check
-        "
+        :label="isButtonDisabled ? `${TEXT_DE.common.wait}` : TEXT_DE.common.check"
         data-cy="submit-answer-button"
       />
     </div>
@@ -307,6 +303,7 @@ onUnmounted(() => {
       <q-card
         v-if="!answerData.isCorrect"
         class="q-mb-md"
+        data-cy="wrong-answer-feedback"
       >
         <q-card-section class="text-center q-pa-md">
           <div class="row items-center justify-center text-h5">
@@ -329,6 +326,7 @@ onUnmounted(() => {
       <q-card
         v-else
         class="q-mb-md bg-positive-1"
+        data-cy="correct-answer-feedback"
       >
         <q-card-section class="text-center q-pa-md">
           <div class="text-h5 text-weight-bold text-positive">
@@ -354,9 +352,7 @@ onUnmounted(() => {
         :color="answerData.isCorrect ? 'positive' : 'negative'"
         :disable="isButtonDisabled || isEnterDisabled"
         :label="
-          isButtonDisabled || isEnterDisabled
-            ? `${TEXT_DE.common.wait} ${buttonDisableCountdown}s...`
-            : TEXT_DE.common.continue
+          isButtonDisabled || isEnterDisabled ? `${TEXT_DE.common.wait}` : TEXT_DE.common.continue
         "
         @click="handleContinue"
         data-cy="continue-button"

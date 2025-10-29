@@ -22,8 +22,9 @@ const {
 const { elapsedTime, stopTimer } = useGameTimer(currentCard)
 
 onMounted(() => {
-  // Redirect home if no settings AND no game cards (game not started properly)
-  if (!gameSettings.value && gameCards.value.length === 0) {
+  // Redirect home if there's no game in progress and no settings
+  // This handles the case where user accessed /game directly without starting a game
+  if (gameCards.value.length === 0 && !gameSettings.value) {
     router.push({ name: '/' })
   }
 })

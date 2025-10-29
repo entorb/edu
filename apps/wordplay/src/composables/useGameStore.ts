@@ -58,6 +58,7 @@ export function useGameStore() {
 
   watch(
     () => [
+      baseStore.gameCards.value.length,
       baseStore.currentCardIndex.value,
       baseStore.points.value,
       baseStore.correctAnswersCount.value
@@ -176,7 +177,12 @@ export function useGameStore() {
       correctAnswers: baseStore.correctAnswersCount.value
     }
 
-    baseStore.saveGameResults(historyEntry)
+    // Store the history entry in memory for GameOverPage to persist
+    baseStore.history.value = [...baseStore.history.value, historyEntry]
+    // Update game stats in memory for GameOverPage to persist
+    baseStore.gameStats.value.gamesPlayed++
+    baseStore.gameStats.value.points += baseStore.points.value
+    baseStore.gameStats.value.correctAnswers += baseStore.correctAnswersCount.value
 
     // Clear game state after finishing
     storageClearGameState()

@@ -3,6 +3,7 @@
     "vite.config.ts",
     "vitest.config.ts",
     "cypress.config.ts",
+    "../../cypress.config.base.ts",
     "../../packages/shared/src/**/*.ts",
     "../../packages/shared/src/**/*.vue",
     "src/config/text-de.ts",

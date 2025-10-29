@@ -15,11 +15,16 @@ import {
   STREAK_GAME_INTERVAL
 } from '../config/constants'
 import FoxIcon from '../components/FoxIcon.vue'
-import { incrementDailyGames } from '../services/storage'
-import { saveGameStats, loadGameStats } from '../services/storage'
+import { incrementDailyGames, loadGameStats, saveGameStats, saveHistory } from '../services/storage'
 
 const router = useRouter()
-const { points, correctAnswersCount, gameCards, isFoxHappy } = useGameStore()
+const {
+  points,
+  correctAnswersCount,
+  gameCards,
+  isFoxHappy,
+  history: gameStoreHistory
+} = useGameStore()
 
 const bonusReasons = ref<Array<{ label: string; points: number }>>([])
 
@@ -43,6 +48,8 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(async () => {
+  // ONLY place where history and stats are persisted
+
   // Calculate daily bonuses using shared helper
   const dailyInfo = incrementDailyGames()
   const bonusConfig: DailyBonusConfig = {
@@ -54,15 +61,20 @@ onMounted(async () => {
   const calculatedBonuses = calculateDailyBonuses(dailyInfo, bonusConfig)
   bonusReasons.value = calculatedBonuses
 
-  // Update statistics with bonus points
+  // Persist history and stats with bonus points
   const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
-  if (totalBonusPoints > 0) {
-    const stats = loadGameStats()
-    saveGameStats({
-      ...stats,
-      points: stats.points + totalBonusPoints
-    })
+
+  // Use history from game store (which includes the new entry added by finishGame)
+  if (gameStoreHistory.value.length > 0) {
+    const lastEntry = gameStoreHistory.value[gameStoreHistory.value.length - 1]
+    lastEntry.points += totalBonusPoints
+    saveHistory(gameStoreHistory.value)
   }
+
+  // Load and update stats
+  const stats = loadGameStats()
+  stats.points += totalBonusPoints
+  saveGameStats(stats)
 
   window.addEventListener('keydown', handleKeyDown)
   // Update usage stats in DB
