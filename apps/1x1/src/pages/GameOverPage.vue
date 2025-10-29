@@ -45,50 +45,51 @@ function handleKeyDown(event: KeyboardEvent) {
 onMounted(async () => {
   result.value = getGameResult()
 
+  // No result found, redirect to home
   if (!result.value) {
-    // No result found, redirect to home
     router.push({ name: '/' })
-  } else {
-    // ONLY place where history and stats are persisted
-
-    // Calculate daily bonuses
-    const dailyInfo = incrementDailyGames()
-
-    if (dailyInfo.isFirstGame) {
-      bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
-    }
-
-    if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
-      bonusReasons.value.push({
-        label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`,
-        points: STREAK_GAME_BONUS
-      })
-    }
-
-    // Persist history and stats with bonus points
-    const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
-
-    // Use history from game store (which includes the new entry added by finishGame)
-    if (gameStoreHistory.value.length > 0) {
-      const lastEntry = gameStoreHistory.value[gameStoreHistory.value.length - 1]
-      lastEntry.points += totalBonusPoints
-      saveHistory(gameStoreHistory.value)
-    }
-
-    // Load and update stats
-    const stats = loadGameStats()
-    stats.points += totalBonusPoints
-    saveGameStats(stats)
-
-    // update usage stats in DB
-    await helperStatsDataWrite(BASE_PATH)
+    return
   }
 
-  window.addEventListener('keydown', handleKeyDown)
+  // ONLY place where history and stats are persisted
+
+  // Calculate daily bonuses
+  const dailyInfo = incrementDailyGames()
+
+  if (dailyInfo.isFirstGame) {
+    bonusReasons.value.push({ label: TEXT_DE.multiply.firstGameBonus, points: FIRST_GAME_BONUS })
+  }
+
+  if (dailyInfo.gamesPlayedToday % STREAK_GAME_INTERVAL === 0) {
+    bonusReasons.value.push({
+      label: `${dailyInfo.gamesPlayedToday}. ${TEXT_DE.multiply.streakGameBonus}`,
+      points: STREAK_GAME_BONUS
+    })
+  }
+
+  // Persist history and stats with bonus points
+  const totalBonusPoints = bonusReasons.value.reduce((sum, r) => sum + r.points, 0)
+
+  // Use history from game store (which includes the new entry added by finishGame)
+  if (gameStoreHistory.value.length > 0) {
+    const lastEntry = gameStoreHistory.value[gameStoreHistory.value.length - 1]
+    lastEntry.points += totalBonusPoints
+    saveHistory(gameStoreHistory.value)
+  }
+
+  // Load and update stats
+  const stats = loadGameStats()
+  stats.points += totalBonusPoints
+  saveGameStats(stats)
+
+  // update usage stats in DB
+  await helperStatsDataWrite(BASE_PATH)
+
+  globalThis.addEventListener('keydown', handleKeyDown)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
+  globalThis.removeEventListener('keydown', handleKeyDown)
 })
 
 function goHome() {

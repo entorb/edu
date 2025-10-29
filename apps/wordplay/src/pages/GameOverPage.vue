@@ -76,13 +76,13 @@ onMounted(async () => {
   stats.points += totalBonusPoints
   saveGameStats(stats)
 
-  window.addEventListener('keydown', handleKeyDown)
+  globalThis.addEventListener('keydown', handleKeyDown)
   // Update usage stats in DB
   await helperStatsDataWrite(BASE_PATH)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
+  globalThis.removeEventListener('keydown', handleKeyDown)
 })
 </script>
 

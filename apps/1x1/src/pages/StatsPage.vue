@@ -36,11 +36,11 @@ function handleKeyDown(event: KeyboardEvent) {
 
 onMounted(() => {
   cards.value = loadCards()
-  window.addEventListener('keydown', handleKeyDown)
+  globalThis.addEventListener('keydown', handleKeyDown)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
+  globalThis.removeEventListener('keydown', handleKeyDown)
 })
 
 function getCardCountByLevel(level: number): number {

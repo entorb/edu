@@ -90,7 +90,7 @@ function goToInfo() {
     <!-- Mascot and Statistics -->
     <div class="row items-center justify-center q-mb-md">
       <div class="col-12 col-sm-auto text-center">
-        <!-- TODO -->
+        <!-- Mascot happiness based on total points -->
         <FoxIcon
           :is-happy="gameStats.points > 1000"
           :size="100"

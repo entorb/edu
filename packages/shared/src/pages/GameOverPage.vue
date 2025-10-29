@@ -60,16 +60,13 @@ function handleGoHome() {
         <q-card-section class="q-pa-lg">
           <div class="row q-gutter-md justify-center">
             <div style="min-width: 90px">
-              <div
-                class="text-h4 text-primary text-weight-bold"
-                data-cy="final-points"
-              >
+              <div class="text-h4 text-primary text-weight-bold">
                 <q-icon
                   name="emoji_events"
                   color="amber"
                   size="36px"
                 />
-                {{ points }}
+                <span data-cy="final-points">{{ totalPoints }}</span>
               </div>
             </div>
             <div style="min-width: 90px">
@@ -118,7 +115,8 @@ function handleGoHome() {
             </div>
             <div class="row justify-center q-mt-sm">
               <div class="text-h6 text-weight-bold">
-                {{ points }} + {{ bonusPoints }} = {{ totalPoints }}
+                {{ points }} + {{ bonusPoints }} =
+                <span data-cy="total-points-with-bonus">{{ totalPoints }}</span>
               </div>
             </div>
           </div>

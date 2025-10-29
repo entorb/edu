@@ -124,10 +124,10 @@ export function updateCard(question: string, updates: Partial<Card>): void {
  */
 export function resetCards(): void {
   const cards = loadCards()
-  cards.forEach(card => {
+  for (const card of cards) {
     card.level = MIN_CARD_LEVEL
     card.time = MAX_CARD_TIME
-  })
+  }
   saveCards(cards)
 }
 

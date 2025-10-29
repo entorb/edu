@@ -66,6 +66,45 @@ export function useGameStore() {
     saveGameStateDebounced
   )
 
+  // Calculate points earned for an answer
+  function calculatePoints(
+    result: AnswerResult,
+    card: Card,
+    answerTime: number | undefined
+  ): number {
+    if (result !== 'correct' && result !== 'close') return 0
+
+    const basePoints = 6 - card.level
+    const settings = baseStore.gameSettings.value
+    if (!settings) return 0
+
+    // Mode multiplier
+    const multiplier = settings.mode === 'blind' ? 2 : settings.mode === 'typing' ? 4 : 1
+    let pointsEarned = basePoints * multiplier
+
+    // Close answer penalty
+    if (result === 'close') {
+      pointsEarned = Math.round(pointsEarned * 0.75)
+    }
+
+    // Language bonus
+    if (settings.language === 'de-en') {
+      pointsEarned += 1
+    }
+
+    // Time bonus for blind/typing modes
+    if (result === 'correct' && answerTime !== undefined && answerTime < 60) {
+      const isBeatTime =
+        (settings.mode === 'blind' && answerTime < card.time_blind) ||
+        (settings.mode === 'typing' && answerTime < card.time_typing)
+      if (isBeatTime) {
+        pointsEarned += 5
+      }
+    }
+
+    return pointsEarned
+  }
+
   // App-specific actions
   function startGame(settings: GameSettings) {
     // Only start a new game if there are no cards in session storage (new game)
@@ -89,52 +128,12 @@ export function useGameStore() {
     const currentCard = baseStore.gameCards.value[baseStore.currentCardIndex.value]
     if (!currentCard || !baseStore.gameSettings.value) return
 
-    let pointsEarned = 0
-
-    if (result === 'correct' || result === 'close') {
-      if (result === 'correct') {
-        baseStore.correctAnswersCount.value++
-      }
-      const basePoints = 6 - currentCard.level
-      let multiplier = 1
-
-      switch (baseStore.gameSettings.value.mode) {
-        case 'blind':
-          multiplier = 2
-          break
-        case 'typing':
-          multiplier = 4
-          break
-        case 'multiple-choice':
-        default:
-          multiplier = 1
-          break
-      }
-
-      pointsEarned = basePoints * multiplier
-
-      if (result === 'close') {
-        pointsEarned = Math.round(pointsEarned * 0.75)
-      }
-
-      if (baseStore.gameSettings.value.language === 'de-en') {
-        pointsEarned += 1
-      }
-
-      // Time bonus: +5 points if beat previous time (only for correct answers in blind/typing modes)
-      if (result === 'correct' && answerTime !== undefined && answerTime < 60) {
-        if (baseStore.gameSettings.value.mode === 'blind' && answerTime < currentCard.time_blind) {
-          pointsEarned += 5
-        } else if (
-          baseStore.gameSettings.value.mode === 'typing' &&
-          answerTime < currentCard.time_typing
-        ) {
-          pointsEarned += 5
-        }
-        // No time bonus for multiple-choice mode
-      }
+    if (result === 'correct') {
+      baseStore.correctAnswersCount.value++
     }
 
+    // Calculate and apply points
+    const pointsEarned = calculatePoints(result, currentCard, answerTime)
     baseStore.points.value += pointsEarned
 
     // Update card level and time
@@ -152,13 +151,12 @@ export function useGameStore() {
         // Update time (only on correct answers for blind/typing modes)
         if (result === 'correct' && answerTime !== undefined) {
           const clampedTime = Math.max(MIN_TIME, Math.min(MAX_TIME, answerTime))
-
-          if (baseStore.gameSettings.value?.mode === 'blind') {
+          const settings = baseStore.gameSettings.value
+          if (settings?.mode === 'blind') {
             updates.time_blind = clampedTime
-          } else if (baseStore.gameSettings.value?.mode === 'typing') {
+          } else if (settings?.mode === 'typing') {
             updates.time_typing = clampedTime
           }
-          // No time update for multiple-choice mode
         }
 
         return { ...card, ...updates }

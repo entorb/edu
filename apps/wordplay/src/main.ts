@@ -37,7 +37,7 @@ app.mount('#app')
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+  globalThis.addEventListener('load', () => {
     navigator.serviceWorker.register('/wordplay/sw.js').catch(() => {
       // Silently fail - PWA not critical
     })

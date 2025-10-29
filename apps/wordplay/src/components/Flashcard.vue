@@ -105,11 +105,11 @@ function handleKeyDown(event: KeyboardEvent) {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
+  globalThis.addEventListener('keydown', handleKeyDown)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
+  globalThis.removeEventListener('keydown', handleKeyDown)
   if (nextCardTimer) clearTimeout(nextCardTimer)
   if (proceedEnableTimer) clearTimeout(proceedEnableTimer)
 })
@@ -143,13 +143,11 @@ function processAnswer(result: AnswerResult) {
         userInput: userAnswer.value,
         correctText: mainCorrectAnswer
       }
-    } else {
-      if (props.settings.mode === 'typing') {
-        feedbackData.value = {
-          type: 'typing-incorrect',
-          userInput: userAnswer.value,
-          correctText: correctAnswer.value
-        }
+    } else if (props.settings.mode === 'typing') {
+      feedbackData.value = {
+        type: 'typing-incorrect',
+        userInput: userAnswer.value,
+        correctText: correctAnswer.value
       }
     }
   }

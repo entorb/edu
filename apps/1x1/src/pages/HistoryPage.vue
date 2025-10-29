@@ -19,11 +19,14 @@ function formatSelection(select: number[] | string): string {
 }
 
 function getFocusText(focus: string): string {
-  return focus === 'weak'
-    ? TEXT_DE.focusOptions.weak
-    : focus === 'strong'
-      ? TEXT_DE.focusOptions.strong
-      : TEXT_DE.focusOptions.slow
+  switch (focus) {
+    case 'weak':
+      return TEXT_DE.focusOptions.weak
+    case 'strong':
+      return TEXT_DE.focusOptions.strong
+    default:
+      return TEXT_DE.focusOptions.slow
+  }
 }
 
 function formatDetails(game: any): string {

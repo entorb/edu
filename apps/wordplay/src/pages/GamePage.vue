@@ -55,11 +55,11 @@ onMounted(() => {
   if (gameSettings.value) {
     startGame(gameSettings.value)
   }
-  window.addEventListener('keydown', handleKeyDown)
+  globalThis.addEventListener('keydown', handleKeyDown)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
+  globalThis.removeEventListener('keydown', handleKeyDown)
 })
 </script>
 
