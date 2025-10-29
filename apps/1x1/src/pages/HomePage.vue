@@ -7,7 +7,7 @@ import type { FocusType } from '@flashcards/shared'
 import GroundhogMascot from '@/components/GroundhogMascot.vue'
 import { SELECT_OPTIONS, DEFAULT_SELECT, FOCUS_OPTIONS, BASE_PATH } from '@/constants'
 import { TEXT_DE } from '@flashcards/shared'
-import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
+import { AppFooter, StatisticsCard, PwaInstallInfo } from '@flashcards/shared/components'
 import { loadGameStats } from '@/services/storage'
 
 const router = useRouter()
@@ -228,6 +228,9 @@ function toggleSquares() {
         data-cy="history-button"
       />
     </div>
+
+    <PwaInstallInfo class="q-mt-md" />
+
     <AppFooter :base-path="BASE_PATH" />
   </q-page>
 </template>

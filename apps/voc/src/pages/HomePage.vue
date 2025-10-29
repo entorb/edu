@@ -5,7 +5,7 @@ import { useGameStore } from '../composables/useGameStore'
 import { loadLastSettings } from '../services/storage'
 import type { GameSettings } from '../types'
 import { TEXT_DE, helperStatsDataRead } from '@flashcards/shared'
-import { AppFooter, StatisticsCard } from '@flashcards/shared/components'
+import { AppFooter, StatisticsCard, PwaInstallInfo } from '@flashcards/shared/components'
 import { BASE_PATH } from '../constants'
 import FoxIcon from '../components/FoxIcon.vue'
 
@@ -189,6 +189,9 @@ function goToInfo() {
         data-cy="history-button"
       />
     </div>
+
+    <PwaInstallInfo class="q-mt-md" />
+
     <AppFooter :base-path="BASE_PATH" />
   </q-page>
 </template>

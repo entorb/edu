@@ -12,7 +12,7 @@ import {
   BG_COLORS
 } from '@/constants'
 import { TEXT_DE, useResetCards } from '@flashcards/shared'
-import { PwaInstallInfo, LevelDistribution } from '@flashcards/shared/components'
+import { LevelDistribution } from '@flashcards/shared/components'
 
 const router = useRouter()
 const { showResetDialog } = useResetCards()
@@ -229,9 +229,6 @@ function goHome() {
           </div>
         </q-card-section>
       </q-card>
-
-      <!-- PWA Installation Info -->
-      <PwaInstallInfo class="q-mt-md" />
     </div>
   </q-page>
 </template>
