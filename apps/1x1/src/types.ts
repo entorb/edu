@@ -15,7 +15,7 @@ import type {
 // ============================================================================
 
 /** Selection type for multiplication tables */
-export type SelectionType = number[] | 'alle' | 'x²'
+export type SelectionType = number[] | 'all' | 'x²'
 
 // ============================================================================
 // Card Definition (extends BaseCard)
@@ -32,7 +32,7 @@ export interface Card extends BaseCard {
 // ============================================================================
 
 export interface GameSettings {
-  select: SelectionType // Array of numbers 3-9, e.g. [3, 5, 7], or 'alle', or 'x²'
+  select: SelectionType // Array of numbers 3-9, e.g. [3, 5, 7], or 'all', or 'x²'
   focus: FocusType // 'weak', 'strong', or 'slow'
 }
 

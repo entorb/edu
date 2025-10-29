@@ -24,6 +24,11 @@ export const router = createRouter({
       component: () => import('./pages/CardsPage.vue')
     },
     {
+      path: '/cards-edit',
+      name: '/cards-edit',
+      component: () => import('./pages/CardsEditPage.vue')
+    },
+    {
       path: '/history',
       name: '/history',
       component: () => import('./pages/HistoryPage.vue')

@@ -6,14 +6,13 @@ import { useGameStore } from '../composables/useGameStore'
 import { TEXT_DE, useResetCards, LEVEL_COLORS } from '@flashcards/shared'
 import { LevelDistribution } from '@flashcards/shared/components'
 import { MIN_LEVEL, MAX_LEVEL } from '../constants'
-import { parseCardsFromText } from '../utils/helpers'
 
 const router = useRouter()
 const $q = useQuasar()
 const { showResetDialog } = useResetCards()
-const { allCards, importCards, moveAllCards } = useGameStore()
+const { allCards, moveAllCards } = useGameStore()
+const store = useGameStore()
 
-const exportButtonText = ref<string>(TEXT_DE.voc.cards.export)
 const targetLevel = ref(1)
 
 function handleGoBack() {
@@ -34,76 +33,8 @@ onUnmounted(() => {
   globalThis.removeEventListener('keydown', handleKeyDown)
 })
 
-function handleExport() {
-  const header = 'en\tde\tlevel\n'
-  const tsvContent = allCards.value.map(c => `${c.en}\t${c.de}\t${c.level}`).join('\n')
-  navigator.clipboard
-    .writeText(header + tsvContent)
-    .then(() => {
-      exportButtonText.value = TEXT_DE.voc.cards.copied
-      setTimeout(() => (exportButtonText.value = TEXT_DE.voc.cards.export), 2000)
-    })
-    .catch(() => {
-      $q.notify({
-        type: 'negative',
-        message: TEXT_DE.voc.cards.clipboardError
-      })
-    })
-}
-
-function showImportDialog() {
-  $q.dialog({
-    title: TEXT_DE.voc.cards.importDialogTitle,
-    message: TEXT_DE.voc.cards.importDialogMessage,
-    prompt: {
-      model: '',
-      type: 'textarea',
-      outlined: true
-    },
-    cancel: true,
-    class: 'bordered'
-  }).onOk((text: string) => {
-    handleParseText(text)
-  })
-}
-
-function handleParseText(text: string) {
-  if (!text) {
-    $q.notify({ type: 'negative', message: TEXT_DE.voc.cards.emptyTextError })
-    return
-  }
-
-  const parseResult = parseCardsFromText(text)
-
-  if (!parseResult) {
-    $q.notify({
-      type: 'negative',
-      message: TEXT_DE.voc.cards.noDelimiterError
-    })
-    return
-  }
-
-  const { cards: newCards, delimiter } = parseResult
-
-  if (newCards.length === 0) {
-    $q.notify({
-      type: 'negative',
-      message: TEXT_DE.voc.cards.noCardsFoundError.replace('{delimiter}', delimiter)
-    })
-    return
-  }
-
-  $q.dialog({
-    title: TEXT_DE.voc.cards.confirmImportTitle,
-    message: TEXT_DE.voc.cards.confirmImportMessage.replace('{count}', newCards.length.toString()),
-    cancel: true
-  }).onOk(() => {
-    importCards(newCards)
-    $q.notify({
-      type: 'positive',
-      message: TEXT_DE.voc.cards.importSuccess.replace('{count}', newCards.length.toString())
-    })
-  })
+function handleEditCards() {
+  router.push('/cards-edit')
 }
 
 function handleMoveClick() {
@@ -133,6 +64,12 @@ function handleMoveClick() {
 function handleResetCards() {
   showResetDialog(() => {
     moveAllCards(1)
+  })
+}
+
+function handleResetCardsToDefaultSet() {
+  showResetDialog(() => {
+    store.resetCards()
   })
 }
 
@@ -195,37 +132,18 @@ function getLevelColor(level: number): string {
         </div>
       </div>
 
-      <!-- Export -->
+      <!-- Edit Cards -->
       <div>
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
-          {{ TEXT_DE.voc.cards.exportTitle }}
+          {{ TEXT_DE.voc.cards.editCardsTitle }}
         </h3>
-        <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cards.exportDescription }}
-        </p>
         <q-btn
           outline
           color="grey-8"
-          :label="exportButtonText"
+          :label="TEXT_DE.voc.cards.editCardsButton"
           no-caps
-          @click="handleExport"
-        />
-      </div>
-
-      <!-- Import -->
-      <div>
-        <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
-          {{ TEXT_DE.voc.cards.importTitle }}
-        </h3>
-        <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cards.importDescription }}
-        </p>
-        <q-btn
-          outline
-          color="grey-8"
-          :label="TEXT_DE.voc.cards.import"
-          no-caps
-          @click="showImportDialog"
+          @click="handleEditCards"
+          data-cy="edit-cards-button"
         />
       </div>
 
@@ -234,9 +152,6 @@ function getLevelColor(level: number): string {
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs">
           {{ TEXT_DE.voc.cards.moveAllTitle }}
         </h3>
-        <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cards.moveAllDescription }}
-        </p>
         <div class="row q-gutter-sm items-center">
           <q-input
             v-model.number="targetLevel"
@@ -265,15 +180,12 @@ function getLevelColor(level: number): string {
         <h3 class="text-subtitle1 text-weight-bold q-mb-xs text-negative">
           {{ TEXT_DE.voc.cards.dangerZoneTitle }}
         </h3>
-        <p class="text-caption text-grey-7 q-mb-sm">
-          {{ TEXT_DE.voc.cards.dangerZoneDescription }}
-        </p>
         <q-btn
           outline
           color="negative"
           :label="TEXT_DE.voc.cards.reset"
           no-caps
-          @click="handleResetCards"
+          @click="handleResetCardsToDefaultSet"
         />
       </div>
     </div>

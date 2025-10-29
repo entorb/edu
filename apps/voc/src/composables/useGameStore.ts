@@ -186,7 +186,7 @@ export function useGameStore() {
     storageClearGameState()
   }
 
-  function resetCards() {
+  function resetCardsToDefaultSet() {
     baseStore.allCards.value = INITIAL_CARDS
     // Explicitly save to ensure cards are persisted immediately
     saveCards(INITIAL_CARDS)
@@ -238,7 +238,7 @@ export function useGameStore() {
     nextCard: baseStore.nextCard,
     finishGame,
     discardGame,
-    resetCards,
+    resetCards: resetCardsToDefaultSet,
     importCards,
     moveAllCards
   }

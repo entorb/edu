@@ -32,7 +32,8 @@ export const TEXT_DE = {
     check: 'Prüfen',
     wait: 'Merken...',
     yes: 'Ja',
-    no: 'Nein'
+    no: 'Nein',
+    cancel: 'Abbrechen'
   },
 
   // Navigation
@@ -61,7 +62,11 @@ export const TEXT_DE = {
     direction: 'Richtung',
     bonusPoints: 'Bonus',
     firstGameBonus: 'Erstes Spiel heute',
-    streakGameBonus: 'Spiel des Tages'
+    streakGameBonus: 'Spiel des Tages',
+    english: 'Englisch',
+    german: 'Deutsch',
+    actions: 'Aktionen',
+    delete: 'Löschen'
   },
 
   // Common focus options
@@ -85,34 +90,28 @@ export const TEXT_DE = {
       blind: 'Blind',
       typing: 'Tippen'
     },
-    language: {
-      'en-de': 'EN → DE',
-      'de-en': 'DE → EN'
-    },
     game: {
       revealAnswer: 'Antwort aufdecken',
       wasYourAnswerCorrect: 'War deine Antwort richtig?',
       typePlaceholder: 'Antwort tippen...'
     },
+    language: {
+      'en-de': 'EN->DE',
+      'de-en': 'DE->EN'
+    },
     cards: {
       // title: 'Kartenverwaltung',
-      export: 'Exportieren',
-      import: 'Importieren...',
+      export: 'Raus kopieren',
+      import: 'Rein kopieren',
       copied: 'Kopiert!',
-      reset: 'Kartenstapel zurücksetzen',
+      reset: 'Alle Karten löschen',
       moveAll: 'Verschieben',
-      exportTitle: 'Karten Exportieren',
-      exportDescription: 'Kopiere deine Karten um sie in Excel einzufügen.',
-      importTitle: 'Karten Importieren',
-      importDescription: 'Ersetze deine Karten per Copy&Paste (aus Excel kopieren).',
       moveAllTitle: 'Alle Karten verschieben',
-      moveAllDescription: 'Setze alle Karten auf ein Level.',
       dangerZoneTitle: 'Gefahrenzone',
-      dangerZoneDescription: 'Ersetze Deine Karten durch den Standardsatz.',
       importDialogTitle: 'Karten importieren',
       importDialogMessage: 'Füge deine Karten aus Excel (oder so) ein (En | De | Level)',
-      confirmImportTitle: 'Import bestätigen',
-      confirmImportMessage: '{count} Karten gefunden. Importieren?',
+      importHintExcel:
+        'Tipp: verwende Excel order Google Tabellen um mehrere Vokabellisten zu verwalten.',
       confirmMoveTitle: 'Verschieben bestätigen',
       confirmMoveMessage: 'Alle {count} Karten auf Level {level} setzen?',
       confirmResetTitle: 'Zurücksetzen bestätigen',
@@ -122,16 +121,22 @@ export const TEXT_DE = {
       noDelimiterError: 'Konnte kein Trennzeichen (Tab, Komma, Semikolon) finden.',
       noCardsFoundError:
         'Keine gültigen Karten gefunden. Format: EN{delimiter}DE{delimiter}LEVEL (optional)',
-      clipboardError: 'Konnte nicht in die Zwischenablage kopieren.',
+      clipboardError: 'Zugriff auf Zwischenablage fehlgeschlagen.',
       invalidLevelError: 'Bitte gib ein Level zwischen {min} und {max} ein.',
       importSuccess: '{count} Karten erfolgreich importiert!',
       moveSuccess: 'Alle Karten verschoben!',
-      resetSuccess: 'Kartenstapel wurde zurückgesetzt!'
-    },
-    history: {
-      points: 'Pkt.',
-      focusWeak: 'Fokus: Schwach',
-      focusStrong: 'Fokus: Stark'
+      resetSuccess: 'Kartenstapel wurde zurückgesetzt!',
+      editCardsTitle: 'Karten Bearbeiten',
+      editCardsButton: 'Bearbeiten',
+      addNewCard: 'Neue Karte',
+      enPlaceholder: 'Englisches Wort',
+      dePlaceholder: 'Deutsches Wort',
+      save: 'Speichern',
+      validationEnEmpty: 'Das englische Wort darf nicht leer sein.',
+      validationDeEmpty: 'Das deutsche Wort darf nicht leer sein.',
+      saveSuccess: 'Karten erfolgreich gespeichert!',
+      unsavedChangesTitle: 'Ungespeicherte Änderungen',
+      unsavedChangesMessage: 'Du hast ungespeicherte Änderungen. Möchtest du die Seite verlassen?'
     },
     info: {
       title: 'Scoring-Regeln',

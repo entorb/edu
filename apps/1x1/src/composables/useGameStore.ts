@@ -98,7 +98,7 @@ export function useGameStore() {
         const [x, y] = card.question.split('x').map(Number)
         return x === y
       })
-    } else if (settings.select === 'alle') {
+    } else if (settings.select === 'all') {
       selectedCards = allAvailableCards
     } else {
       const selectArray = Array.isArray(settings.select) ? settings.select : []
@@ -143,7 +143,7 @@ export function useGameStore() {
         (num: number, idx: number) => num === SELECT_OPTIONS[idx]
       )
     ) {
-      settingsForHistory.select = 'alle'
+      settingsForHistory.select = 'all'
     }
 
     const historyEntry: GameHistory = {

@@ -13,6 +13,9 @@ onMounted(() => {
 
 function formatSelection(select: number[] | string): string {
   if (typeof select === 'string') {
+    if (select === 'all') {
+      return TEXT_DE.multiply.selectionAll
+    }
     return select
   }
   return select.join(', ')
