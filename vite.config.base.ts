@@ -12,9 +12,9 @@ export const baseViteConfig: UserConfig = {
 
   optimizeDeps: {
     exclude: [
-      'unplugin-vue-router/runtime',
       'unplugin-vue-router/data-loaders',
-      'unplugin-vue-router/data-loaders/basic'
+      'unplugin-vue-router/data-loaders/basic',
+      'unplugin-vue-router/runtime'
     ],
     include: ['vue', 'vue-router', 'quasar']
   },

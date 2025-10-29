@@ -41,7 +41,7 @@ export default mergeConfig(
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
           name: APP_TITLE,
-          short_name: BASE_PATH,
+          short_name: APP_TITLE,
           description: APP_TITLE,
           theme_color: '#1976d2',
           background_color: '#ffffff',

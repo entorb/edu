@@ -31,7 +31,7 @@ export default mergeConfig(
         template: { transformAssetUrls }
       }),
       quasar({
-        sassVariables: 'src/quasar-variables.sass'
+        sassVariables: fileURLToPath(new URL('./src/quasar-variables.sass', import.meta.url))
       }),
       VueRouter({
         dts: 'src/typed-router.d.ts'
@@ -41,7 +41,7 @@ export default mergeConfig(
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
           name: APP_TITLE,
-          short_name: BASE_PATH,
+          short_name: APP_TITLE,
           description: APP_TITLE,
           theme_color: '#1976d2',
           background_color: '#ffffff',
