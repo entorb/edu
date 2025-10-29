@@ -5,8 +5,8 @@ import { useQuasar } from 'quasar'
 import { useGameStore } from '../composables/useGameStore'
 import { TEXT_DE, useResetCards, LEVEL_COLORS } from '@flashcards/shared'
 import { LevelDistribution } from '@flashcards/shared/components'
-import { MIN_LEVEL, MAX_LEVEL, DEFAULT_TIME } from '../constants'
-import type { Card } from '../types'
+import { MIN_LEVEL, MAX_LEVEL } from '../constants'
+import { parseCardsFromText } from '../utils/helpers'
 
 const router = useRouter()
 const $q = useQuasar()
@@ -73,14 +73,9 @@ function handleParseText(text: string) {
     return
   }
 
-  const lines = text.trim().split('\n')
-  const firstLine = lines[0]
-  let delimiter = ''
-  if (firstLine.includes('\t')) delimiter = '\t'
-  else if (firstLine.includes(';')) delimiter = ';'
-  else if (firstLine.includes(',')) delimiter = ','
-  else if (firstLine.includes('/')) delimiter = '/'
-  else {
+  const parseResult = parseCardsFromText(text)
+
+  if (!parseResult) {
     $q.notify({
       type: 'negative',
       message: TEXT_DE.voc.cards.noDelimiterError
@@ -88,23 +83,7 @@ function handleParseText(text: string) {
     return
   }
 
-  const newCards: Card[] = []
-  lines.forEach((line, index) => {
-    if (index === 0 && line.toLowerCase().includes('en') && line.toLowerCase().includes('de')) {
-      return // Skip header
-    }
-
-    const parts = line.split(delimiter)
-    if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
-      newCards.push({
-        en: parts[0].trim(),
-        de: parts[1].trim(),
-        level: parseInt(parts[2], 10) || 1,
-        time_blind: DEFAULT_TIME,
-        time_typing: DEFAULT_TIME
-      })
-    }
-  })
+  const { cards: newCards, delimiter } = parseResult
 
   if (newCards.length === 0) {
     $q.notify({

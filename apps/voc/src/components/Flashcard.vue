@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted, onMounted } from 'vue'
 import type { Card, GameSettings } from '../types'
-import { normalizeString, levenshteinDistance } from '../utils/helpers'
+import { validateTypingAnswer } from '../utils/helpers'
 import { shuffleArray } from '@flashcards/shared/utils'
 import { TEXT_DE, type AnswerResult } from '@flashcards/shared'
-import { MAX_TIME, LEVENSHTEIN_THRESHOLD } from '../constants'
+import { MAX_TIME } from '../constants'
 
 interface Props {
   card: Card
@@ -177,33 +177,12 @@ function handleBlindSubmit(correct: boolean) {
 function handleTypingSubmit() {
   if (answerStatus.value) return
 
-  const normalizedUserAnswer = normalizeString(userAnswer.value)
-  const possibleAnswers = correctAnswer.value.split('/').map(normalizeString)
-
-  // If DE->EN, also accept answers without the leading "to "
-  if (props.settings.language === 'de-en') {
-    const answersWithoutTo = possibleAnswers
-      .filter(ans => ans.startsWith('to '))
-      .map(ans => ans.substring(3))
-    possibleAnswers.push(...answersWithoutTo)
-  }
-
-  if (possibleAnswers.some(ans => ans === normalizedUserAnswer)) {
-    processAnswer('correct')
-    return
-  }
-
-  // Check for "close" answers using configurable threshold
-  if (
-    possibleAnswers.some(
-      ans => levenshteinDistance(normalizedUserAnswer, ans) <= LEVENSHTEIN_THRESHOLD
-    )
-  ) {
-    processAnswer('close')
-    return
-  }
-
-  processAnswer('incorrect')
+  const result = validateTypingAnswer(
+    userAnswer.value,
+    correctAnswer.value,
+    props.settings.language
+  )
+  processAnswer(result)
 }
 </script>
 

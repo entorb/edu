@@ -1,3 +1,6 @@
+import { LEVENSHTEIN_THRESHOLD, DEFAULT_TIME } from '@/constants'
+import type { Card } from '../types'
+
 /**
  * Normalize a string for comparison (lowercase, trim)
  */
@@ -51,4 +54,86 @@ export function formatDate(dateString: string): string {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+/**
+ * Validates a typed answer against the correct answer(s)
+ * Supports multiple possible answers separated by '/'
+ * Handles language-specific rules (e.g., removing "to " prefix for DE->EN)
+ * Returns 'correct', 'close' (typo tolerance), or 'incorrect'
+ */
+export function validateTypingAnswer(
+  userInput: string,
+  correctAnswer: string,
+  language: 'en-de' | 'de-en'
+): 'correct' | 'close' | 'incorrect' {
+  const normalizedUserAnswer = normalizeString(userInput)
+  const possibleAnswers = correctAnswer.split('/').map(normalizeString)
+
+  // If DE->EN, also accept answers without the leading "to "
+  if (language === 'de-en') {
+    const answersWithoutTo = possibleAnswers
+      .filter(ans => ans.startsWith('to '))
+      .map(ans => ans.substring(3))
+    possibleAnswers.push(...answersWithoutTo)
+  }
+
+  // Check for exact match
+  if (possibleAnswers.some(ans => ans === normalizedUserAnswer)) {
+    return 'correct'
+  }
+
+  // Check for "close" answers using Levenshtein distance
+  if (
+    possibleAnswers.some(
+      ans => levenshteinDistance(normalizedUserAnswer, ans) <= LEVENSHTEIN_THRESHOLD
+    )
+  ) {
+    return 'close'
+  }
+
+  return 'incorrect'
+}
+
+/**
+ * Parses text input with various delimiters (tab, semicolon, comma, slash)
+ * Extracts pure parsing logic for card imports
+ *
+ * Returns an object with cards array and detected delimiter, or null if invalid
+ */
+export function parseCardsFromText(text: string): { cards: Card[]; delimiter: string } | null {
+  if (!text) {
+    return null
+  }
+
+  const lines = text.trim().split('\n')
+  const firstLine = lines[0]
+  let delimiter = '\t'
+  if (firstLine.includes('\t')) delimiter = '\t'
+  else if (firstLine.includes(';')) delimiter = ';'
+  else if (firstLine.includes(',')) delimiter = ','
+  else if (firstLine.includes('/')) delimiter = '/'
+  else {
+    return null // No valid delimiter found
+  }
+
+  const newCards: Card[] = []
+  lines.forEach((line, index) => {
+    if (index === 0 && line.toLowerCase().includes('en') && line.toLowerCase().includes('de')) {
+      return // Skip header
+    }
+
+    const parts = line.split(delimiter)
+    if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
+      newCards.push({
+        en: parts[0].trim(),
+        de: parts[1].trim(),
+        level: Number.parseInt(parts[2], 10) || 1,
+        time_blind: DEFAULT_TIME,
+        time_typing: DEFAULT_TIME
+      })
+    }
+  })
+
+  return newCards.length > 0 ? { cards: newCards, delimiter } : null
 }

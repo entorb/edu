@@ -78,3 +78,12 @@ export interface DailyGamesResult {
   isFirstGame: boolean
   gamesPlayedToday: number
 }
+
+/**
+ * Configuration for daily game bonuses
+ */
+export interface DailyBonusConfig {
+  firstGameBonus: number
+  streakGameBonus: number
+  streakGameInterval: number
+}

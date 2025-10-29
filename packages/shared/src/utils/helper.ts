@@ -1,4 +1,5 @@
 import { TEXT_DE } from '../text-de'
+import type { DailyBonusConfig } from '../types'
 
 /**
  * Get focus type text from focus value
@@ -54,15 +55,6 @@ export const helperStatsDataWrite = async (basePath: string): Promise<void> => {
   } catch {
     // Silently ignore errors - stats are not critical for app functionality
   }
-}
-
-/**
- * Configuration for daily game bonuses
- */
-export interface DailyBonusConfig {
-  firstGameBonus: number
-  streakGameBonus: number
-  streakGameInterval: number
 }
 
 /**
