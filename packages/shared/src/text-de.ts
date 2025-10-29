@@ -96,8 +96,8 @@ export const TEXT_DE = {
       typePlaceholder: 'Antwort tippen...'
     },
     language: {
-      'en-de': 'EN->DE',
-      'de-en': 'DE->EN'
+      'en-de': 'EN → DE',
+      'de-en': 'DE → EN'
     },
     cards: {
       // title: 'Kartenverwaltung',

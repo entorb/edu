@@ -79,7 +79,7 @@ export function validateTypingAnswer(
   }
 
   // Check for exact match
-  if (possibleAnswers.some(ans => ans === normalizedUserAnswer)) {
+  if (possibleAnswers.includes(normalizedUserAnswer)) {
     return 'correct'
   }
 
@@ -118,9 +118,9 @@ export function parseCardsFromText(text: string): { cards: Card[]; delimiter: st
   }
 
   const newCards: Card[] = []
-  lines.forEach((line, index) => {
+  for (const [index, line] of lines.entries()) {
     if (index === 0 && line.toLowerCase().includes('en') && line.toLowerCase().includes('de')) {
-      return // Skip header
+      continue // Skip header
     }
 
     const parts = line.split(delimiter)
@@ -133,7 +133,7 @@ export function parseCardsFromText(text: string): { cards: Card[]; delimiter: st
         time_typing: DEFAULT_TIME
       })
     }
-  })
+  }
 
   return newCards.length > 0 ? { cards: newCards, delimiter } : null
 }

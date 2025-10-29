@@ -79,7 +79,12 @@ export function useGameStore() {
     if (!settings) return 0
 
     // Mode multiplier
-    const multiplier = settings.mode === 'blind' ? 2 : settings.mode === 'typing' ? 4 : 1
+    let multiplier = 1
+    if (settings.mode === 'blind') {
+      multiplier = 2
+    } else if (settings.mode === 'typing') {
+      multiplier = 4
+    }
     let pointsEarned = basePoints * multiplier
 
     // Close answer penalty

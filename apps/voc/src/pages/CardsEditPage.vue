@@ -260,7 +260,7 @@ function onCardChange() {
               <q-item-label class="text-weight-bold">{{ TEXT_DE.words.level }}</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <!-- <q-item-label class="text-weight-bold">{{ TEXT_DE.words.actions }}</q-item-label> -->
+              <q-item-label class="text-weight-bold">{{ TEXT_DE.words.actions }}</q-item-label>
             </q-item-section>
           </q-item>
 

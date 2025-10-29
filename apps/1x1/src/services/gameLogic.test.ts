@@ -15,7 +15,7 @@ describe('Card Initialization', () => {
 
   it('should have all expected cards', () => {
     const cards = loadCards()
-    const questions = cards.map(c => c.question).sort()
+    const questions = cards.map(c => c.question).sort((a, b) => a.localeCompare(b))
 
     // Generate expected questions
     const expected: string[] = []
@@ -25,16 +25,16 @@ describe('Card Initialization', () => {
       }
     }
 
-    expect(questions).toEqual(expected.sort())
+    expect(questions).toEqual(expected.sort((a, b) => a.localeCompare(b)))
   })
 
   it('should initialize all cards with level 1 and time 60', () => {
     const cards = loadCards()
 
-    cards.forEach(card => {
+    for (const card of cards) {
       expect(card.level).toBe(1)
       expect(card.time).toBe(60)
-    })
+    }
   })
 })
 
@@ -47,14 +47,14 @@ describe('Card Filtering', () => {
   })
 
   it('should return 7 cards when selecting [6]', () => {
-    const select = [6]
+    const selectSet = new Set([6])
     const filtered = allCards.filter(card => {
       const [x, y] = card.question.split('x').map(Number)
-      return select.includes(x) || select.includes(y)
+      return selectSet.has(x) || selectSet.has(y)
     })
 
     expect(filtered).toHaveLength(7)
-    expect(filtered.map(c => c.question).sort()).toEqual([
+    expect(filtered.map(c => c.question).sort((a, b) => a.localeCompare(b))).toEqual([
       '3x6',
       '4x6',
       '5x6',
@@ -66,14 +66,14 @@ describe('Card Filtering', () => {
   })
 
   it('should return 7 cards when selecting [3]', () => {
-    const select = [3]
+    const selectSet = new Set([3])
     const filtered = allCards.filter(card => {
       const [x, y] = card.question.split('x').map(Number)
-      return select.includes(x) || select.includes(y)
+      return selectSet.has(x) || selectSet.has(y)
     })
 
     expect(filtered).toHaveLength(7)
-    expect(filtered.map(c => c.question).sort()).toEqual([
+    expect(filtered.map(c => c.question).sort((a, b) => a.localeCompare(b))).toEqual([
       '3x3',
       '3x4',
       '3x5',
@@ -85,14 +85,14 @@ describe('Card Filtering', () => {
   })
 
   it('should return 7 cards when selecting [9]', () => {
-    const select = [9]
+    const selectSet = new Set([9])
     const filtered = allCards.filter(card => {
       const [x, y] = card.question.split('x').map(Number)
-      return select.includes(x) || select.includes(y)
+      return selectSet.has(x) || selectSet.has(y)
     })
 
     expect(filtered).toHaveLength(7)
-    expect(filtered.map(c => c.question).sort()).toEqual([
+    expect(filtered.map(c => c.question).sort((a, b) => a.localeCompare(b))).toEqual([
       '3x9',
       '4x9',
       '5x9',
@@ -104,20 +104,20 @@ describe('Card Filtering', () => {
   })
 
   it('should return cards with 3 OR 4 when selecting [3, 4]', () => {
-    const select = [3, 4]
+    const selectSet = new Set([3, 4])
     const filtered = allCards.filter(card => {
       const [x, y] = card.question.split('x').map(Number)
-      return select.includes(x) || select.includes(y)
+      return selectSet.has(x) || selectSet.has(y)
     })
 
     // Should include: 3x3, 3x4, 3x5, 3x6, 3x7, 3x8, 3x9, 4x4, 4x5, 4x6, 4x7, 4x8, 4x9
     expect(filtered.length).toBeGreaterThanOrEqual(10)
 
     // Verify all filtered cards contain 3 or 4
-    filtered.forEach(card => {
+    for (const card of filtered) {
       const [x, y] = card.question.split('x').map(Number)
-      expect(select.includes(x) || select.includes(y)).toBe(true)
-    })
+      expect(selectSet.has(x) || selectSet.has(y)).toBe(true)
+    }
   })
 })
 
@@ -198,12 +198,12 @@ describe('Integration: Full Game Flow', () => {
 
   it('should correctly filter and select cards for [6]', () => {
     const allCards = loadCards()
-    const select = [6]
+    const selectSet = new Set([6])
 
     // Filter step
     const filtered = allCards.filter(card => {
       const [x, y] = card.question.split('x').map(Number)
-      return select.includes(x) || select.includes(y)
+      return selectSet.has(x) || selectSet.has(y)
     })
 
     expect(filtered).toHaveLength(7)
@@ -212,7 +212,7 @@ describe('Integration: Full Game Flow', () => {
     const selected = selectCards(filtered, 'weak', 10)
 
     expect(selected).toHaveLength(7)
-    expect(selected.map(c => c.question).sort()).toEqual([
+    expect(selected.map(c => c.question).sort((a, b) => a.localeCompare(b))).toEqual([
       '3x6',
       '4x6',
       '5x6',
