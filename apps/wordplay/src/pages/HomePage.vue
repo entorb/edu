@@ -174,7 +174,7 @@ function goToInfo() {
         size="md"
         class="col"
         @click="goToCards"
-        icon="style"
+        icon="layers"
         :label="TEXT_DE.nav.cards"
         data-cy="cards-button"
       />

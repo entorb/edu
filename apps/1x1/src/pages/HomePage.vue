@@ -213,8 +213,8 @@ function toggleSquares() {
         size="md"
         class="col"
         @click="goToStats"
-        icon="bar_chart"
-        :label="TEXT_DE.nav.stats"
+        icon="layers"
+        :label="TEXT_DE.nav.cards"
         data-cy="stats-button"
       />
       <q-btn
