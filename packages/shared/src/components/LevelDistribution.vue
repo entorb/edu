@@ -61,7 +61,7 @@ function handleReset() {
             :style="{ backgroundColor: getLevelBackgroundColor(level) }"
           >
             <q-card-section class="text-center q-pa-sm">
-              <div class="text-caption text-grey-8">{{ TEXT_DE.stats.level }}{{ level }}</div>
+              <div class="text-caption text-grey-8">{{ TEXT_DE.stats.level }} {{ level }}</div>
               <div class="text-h5 text-weight-bold text-grey-9">
                 {{ getCardCountByLevel(level) }}
               </div>
@@ -72,13 +72,3 @@ function handleReset() {
     </q-card-section>
   </q-card>
 </template>
-
-<style scoped>
-.level-badge {
-  transition: transform 0.2s ease;
-}
-
-.level-badge:hover {
-  transform: translateY(-2px);
-}
-</style>

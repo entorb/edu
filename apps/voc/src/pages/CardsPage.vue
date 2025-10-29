@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useGameStore } from '../composables/useGameStore'
-import { TEXT_DE, useResetCards } from '@flashcards/shared'
+import { TEXT_DE, useResetCards, LEVEL_COLORS } from '@flashcards/shared'
 import { LevelDistribution } from '@flashcards/shared/components'
 import { MIN_LEVEL, MAX_LEVEL, DEFAULT_TIME } from '../constants'
 import type { Card } from '../types'
@@ -57,9 +57,11 @@ function showImportDialog() {
     message: TEXT_DE.voc.cardManagement.importDialogMessage,
     prompt: {
       model: '',
-      type: 'textarea'
+      type: 'textarea',
+      outlined: true
     },
-    cancel: true
+    cancel: true,
+    class: 'bordered'
   }).onOk((text: string) => {
     handleParseText(text)
   })
@@ -162,8 +164,7 @@ function handleResetCards() {
 }
 
 function getLevelColor(level: number): string {
-  const colors = ['red', 'orange', 'amber', 'light-green', 'green']
-  return colors[level - 1] || 'grey'
+  return LEVEL_COLORS[level] || LEVEL_COLORS[1]
 }
 </script>
 
@@ -194,14 +195,11 @@ function getLevelColor(level: number): string {
       />
 
       <!-- Current Deck -->
-      <div
-        class="q-pt-lg"
-        style="border-top: 1px solid #e0e0e0"
-      >
+      <div class="q-pt-lg">
         <h3 class="text-h6 text-weight-bold q-mb-md">
           {{ TEXT_DE.voc.cardManagement.currentDeck }} ({{ allCards.length }})
         </h3>
-        <div style="max-height: 150px; overflow-y: auto">
+        <div style="max-height: 300px; overflow-y: auto">
           <q-list
             bordered
             separator
@@ -215,8 +213,8 @@ function getLevelColor(level: number): string {
               </q-item-section>
               <q-item-section side>
                 <q-badge
-                  :color="getLevelColor(card.level)"
                   :label="`Level ${card.level}`"
+                  :style="{ backgroundColor: getLevelColor(card.level) }"
                 />
               </q-item-section>
             </q-item>
