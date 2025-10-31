@@ -307,7 +307,7 @@ function goHome() {
 
           <!-- Extended Cards Section -->
           <q-separator class="q-my-md" />
-          <div class="extended-cards-section">
+          <div class="q-mt-md">
             <div class="text-subtitle2 q-mb-md text-grey-8">
               <q-icon
                 name="extension"
@@ -316,48 +316,36 @@ function goHome() {
               />
               {{ TEXT_DE.multiply.extendedCards.title }}
             </div>
-            <div class="row q-col-gutter-md">
-              <!-- 1x2 Feature -->
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="feature-toggle">
-                  <div class="feature-label">
-                    {{ TEXT_DE.multiply.extendedCards.feature1x2 }}
-                  </div>
-                  <q-toggle
-                    :model-value="extendedFeatures.feature1x2"
-                    @update:model-value="toggleExtendedFeature('feature1x2')"
-                    data-cy="feature-1x2-toggle"
-                  />
-                </div>
-              </div>
+            <div class="row items-center q-gutter-md">
+              <!-- 1x2 Toggle Button -->
+              <q-btn
+                :pressed="extendedFeatures.feature1x2"
+                unelevated
+                @click="toggleExtendedFeature('feature1x2')"
+                :label="TEXT_DE.multiply.extendedCards.feature1x2"
+                data-cy="feature-1x2-toggle"
+                :color="extendedFeatures.feature1x2 ? 'primary' : 'grey-5'"
+              />
 
-              <!-- 1x12 Feature -->
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="feature-toggle">
-                  <div class="feature-label">
-                    {{ TEXT_DE.multiply.extendedCards.feature1x12 }}
-                  </div>
-                  <q-toggle
-                    :model-value="extendedFeatures.feature1x12"
-                    @update:model-value="toggleExtendedFeature('feature1x12')"
-                    data-cy="feature-1x12-toggle"
-                  />
-                </div>
-              </div>
+              <!-- 1x12 Toggle Button -->
+              <q-btn
+                :pressed="extendedFeatures.feature1x12"
+                unelevated
+                @click="toggleExtendedFeature('feature1x12')"
+                :label="TEXT_DE.multiply.extendedCards.feature1x12"
+                data-cy="feature-1x12-toggle"
+                :color="extendedFeatures.feature1x12 ? 'primary' : 'grey-5'"
+              />
 
-              <!-- 1x20 Feature -->
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="feature-toggle">
-                  <div class="feature-label">
-                    {{ TEXT_DE.multiply.extendedCards.feature1x20 }}
-                  </div>
-                  <q-toggle
-                    :model-value="extendedFeatures.feature1x20"
-                    @update:model-value="toggleExtendedFeature('feature1x20')"
-                    data-cy="feature-1x20-toggle"
-                  />
-                </div>
-              </div>
+              <!-- 1x20 Toggle Button -->
+              <q-btn
+                :pressed="extendedFeatures.feature1x20"
+                unelevated
+                @click="toggleExtendedFeature('feature1x20')"
+                :label="TEXT_DE.multiply.extendedCards.feature1x20"
+                data-cy="feature-1x20-toggle"
+                :color="extendedFeatures.feature1x20 ? 'primary' : 'grey-5'"
+              />
             </div>
           </div>
         </q-card-section>
@@ -417,27 +405,6 @@ function goHome() {
   font-size: 1.1rem;
 }
 
-/* Extended Cards Section */
-.extended-cards-section {
-  margin-top: 16px;
-}
-
-.feature-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #fafafa;
-}
-
-.feature-label {
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: #424242;
-}
-
 /* Mobile: compact grid */
 @media (max-width: 599.98px) {
   .cards-grid {
@@ -463,11 +430,6 @@ function goHome() {
 
   .text-caption {
     font-size: 0.65rem !important;
-  }
-
-  .feature-toggle {
-    flex-direction: column;
-    gap: 12px;
   }
 }
 </style>
