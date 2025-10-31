@@ -204,7 +204,7 @@ function goHome() {
         class="q-mb-md"
       />
 
-      <!-- Cards Grid -->
+      <!-- Cards Grid/Matrix -->
       <q-card class="grid-card">
         <q-card-section>
           <div class="text-h6 q-mb-md">
@@ -247,9 +247,12 @@ function goHome() {
                 >
                   <div class="cell-content q-pa-xs">
                     <div class="text-caption text-weight-medium">
+                      <!-- Level -->
                       L{{ (y > x ? getCard(x, y) : getCard(y, x))?.level || 1 }}
                     </div>
-                    <div class="cell-answer q-my-xs">{{ y }}x{{ x }}<br />{{ x * y }}</div>
+                    <!-- Question and Answer -->
+                    <div class="cell-answer q-my-xs">{{ y }}x{{ x }}<br />= {{ x * y }}</div>
+                    <!-- Time -->
                     <div class="text-caption text-weight-medium">
                       {{ (y > x ? getCard(x, y) : getCard(y, x))?.time.toFixed(1) || 60 }}s
                     </div>
@@ -444,13 +447,22 @@ function goHome() {
   }
 
   .grid-cell {
-    min-height: 70px;
-    min-width: 70px;
+    min-height: 85px;
+    min-width: 85px;
     border-width: 1px;
   }
 
+  .cell-content {
+    padding: 2px !important;
+  }
+
   .cell-answer {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.1;
+  }
+
+  .text-caption {
+    font-size: 0.65rem !important;
   }
 
   .feature-toggle {
