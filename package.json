@@ -32,7 +32,7 @@
     "cy:run:voc": "pnpm --filter voc cy:run",
     "spell": "cspell --cache --quiet \"**/*.{txt,md,html,js,ts,vue,json,yml,py}\"",
     "check": "run-p format lint types spell test",
-    "find-unused-translations": "node ./scripts/find-unused-translations.js",
+    "find-unused": "node ./scripts/find-unused.js",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/dist packages/*/dist",
     "clean:cache": "rm -rf .cache apps/*/.cache packages/*/.cache apps/*/.eslintcache packages/*/.eslintcache coverage apps/*/coverage packages/*/coverage"
   },
