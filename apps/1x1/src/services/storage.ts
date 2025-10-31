@@ -37,9 +37,6 @@ const gamePersistence = createGamePersistence<GameSettings, GameState>(
   STORAGE_KEYS.GAME_STATE
 )
 
-// Expected card count for 3x3 to 9x9 where y <= x
-const EXPECTED_CARD_COUNT = 28
-
 /**
  * Initialize all multiplication cards for the app
  * Generates cards from 3x3 to 9x9 where y <= x (avoiding duplicates)
@@ -84,20 +81,6 @@ export function loadCards(): Card[] {
  */
 export function saveCards(cards: Card[]): void {
   saveJSON(STORAGE_KEYS.CARDS, cards)
-}
-
-/**
- * Verify card data integrity - ensures all expected cards exist
- */
-export function verifyAndFixCards(): void {
-  const cards = loadCards()
-
-  if (cards.length !== EXPECTED_CARD_COUNT) {
-    console.warn(
-      `Card count mismatch: ${cards.length} !== ${EXPECTED_CARD_COUNT}. Reinitializing...`
-    )
-    initializeCards()
-  }
 }
 
 /**
@@ -180,21 +163,9 @@ export function saveGameStats(stats: GameStats): void {
 
 /**
  * Update statistics after a game
- * Note: For 1x1, use updateBonusPoints() instead to avoid double-incrementing gamesPlayed
  */
 export function updateStatistics(points: number, correctAnswers: number): void {
   statsOps.update(points, correctAnswers)
-}
-
-/**
- * Update only bonus points without incrementing gamesPlayed
- * Used for daily bonuses in GameOverPage after saveGameResults() has already incremented gamesPlayed
- */
-export function updateBonusPoints(points: number): void {
-  const stats = statsOps.load()
-  // Don't increment gamesPlayed - it's already incremented by saveGameResults()
-  stats.points += points
-  statsOps.save(stats)
 }
 
 // Game Configuration (Session Storage)
@@ -211,13 +182,6 @@ export function setGameConfig(config: GameSettings): void {
  */
 export function getGameConfig(): GameSettings | null {
   return gamePersistence.loadSettings()
-}
-
-/**
- * Clear game configuration from session storage
- */
-export function clearGameConfig(): void {
-  gamePersistence.clearSettings()
 }
 
 // Game Result (Session Storage)

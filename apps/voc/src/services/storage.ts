@@ -162,13 +162,6 @@ export function loadGameSettings(): GameSettings | null {
   return gamePersistence.loadSettings()
 }
 
-/**
- * Clear game settings from session storage
- */
-export function clearGameSettings(): void {
-  gamePersistence.clearSettings()
-}
-
 // Game State (for reload recovery)
 
 /**

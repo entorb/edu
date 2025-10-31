@@ -32,8 +32,8 @@ const modeOptions = [
 ]
 
 const languageOptions = [
-  { label: TEXT_DE.voc.language['en-de'], value: 'en-de' as const },
-  { label: TEXT_DE.voc.language['de-en'], value: 'de-en' as const }
+  { label: TEXT_DE.voc.language.en_de, value: 'en-de' as const },
+  { label: TEXT_DE.voc.language.de_en, value: 'de-en' as const }
 ]
 
 onMounted(async () => {
