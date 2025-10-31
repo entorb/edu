@@ -152,11 +152,7 @@ export default [
 
   // Vitest test files
   {
-    files: [
-      '**/*.{test,spec}.{js,ts,jsx,tsx}',
-      '**/setup.ts',
-      'src/**/__tests__/**/*.{js,ts,jsx,tsx}'
-    ],
+    files: ['**/*.{test,spec}.{js,ts,jsx,tsx}', '**/__tests__/setup.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
