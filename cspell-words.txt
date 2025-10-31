@@ -1,5 +1,7 @@
 Abbrechen
 accesscounts
+Aktualisieren
+aktualisieren
 Antwort
 Antworten
 anzeigen
@@ -12,6 +14,7 @@ Daten
 definded
 Deiner
 Dexie
+Eine
 entorb
 Ergebnis
 Erstes
@@ -31,6 +34,7 @@ hinzufügen
 hohe
 Insgesamt
 installieren
+Jetzt
 Karten
 Kartendaten
 keine
@@ -40,6 +44,7 @@ Langsame
 Legende
 Menü
 Möchten
+neue
 niedrige
 Noch
 Nutzern
@@ -58,6 +63,7 @@ Sehr
 SonarQube
 Spiele
 Spielen
+Später
 Stapel
 Starke
 Startbildschirm
@@ -72,6 +78,7 @@ Torben
 turborepo
 Übersicht
 unplugin
+Update
 verfügbar
 Verlauf
 viel

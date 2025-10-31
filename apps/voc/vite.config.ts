@@ -37,7 +37,7 @@ export default mergeConfig(
         dts: 'src/typed-router.d.ts'
       }),
       VitePWA({
-        registerType: 'autoUpdate',
+        registerType: 'prompt',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'android-chrome-192x192.png'],
         manifest: {
           name: APP_TITLE,

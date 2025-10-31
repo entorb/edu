@@ -9,12 +9,10 @@ This is a pnpm workspace monorepo hosting two Vue.js/Quasar educational applicat
 ## Instructions
 
 - do not create commits, but propose to the user to create a commit
-- run `pnpm run format` after each modification and ensure that there are no problems and so that you do not have to deal with format issues
-- run `pnpm run check` after each step and ensure that there are no problems
+- run `pnpm run check` after each step (includes format, lint, types, spell, and tests in parallel)
 - run `pnpm run cy:run:1x1` and `pnpm run cy:run:voc` after each phase
-- all text must be definded in @packages/shared/src/text-de.ts
+- all text must be defined in @packages/shared/src/text-de.ts
 - Vitest unit tests are placed next to the files they test and use the `.spec.ts` suffix: e.g. `CardsPage.vue` and `CardsPage.spec.ts`. DO NOT copy functions from the source file to the test file, import them!
-
 - in Cypress e2e tests, use data-cy= locators instead of text or ids (Cypress is using the dev server)
 
 ### Prevent SonarQube Issues
@@ -281,11 +279,111 @@ See [apps/1x1/CLAUDE.md](apps/1x1/CLAUDE.md) and [apps/voc/CLAUDE.md](apps/voc/C
 - **Build Tool**: Vite 6.x
 - **Testing**: Vitest 2.1.9, Cypress 15.5.0
 - **TypeScript**: Strict mode with project references and path mappings
-- **Storage**: Dexie.js (IndexedDB wrapper)
+- **Storage**: localStorage (flashcards, history, stats, settings)
 - **Package Manager**: pnpm with workspaces (v9.0.0+)
-- **PWA**: @vite-pwa/vite-plugin
+- **PWA**: @vite-pwa/vite-plugin with service workers
 - **Code Quality**: ESLint, Prettier, cspell
 - **Shared Package**: @flashcards/shared (workspace package)
+
+## PWA Implementation
+
+Both apps are configured as Progressive Web Apps (PWAs) with offline support and automatic updates.
+
+### Service Worker Registration
+
+**Pattern** (`apps/*/src/main.ts`):
+
+```typescript
+// Register PWA service worker after app is mounted
+import { registerSW } from 'virtual:pwa-register'
+import { TEXT_DE } from '@flashcards/shared'
+
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    // Prompt user before reloading to prevent data loss
+    if (confirm(TEXT_DE.pwaUpdate.confirmMessage)) {
+      updateSW(true)
+    }
+  }
+})
+```
+
+**Key Points:**
+
+- Registration occurs **after** `app.mount()` to ensure DOM is ready
+- `immediate: true` checks for updates on every page load (browser HTTP caching prevents excessive traffic)
+- `onNeedRefresh()` callback prompts user before reload
+- Uses centralized German text: `TEXT_DE.pwaUpdate.confirmMessage`
+
+### Vite PWA Configuration
+
+**Pattern** (`apps/*/vite.config.ts`):
+
+```typescript
+{
+  VitePWA({
+    registerType: 'prompt', // Returns update function (NOT 'autoUpdate')
+    manifest: {
+      name: APP_TITLE,
+      short_name: 'App Name'
+      // ... icons and other manifest properties
+    }
+  })
+}
+```
+
+**Critical Configuration:**
+
+- `registerType: 'prompt'` - Provides callback for custom update handling
+- `registerType: 'autoUpdate'` returns undefined and will cause runtime errors
+- Manifest includes app title and icons for home screen installation
+
+### Display Mode Detection
+
+**Pattern** (`packages/shared/src/components/PwaInstallInfo.vue`):
+
+```typescript
+const isPwaInstalled = ref(false)
+
+onMounted(() => {
+  const isStandalone =
+    globalThis.matchMedia('(display-mode: standalone)').matches ||
+    (globalThis.navigator as Navigator & { standalone?: boolean }).standalone === true
+  isPwaInstalled.value = isStandalone
+})
+```
+
+**Behavior:**
+
+- Hides install instructions when app is already running as installed PWA
+- Works on desktop, Android, and iOS
+- Uses `globalThis` for SonarQube compliance
+
+### Update Message
+
+**Centralized Text** (`packages/shared/src/text-de.ts`):
+
+```typescript
+pwaUpdate: {
+  confirmMessage: 'Neue Version verfügbar. Neu laden?'
+}
+```
+
+### Update Flow
+
+1. Service worker checks for updates on every page load
+2. If update available, `onNeedRefresh()` callback fires
+3. User sees confirmation dialog (native `confirm()`)
+4. If user accepts, app reloads with new version
+5. User data is preserved in localStorage
+
+### PWA Important Notes
+
+- **Automatic Checks**: Browser handles HTTP cache headers to prevent excessive traffic
+- **No Force Updates**: Users can manually close/reopen app to force check (respects their control)
+- **Data Safety**: Confirmation prompt prevents accidental loss of unsaved game data
+- **Type Declarations**: Requires `apps/*/src/vite-env.d.ts` with PWA type references
 
 ## Important Notes
 
