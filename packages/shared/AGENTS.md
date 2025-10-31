@@ -48,7 +48,7 @@ src/
 └── index.ts                    # Main export entry point
 ```
 
-Vitest unit tests are placed next to the files they test and use the `.spec.ts` suffix: e.g. `CardsPage.vue` and `CardsPage.spec.ts`
+Vitest unit tests are placed next to the files they test and use the `.spec.ts` suffix: e.g. `CardsPage.vue` and `CardsPage.spec.ts`. DO NOT copy functions from the source file to the test file, import them!
 
 ### Most Important Files
 

@@ -9,8 +9,6 @@
 
 ## 1x1
 
--
-
 ## Wordplay
 
 - Extract all logic configuration parameters / constants to apps/voc/src/config/constants.ts
