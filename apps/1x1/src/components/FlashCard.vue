@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import type { Card } from '@/types'
-import type { SelectionType } from '@/types'
+import type { Card, SelectionType } from '@/types'
 import { TEXT_DE } from '@flashcards/shared'
 import { loadExtendedFeatures } from '@/services/storage'
 import { formatDisplayQuestion } from '@/utils/questionFormatter'

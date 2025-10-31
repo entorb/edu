@@ -12,9 +12,7 @@ interface Props {
   autoCloseCountdown?: number
 }
 
-interface Emits {
-  (e: 'continue'): void
-}
+type Emits = (e: 'continue') => void
 
 withDefaults(defineProps<Props>(), {
   iconSize: '80px',

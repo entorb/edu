@@ -108,7 +108,7 @@ export function parseCardsFromText(text: string): { cards: Card[]; delimiter: st
 
   const lines = text.trim().split('\n')
   const firstLine = lines[0]
-  let delimiter = '\t'
+  let delimiter: string
   if (firstLine.includes('\t')) delimiter = '\t'
   else if (firstLine.includes(';')) delimiter = ';'
   else if (firstLine.includes(',')) delimiter = ','

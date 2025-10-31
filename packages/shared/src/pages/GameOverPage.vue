@@ -15,9 +15,7 @@ interface Props {
   showMascot: boolean
 }
 
-interface Emits {
-  (e: 'goHome'): void
-}
+type Emits = (e: 'goHome') => void
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()

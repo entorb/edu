@@ -265,34 +265,55 @@ export function loadExtendedFeatures(): ExtendedFeaturesState {
 }
 
 /**
- * Add cards for a specific extended feature
- * Generates new cards with level 1 and time 60s
+ * Generate cards for 1x2 feature (2×3 to 2×20)
  */
-export function addExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'feature1x20'): void {
-  const cards = loadCards()
+function generateFeature1x2Cards(existingCards: Card[], features: ExtendedFeaturesState): Card[] {
   const newCards: Card[] = []
+  const x = 2
+  const yValues = [2, 3, 4, 5, 6, 7, 8, 9]
 
-  if (feature === 'feature1x2') {
-    const x = 2
-    const yValues = [2, 3, 4, 5, 6, 7, 8, 9]
+  if (features.feature1x12) {
+    yValues.push(11, 12)
+  }
 
-    // Check if 1x12 is already active and add cards 2x11, 2x12
-    const features1x12 = loadExtendedFeatures().feature1x12
-    if (features1x12) {
-      yValues.push(11, 12)
+  if (features.feature1x20) {
+    for (let i = 13; i <= 20; i++) {
+      yValues.push(i)
     }
+  }
 
-    // Check if 1x20 is already active and add cards 2x13-2x20
-    const features1x20 = loadExtendedFeatures().feature1x20
-    if (features1x20) {
-      for (let i = 13; i <= 20; i++) {
-        yValues.push(i)
-      }
+  for (const y of yValues) {
+    const question = `${Math.min(x, y)}x${Math.max(x, y)}`
+    if (!existingCards.some(c => c.question === question)) {
+      newCards.push({
+        question,
+        answer: x * y,
+        level: MIN_CARD_LEVEL,
+        time: MAX_CARD_TIME
+      })
     }
+  }
 
+  return newCards
+}
+
+/**
+ * Generate cards for 1x12 feature (11×11 to 12×12 with cross-products)
+ */
+function generateFeature1x12Cards(existingCards: Card[], features: ExtendedFeaturesState): Card[] {
+  const newCards: Card[] = []
+  const xValues = [11, 12]
+  const yValues: number[] = []
+
+  if (features.feature1x2) {
+    yValues.push(2)
+  }
+  yValues.push(3, 4, 5, 6, 7, 8, 9, 11, 12)
+
+  for (const x of xValues) {
     for (const y of yValues) {
       const question = `${Math.min(x, y)}x${Math.max(x, y)}`
-      if (!cards.some(c => c.question === question)) {
+      if (!existingCards.some(c => c.question === question)) {
         newCards.push({
           question,
           answer: x * y,
@@ -301,22 +322,32 @@ export function addExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'featur
         })
       }
     }
-  } else if (feature === 'feature1x12') {
-    const xValues = [11, 12]
-    const features1x2 = loadExtendedFeatures().feature1x2
+  }
 
-    // Build yValues: [2], 3-9, 11-12 (skip 10)
-    const yValues: number[] = []
-    if (features1x2) {
-      yValues.push(2)
-    }
-    yValues.push(3, 4, 5, 6, 7, 8, 9) // Base range
-    yValues.push(11, 12) // Skip 10
+  return newCards
+}
 
-    for (const x of xValues) {
-      for (const y of yValues) {
+/**
+ * Generate cards for 1x20 feature (13×13 to 20×20 with cross-products)
+ */
+function generateFeature1x20Cards(existingCards: Card[], features: ExtendedFeaturesState): Card[] {
+  const newCards: Card[] = []
+  const xValues = Array.from({ length: 8 }, (_, i) => 13 + i)
+  const yValues: number[] = []
+
+  if (features.feature1x2) {
+    yValues.push(2)
+  }
+  yValues.push(3, 4, 5, 6, 7, 8, 9, 11, 12)
+  for (let i = 13; i <= 20; i++) {
+    yValues.push(i)
+  }
+
+  for (const x of xValues) {
+    for (const y of yValues) {
+      if (y <= x) {
         const question = `${Math.min(x, y)}x${Math.max(x, y)}`
-        if (!cards.some(c => c.question === question)) {
+        if (!existingCards.some(c => c.question === question)) {
           newCards.push({
             question,
             answer: x * y,
@@ -326,36 +357,26 @@ export function addExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'featur
         }
       }
     }
+  }
+
+  return newCards
+}
+
+/**
+ * Add cards for a specific extended feature
+ * Generates new cards with level 1 and time 60s
+ */
+export function addExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'feature1x20'): void {
+  const cards = loadCards()
+  const features = loadExtendedFeatures()
+  let newCards: Card[] = []
+
+  if (feature === 'feature1x2') {
+    newCards = generateFeature1x2Cards(cards, features)
+  } else if (feature === 'feature1x12') {
+    newCards = generateFeature1x12Cards(cards, features)
   } else if (feature === 'feature1x20') {
-    const xValues = Array.from({ length: 8 }, (_, i) => 13 + i) // 13-20
-    const features1x2 = loadExtendedFeatures().feature1x2
-
-    // Build yValues: [2], 3-9, 11-12, 13-20 (skip 10)
-    const yValues: number[] = []
-    if (features1x2) {
-      yValues.push(2)
-    }
-    yValues.push(3, 4, 5, 6, 7, 8, 9) // Base range
-    yValues.push(11, 12) // Skip 10
-    for (let i = 13; i <= 20; i++) {
-      yValues.push(i)
-    }
-
-    for (const x of xValues) {
-      for (const y of yValues) {
-        if (y <= x) {
-          const question = `${Math.min(x, y)}x${Math.max(x, y)}`
-          if (!cards.some(c => c.question === question)) {
-            newCards.push({
-              question,
-              answer: x * y,
-              level: MIN_CARD_LEVEL,
-              time: MAX_CARD_TIME
-            })
-          }
-        }
-      }
-    }
+    newCards = generateFeature1x20Cards(cards, features)
   }
 
   cards.push(...newCards)

@@ -15,7 +15,8 @@ describe('Card Initialization', () => {
 
   it('should have all expected cards', () => {
     const cards = loadCards()
-    const questions = cards.map(c => c.question).sort((a, b) => a.localeCompare(b))
+    const questions = cards.map(c => c.question)
+    questions.sort((a, b) => a.localeCompare(b))
 
     // Generate expected questions
     const expected: string[] = []

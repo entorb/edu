@@ -9,7 +9,7 @@ const localStorageMock = {
   clear: vi.fn()
 }
 
-global.localStorage = localStorageMock as any
+globalThis.localStorage = localStorageMock as any
 
 // Mock sessionStorage
 const sessionStorageMock = {
@@ -19,4 +19,4 @@ const sessionStorageMock = {
   clear: vi.fn()
 }
 
-global.sessionStorage = sessionStorageMock as any
+globalThis.sessionStorage = sessionStorageMock as any
