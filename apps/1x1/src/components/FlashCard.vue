@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import type { Card } from '@/types'
 import { TEXT_DE } from '@flashcards/shared'
+import { loadExtendedFeatures } from '@/services/storage'
 import {
   AUTO_SUBMIT_DIGITS,
   AUTO_CLOSE_DURATION,
@@ -50,9 +51,20 @@ const displayQuestion = computed(() => {
   return props.card.question.replace('x', '\u00d7')
 })
 
-// Auto-submit after configured digit count
+// Check if auto-submit should be disabled for extended features
+const shouldDisableAutoSubmit = computed(() => {
+  const features = loadExtendedFeatures()
+  return features.feature1x12 || features.feature1x20
+})
+
+// Auto-submit after configured digit count (unless extended features are active)
 watch(userAnswer, newValue => {
-  if (newValue !== null && newValue !== undefined && !showFeedback.value) {
+  if (
+    newValue !== null &&
+    newValue !== undefined &&
+    !showFeedback.value &&
+    !shouldDisableAutoSubmit.value
+  ) {
     const valueStr = String(newValue)
     if (valueStr.length >= AUTO_SUBMIT_DIGITS) {
       submitAnswer()

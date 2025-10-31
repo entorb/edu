@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { loadCards, resetCards } from '@/services/storage'
+import {
+  loadCards,
+  resetCards,
+  loadExtendedFeatures,
+  addExtendedCards,
+  deleteExtendedCards
+} from '@/services/storage'
 import type { Card } from '@/types'
 import {
   MIN_CARD_TIME,
@@ -13,10 +19,13 @@ import {
 } from '@/constants'
 import { TEXT_DE, useResetCards } from '@flashcards/shared'
 import { LevelDistribution } from '@flashcards/shared/components'
+import { useQuasar } from 'quasar'
 
 const router = useRouter()
+const $q = useQuasar()
 const { showResetDialog } = useResetCards()
 const cards = ref<Card[]>([])
+const extendedFeatures = ref({ feature1x2: false, feature1x12: false, feature1x20: false })
 
 const minTime = computed(() => {
   if (cards.value.length === 0) return MIN_CARD_TIME
@@ -27,6 +36,40 @@ const maxTime = computed(() => {
   return Math.min(MAX_CARD_TIME, Math.max(...cards.value.map(c => c.time)))
 })
 
+// Get Y values to display based on extended features
+const yValues = computed(() => {
+  const values = [3, 4, 5, 6, 7, 8, 9]
+  if (extendedFeatures.value.feature1x2) {
+    values.unshift(2)
+  }
+  if (extendedFeatures.value.feature1x12) {
+    values.push(11, 12)
+  }
+  if (extendedFeatures.value.feature1x20) {
+    for (let i = 13; i <= 20; i++) {
+      values.push(i)
+    }
+  }
+  return values
+})
+
+// Get X values to display based on extended features
+const xValues = computed(() => {
+  const values = [3, 4, 5, 6, 7, 8, 9]
+  if (extendedFeatures.value.feature1x2) {
+    values.unshift(2)
+  }
+  if (extendedFeatures.value.feature1x12) {
+    values.push(11, 12)
+  }
+  if (extendedFeatures.value.feature1x20) {
+    for (let i = 13; i <= 20; i++) {
+      values.push(i)
+    }
+  }
+  return values
+})
+
 function handleKeyDown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     goHome()
@@ -35,6 +78,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
 onMounted(() => {
   cards.value = loadCards()
+  extendedFeatures.value = loadExtendedFeatures()
   globalThis.addEventListener('keydown', handleKeyDown)
 })
 
@@ -89,6 +133,46 @@ function resetCardsHandler() {
   })
 }
 
+function toggleExtendedFeature(feature: 'feature1x2' | 'feature1x12' | 'feature1x20') {
+  const isActive = extendedFeatures.value[feature]
+
+  if (isActive) {
+    // Deactivate feature
+    $q.dialog({
+      title: TEXT_DE.multiply.extendedCards.confirmDeleteTitle,
+      message: TEXT_DE.multiply.extendedCards.confirmDeleteMessage,
+      cancel: true,
+      persistent: true
+    }).onOk(() => {
+      deleteExtendedCards(feature)
+      extendedFeatures.value = loadExtendedFeatures()
+      cards.value = loadCards()
+      // Show warning if feature1x12 was deactivated
+      if (feature === 'feature1x12') {
+        $q.notify({
+          type: 'warning',
+          message: TEXT_DE.multiply.extendedCards.feature1x12Warning,
+          position: 'top'
+        })
+      }
+    })
+  } else {
+    // Activate feature
+    // If activating 1x20, also activate 1x12 if not already active
+    if (feature === 'feature1x20' && !extendedFeatures.value.feature1x12) {
+      addExtendedCards('feature1x12')
+    }
+    addExtendedCards(feature)
+    extendedFeatures.value = loadExtendedFeatures()
+    cards.value = loadCards()
+    $q.notify({
+      type: 'positive',
+      message: TEXT_DE.multiply.extendedCards.addSuccess,
+      position: 'top'
+    })
+  }
+}
+
 function goHome() {
   router.push({ name: '/' })
 }
@@ -132,11 +216,14 @@ function goHome() {
           </div>
 
           <div class="cards-grid-container">
-            <div class="cards-grid">
+            <div
+              class="cards-grid"
+              :style="{ gridTemplateColumns: `40px repeat(${xValues.length}, 1fr)` }"
+            >
               <!-- Header row with X values -->
               <div class="grid-header"></div>
               <div
-                v-for="x in [3, 4, 5, 6, 7, 8, 9]"
+                v-for="x in xValues"
                 :key="`header-${x}`"
                 class="grid-header text-center text-weight-bold"
               >
@@ -145,7 +232,7 @@ function goHome() {
 
               <!-- Rows for each Y value -->
               <template
-                v-for="y in [3, 4, 5, 6, 7, 8, 9]"
+                v-for="y in yValues"
                 :key="`row-${y}`"
               >
                 <!-- Y label -->
@@ -153,7 +240,7 @@ function goHome() {
 
                 <!-- Cells for each X value -->
                 <div
-                  v-for="x in [3, 4, 5, 6, 7, 8, 9]"
+                  v-for="x in xValues"
                   :key="`cell-${y}-${x}`"
                   class="grid-cell"
                   :style="getCellStyle(y, x)"
@@ -214,6 +301,62 @@ function goHome() {
               </div>
             </div>
           </div>
+
+          <!-- Extended Cards Section -->
+          <q-separator class="q-my-md" />
+          <div class="extended-cards-section">
+            <div class="text-subtitle2 q-mb-md text-grey-8">
+              <q-icon
+                name="extension"
+                size="18px"
+                class="q-mr-xs"
+              />
+              {{ TEXT_DE.multiply.extendedCards.title }}
+            </div>
+            <div class="row q-col-gutter-md">
+              <!-- 1x2 Feature -->
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="feature-toggle">
+                  <div class="feature-label">
+                    {{ TEXT_DE.multiply.extendedCards.feature1x2 }}
+                  </div>
+                  <q-toggle
+                    :model-value="extendedFeatures.feature1x2"
+                    @update:model-value="toggleExtendedFeature('feature1x2')"
+                    data-cy="feature-1x2-toggle"
+                  />
+                </div>
+              </div>
+
+              <!-- 1x12 Feature -->
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="feature-toggle">
+                  <div class="feature-label">
+                    {{ TEXT_DE.multiply.extendedCards.feature1x12 }}
+                  </div>
+                  <q-toggle
+                    :model-value="extendedFeatures.feature1x12"
+                    @update:model-value="toggleExtendedFeature('feature1x12')"
+                    data-cy="feature-1x12-toggle"
+                  />
+                </div>
+              </div>
+
+              <!-- 1x20 Feature -->
+              <div class="col-12 col-sm-6 col-md-4">
+                <div class="feature-toggle">
+                  <div class="feature-label">
+                    {{ TEXT_DE.multiply.extendedCards.feature1x20 }}
+                  </div>
+                  <q-toggle
+                    :model-value="extendedFeatures.feature1x20"
+                    @update:model-value="toggleExtendedFeature('feature1x20')"
+                    data-cy="feature-1x20-toggle"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </q-card-section>
       </q-card>
     </div>
@@ -228,9 +371,8 @@ function goHome() {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: 40px repeat(7, 1fr);
   gap: 6px;
-  min-width: 500px;
+  min-width: 700px;
 }
 
 .grid-header {
@@ -251,7 +393,8 @@ function goHome() {
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease;
-  min-height: 70px;
+  min-height: 100px;
+  min-width: 100px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -271,6 +414,27 @@ function goHome() {
   font-size: 1.1rem;
 }
 
+/* Extended Cards Section */
+.extended-cards-section {
+  margin-top: 16px;
+}
+
+.feature-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.feature-label {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #424242;
+}
+
 /* Mobile: compact grid */
 @media (max-width: 599.98px) {
   .cards-grid {
@@ -280,12 +444,18 @@ function goHome() {
   }
 
   .grid-cell {
-    min-height: 54px;
+    min-height: 70px;
+    min-width: 70px;
     border-width: 1px;
   }
 
   .cell-answer {
     font-size: 0.85rem;
+  }
+
+  .feature-toggle {
+    flex-direction: column;
+    gap: 12px;
   }
 }
 </style>

@@ -80,7 +80,17 @@ export const TEXT_DE = {
   multiply: {
     selection: 'Reihe',
     selectionSquares: 'x²',
-    selectionAll: 'alle'
+    selectionAll: 'alle',
+    extendedCards: {
+      title: 'Weitere Karten',
+      feature1x2: '1x2',
+      feature1x12: '1x12',
+      feature1x20: '1x20',
+      confirmDeleteTitle: 'Karten löschen?',
+      confirmDeleteMessage: 'Sicher, dass Du die Karten und ihr Level löschen willst?',
+      addSuccess: 'Karten hinzugefügt!',
+      feature1x12Warning: '1x20 wird deaktiviert, da 1x12 deaktiviert wurde.'
+    }
   },
 
   // Wordplay App specific

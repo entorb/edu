@@ -277,6 +277,157 @@ export function clearGameState(): void {
   gamePersistence.clearState()
 }
 
+// Extended Features (1x2, 1x12, 1x20)
+
+interface ExtendedFeaturesState {
+  feature1x2: boolean
+  feature1x12: boolean
+  feature1x20: boolean
+}
+
+/**
+ * Load extended features state by checking for indicator cards
+ * - If card 2x3 exists → feature1x2 is active
+ * - If card 11x12 exists → feature1x12 is active
+ * - If card 18x19 exists → feature1x20 is active
+ */
+export function loadExtendedFeatures(): ExtendedFeaturesState {
+  const cards = loadCards()
+  return {
+    feature1x2: cards.some(c => c.question === '2x3'),
+    feature1x12: cards.some(c => c.question === '11x12'),
+    feature1x20: cards.some(c => c.question === '18x19')
+  }
+}
+
+/**
+ * Add cards for a specific extended feature
+ * Generates new cards with level 1 and time 60s
+ */
+export function addExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'feature1x20'): void {
+  const cards = loadCards()
+  const newCards: Card[] = []
+
+  if (feature === 'feature1x2') {
+    const x = 2
+    const yValues = [2, 3, 4, 5, 6, 7, 8, 9]
+
+    // Check if 1x12 is already active and add cards 2x11, 2x12
+    const features1x12 = loadExtendedFeatures().feature1x12
+    if (features1x12) {
+      yValues.push(11, 12)
+    }
+
+    // Check if 1x20 is already active and add cards 2x13-2x20
+    const features1x20 = loadExtendedFeatures().feature1x20
+    if (features1x20) {
+      for (let i = 13; i <= 20; i++) {
+        yValues.push(i)
+      }
+    }
+
+    for (const y of yValues) {
+      const question = `${Math.min(x, y)}x${Math.max(x, y)}`
+      if (!cards.some(c => c.question === question)) {
+        newCards.push({
+          question,
+          answer: x * y,
+          level: MIN_CARD_LEVEL,
+          time: MAX_CARD_TIME
+        })
+      }
+    }
+  } else if (feature === 'feature1x12') {
+    const xValues = [11, 12]
+    const features1x2 = loadExtendedFeatures().feature1x2
+
+    // Build yValues: [2], 3-9, 11-12 (skip 10)
+    const yValues: number[] = []
+    if (features1x2) {
+      yValues.push(2)
+    }
+    yValues.push(3, 4, 5, 6, 7, 8, 9) // Base range
+    yValues.push(11, 12) // Skip 10
+
+    for (const x of xValues) {
+      for (const y of yValues) {
+        const question = `${Math.min(x, y)}x${Math.max(x, y)}`
+        if (!cards.some(c => c.question === question)) {
+          newCards.push({
+            question,
+            answer: x * y,
+            level: MIN_CARD_LEVEL,
+            time: MAX_CARD_TIME
+          })
+        }
+      }
+    }
+  } else if (feature === 'feature1x20') {
+    const xValues = Array.from({ length: 8 }, (_, i) => 13 + i) // 13-20
+    const features1x2 = loadExtendedFeatures().feature1x2
+
+    // Build yValues: [2], 3-9, 11-12, 13-20 (skip 10)
+    const yValues: number[] = []
+    if (features1x2) {
+      yValues.push(2)
+    }
+    yValues.push(3, 4, 5, 6, 7, 8, 9) // Base range
+    yValues.push(11, 12) // Skip 10
+    for (let i = 13; i <= 20; i++) {
+      yValues.push(i)
+    }
+
+    for (const x of xValues) {
+      for (const y of yValues) {
+        if (y <= x) {
+          const question = `${Math.min(x, y)}x${Math.max(x, y)}`
+          if (!cards.some(c => c.question === question)) {
+            newCards.push({
+              question,
+              answer: x * y,
+              level: MIN_CARD_LEVEL,
+              time: MAX_CARD_TIME
+            })
+          }
+        }
+      }
+    }
+  }
+
+  cards.push(...newCards)
+  saveCards(cards)
+}
+
+/**
+ * Delete cards for a specific extended feature
+ */
+export function deleteExtendedCards(feature: 'feature1x2' | 'feature1x12' | 'feature1x20'): void {
+  let cards = loadCards()
+
+  if (feature === 'feature1x2') {
+    // Delete all cards with X or Y == 2
+    cards = cards.filter(c => {
+      const [y, x] = c.question.split('x').map(Number)
+      return x !== 2 && y !== 2
+    })
+  } else if (feature === 'feature1x12') {
+    // Delete all cards with X or Y >= 11 or X or Y == 10 (cleanup for bug)
+    // This also deactivates feature1x20 by removing those cards
+    cards = cards.filter(c => {
+      const [y, x] = c.question.split('x').map(Number)
+      return x < 11 && y < 11 && x !== 10 && y !== 10
+    })
+  } else if (feature === 'feature1x20') {
+    // Delete all cards with X or Y >= 13 or X or Y == 10 (cleanup for bug)
+    cards = cards.filter(c => {
+      const [y, x] = c.question.split('x').map(Number)
+      return x < 13 && y < 13 && x !== 10 && y !== 10
+    })
+  }
+
+  saveCards(cards)
+}
+
 // Reset All
 
 /**

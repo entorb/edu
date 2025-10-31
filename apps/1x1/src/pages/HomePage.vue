@@ -13,7 +13,7 @@ import {
   PwaInstallInfo,
   FocusSelector
 } from '@flashcards/shared/components'
-import { loadGameStats } from '@/services/storage'
+import { loadGameStats, loadExtendedFeatures } from '@/services/storage'
 
 const router = useRouter()
 
@@ -21,7 +21,22 @@ const { gameStats, gameSettings, startGame: storeStartGame } = useGameStore()
 
 const select = ref<SelectionType>(DEFAULT_SELECT)
 const focus = ref<FocusType>('weak')
-const selectOptions = SELECT_OPTIONS
+const extendedFeatures = ref({ feature1x2: false, feature1x12: false, feature1x20: false })
+
+// Compute available selection options based on extended features
+const selectOptions = computed(() => {
+  const options = [...SELECT_OPTIONS]
+  if (extendedFeatures.value.feature1x2) {
+    options.unshift(2)
+  }
+  if (extendedFeatures.value.feature1x12) {
+    options.push(11, 12)
+  }
+  if (extendedFeatures.value.feature1x20) {
+    options.push(13, 14, 15, 16, 17, 18, 19, 20)
+  }
+  return options
+})
 
 // Check if a number is selected
 const isNumberSelected = computed(() => (num: number) => {
@@ -33,6 +48,9 @@ const isNumberSelected = computed(() => (num: number) => {
 const isSquaresSelected = computed(() => select.value === 'x²')
 
 onMounted(() => {
+  // Load extended features
+  extendedFeatures.value = loadExtendedFeatures()
+
   // Restore select and focus from gameSettings in store
   if (gameSettings.value) {
     select.value = gameSettings.value.select
@@ -81,7 +99,7 @@ function toggleSelect(option: number) {
     return
   }
 
-  const allSelected = selectOptions.every(
+  const allSelected = selectOptions.value.every(
     opt => Array.isArray(select.value) && select.value.includes(opt)
   )
 
@@ -90,17 +108,17 @@ function toggleSelect(option: number) {
     select.value = [option]
   } else if (Array.isArray(select.value) && select.value.includes(option)) {
     // If already selected, select all
-    select.value = [...selectOptions]
+    select.value = [...selectOptions.value]
   } else if (Array.isArray(select.value)) {
     // Not selected, add it
-    select.value = [...select.value, option].sort()
+    select.value = [...select.value, option].sort((a, b) => a - b)
   }
 }
 
 function toggleSquares() {
   if (select.value === 'x²') {
     // If x² is already selected, deselect and go to all
-    select.value = [...selectOptions]
+    select.value = [...selectOptions.value]
   } else {
     // Select x² mode
     select.value = 'x²'
