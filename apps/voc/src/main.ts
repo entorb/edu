@@ -35,11 +35,16 @@ app.use(router)
 
 app.mount('#app')
 
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-  globalThis.addEventListener('load', () => {
-    navigator.serviceWorker.register('/voc/sw.js').catch(() => {
-      // Silently fail - PWA not critical
-    })
-  })
-}
+// Register PWA service worker after app is mounted
+import { registerSW } from 'virtual:pwa-register'
+import { TEXT_DE } from '@flashcards/shared'
+
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    // Prompt user before reloading to avoid data loss
+    if (confirm(TEXT_DE.pwaUpdate.confirmMessage)) {
+      updateSW(true)
+    }
+  }
+})

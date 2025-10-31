@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { TEXT_DE } from '../text-de'
+
+const isPwaInstalled = ref(false)
+
+onMounted(() => {
+  // Detect if running in standalone mode (installed PWA)
+  const isStandalone =
+    globalThis.matchMedia('(display-mode: standalone)').matches ||
+    (globalThis.navigator as Navigator & { standalone?: boolean }).standalone === true
+
+  isPwaInstalled.value = isStandalone
+})
 </script>
 
 <template>
   <q-card
+    v-if="!isPwaInstalled"
     class="bg-blue-1"
     bordered
   >

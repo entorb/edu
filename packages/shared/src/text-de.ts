@@ -24,6 +24,10 @@ export const TEXT_DE = {
     iPhoneInstructions: 'Teilen-Symbol → "Zum Home-Bildschirm"'
   },
 
+  pwaUpdate: {
+    confirmMessage: 'Neue Version verfügbar. Neu laden?'
+  },
+
   // Common actions
   common: {
     start: 'Starten',

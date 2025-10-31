@@ -12,10 +12,6 @@ import '@quasar/extras/material-icons/material-icons.css'
 // Import global styles
 import './styles/global.css'
 
-// Register PWA service worker
-import { registerSW } from 'virtual:pwa-register'
-registerSW({ immediate: true })
-
 const app = createApp(App)
 
 app.use(Quasar, {
@@ -28,3 +24,17 @@ app.use(Quasar, {
 app.use(router)
 
 app.mount('#app')
+
+// Register PWA service worker after app is mounted
+import { registerSW } from 'virtual:pwa-register'
+import { TEXT_DE } from '@flashcards/shared'
+
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    // Prompt user before reloading to avoid data loss
+    if (confirm(TEXT_DE.pwaUpdate.confirmMessage)) {
+      updateSW(true)
+    }
+  }
+})
