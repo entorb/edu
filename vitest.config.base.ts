@@ -14,13 +14,7 @@ export const getVitestConfig = (rootDir: string): any => ({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      exclude: [
-        ...configDefaults.exclude,
-        '**/*.spec.ts',
-        '**/*.test.ts',
-        'e2e/**',
-        'src/__tests__/**'
-      ]
+      exclude: [...configDefaults.exclude, '**/*.spec.ts', 'e2e/**']
     },
     css: {
       modules: {
