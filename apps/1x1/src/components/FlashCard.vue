@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import type { Card } from '@/types'
+import type { SelectionType } from '@/types'
 import { TEXT_DE } from '@flashcards/shared'
 import { loadExtendedFeatures } from '@/services/storage'
+import { formatDisplayQuestion } from '@/utils/questionFormatter'
 import {
   AUTO_SUBMIT_DIGITS,
   AUTO_CLOSE_DURATION,
@@ -14,6 +16,7 @@ import {
 interface Props {
   card: Card
   elapsedTime: number
+  selection?: SelectionType
 }
 
 interface AnswerData {
@@ -48,7 +51,7 @@ let buttonDisableCountdownInterval: ReturnType<typeof setInterval> | null = null
 let enterDisableTimer: ReturnType<typeof setTimeout> | null = null
 
 const displayQuestion = computed(() => {
-  return props.card.question.replace('x', '\u00d7')
+  return formatDisplayQuestion(props.card.question, props.selection)
 })
 
 // Check if auto-submit should be disabled for extended features

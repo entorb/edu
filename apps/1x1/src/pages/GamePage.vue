@@ -105,6 +105,7 @@ onUnmounted(() => {
       :key="currentCard.question"
       :card="currentCard"
       :elapsed-time="elapsedTime"
+      :selection="gameSettings?.select"
       @answer="handleAnswer"
       @next="handleNextCard"
     />
