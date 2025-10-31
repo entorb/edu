@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import type { Card } from '@/types'
+import type { SelectionType } from '@/types'
 import { TEXT_DE } from '@flashcards/shared'
 import { loadExtendedFeatures } from '@/services/storage'
 import {
@@ -14,6 +15,7 @@ import {
 interface Props {
   card: Card
   elapsedTime: number
+  selection?: SelectionType
 }
 
 interface AnswerData {
@@ -48,6 +50,22 @@ let buttonDisableCountdownInterval: ReturnType<typeof setInterval> | null = null
 let enterDisableTimer: ReturnType<typeof setTimeout> | null = null
 
 const displayQuestion = computed(() => {
+  // Check if a single number is selected (array with one element, not x² and not multiple numbers)
+  const isSingleNumberSelected =
+    props.selection && Array.isArray(props.selection) && props.selection.length === 1
+
+  if (isSingleNumberSelected) {
+    const selectedNum = props.selection[0]
+    const [x, y] = props.card.question.split('x').map(Number)
+
+    // If the selected number matches one of the operands, rearrange so it's last
+    if (selectedNum === x || selectedNum === y) {
+      const other = selectedNum === x ? y : x
+      return `${other}\u00d7${selectedNum}`
+    }
+  }
+
+  // Default: replace 'x' with multiplication sign
   return props.card.question.replace('x', '\u00d7')
 })
 
