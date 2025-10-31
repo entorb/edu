@@ -210,17 +210,6 @@ export const FONT_SIZE = {
 }
 
 // ============================================================================
-// FOCUS OPTIONS
-// ============================================================================
-import { TEXT_DE } from '@flashcards/shared'
-
-export const FOCUS_OPTIONS = [
-  { label: TEXT_DE.focusOptions.weak, value: 'weak', icon: 'school' },
-  { label: TEXT_DE.focusOptions.strong, value: 'strong', icon: 'star' },
-  { label: TEXT_DE.focusOptions.slow, value: 'slow', icon: 'schedule' }
-] as const
-
-// ============================================================================
 // EXTERNAL API
 // ============================================================================
 

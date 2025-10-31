@@ -4,13 +4,10 @@ import { router } from './router'
 import App from './App.vue'
 
 // Import Quasar css
-import 'quasar/dist/quasar.css'
+import 'quasar/src/css/index.sass'
 
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
-
-// Import global styles
-import './styles/global.css'
 
 const app = createApp(App)
 
