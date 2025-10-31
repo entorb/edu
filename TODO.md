@@ -5,10 +5,11 @@
 ## Both
 
 - check which constants can be moved to the shared package
+- Update @apps/1x1/README.md and @apps/1x1/AGENTS.md
 
 ## 1x1
 
-Update @apps/1x1/README.md and @apps/1x1/AGENTS.md
+-
 
 ## Wordplay
 

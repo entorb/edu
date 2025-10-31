@@ -29,7 +29,6 @@ The shared package (`@flashcards/shared`) provides common types, utilities, comp
 
 ```text
 src/
-├── __tests__/                   # Tests for shared functionality
 ├── components/
 │   ├── AppFooter.vue           # Shared footer component
 │   └── AnswerFeedback.vue      # Game feedback display component
@@ -48,6 +47,8 @@ src/
 ├── text-de.ts                  # German text strings (i18n)
 └── index.ts                    # Main export entry point
 ```
+
+Vitest unit tests are placed next to the files they test and use the `.spec.ts` suffix: e.g. `CardsPage.vue` and `CardsPage.spec.ts`
 
 ### Most Important Files
 
